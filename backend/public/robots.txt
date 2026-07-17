@@ -1,0 +1,15 @@
+User-agent: *
+Allow: /
+
+Disallow: /admin.html
+Disallow: /login.html
+Disallow: /cabinet.html
+Disallow: /cabinet-department.html
+Disallow: /dashboard.html
+Disallow: /report-plan-fact.html
+Disallow: /splash.html
+Disallow: /demo.html
+Disallow: /icons-test.html
+Disallow: /api/
+
+Sitemap: https://ilmiystat.uz/sitemap.xml

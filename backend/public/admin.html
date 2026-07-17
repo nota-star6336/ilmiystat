@@ -1,0 +1,2013 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Служебная административная панель IlmiyStat." />
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet" />
+  <title>Админ-панель IlmiyStat</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      /* Palette aligned with IlmiyStat.html */
+      --primary: #111;
+      --primary-dark: #000;
+      --success: #2e7d32;
+      --danger: #b00020;
+      --warning: #ef6c00;
+      --bg: #ffffff;
+      --card-bg: #ffffff;
+      --text: #111;
+      --text-muted: #666;
+      --border: #d9d9d9;
+      --radius: 10px;
+      --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    a { color:#0b57d0; text-decoration:none; }
+    a:hover { text-decoration:underline; }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    header {
+      background: var(--card-bg);
+      padding: 20px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    h1 {
+      font-size: 24px;
+      color: var(--text);
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn-danger {
+      background: var(--danger);
+      color: white;
+    }
+
+    .btn-danger:hover {
+      filter: brightness(0.92);
+    }
+
+    .btn-success {
+      background: var(--success);
+      color: white;
+    }
+
+    .btn-secondary {
+      background: var(--border);
+      color: var(--text);
+    }
+
+    .btn-small {
+      padding: 6px 12px;
+      font-size: 12px;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      background: var(--card-bg);
+      padding: 10px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .tab {
+      padding: 10px 20px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-muted);
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+    }
+
+    .tab.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      background: var(--bg);
+      font-weight: 600;
+      font-size: 12px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    tr:hover {
+      background: var(--bg);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .badge-success {
+      background: #e8f5e9;
+      color: var(--success);
+      border: 1px solid rgba(46, 125, 50, 0.5);
+    }
+
+    .badge-danger {
+      background: #ffebee;
+      color: var(--danger);
+      border: 1px solid rgba(176, 0, 32, 0.55);
+    }
+
+    .badge-warning { background: var(--warning); color: #fff; }
+    .badge-primary {
+      background: #f6f6f6;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 30px;
+      max-width: 500px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .modal-title {
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .close {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: var(--text-muted);
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--text);
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 14px;
+      font-family: inherit;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      margin-top: 20px;
+    }
+
+    .alert {
+      padding: 12px 16px;
+      border-radius: var(--radius);
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    .alert.active {
+      display: block;
+    }
+
+    .alert-success {
+      background: #e8f5e9;
+      color: var(--success);
+      border: 1px solid rgba(46, 125, 50, 0.5);
+    }
+
+    .alert-error {
+      background: #ffebee;
+      color: var(--danger);
+      border: 1px solid rgba(176, 0, 32, 0.55);
+    }
+
+    .login-container {
+      max-width: 400px;
+      margin: 100px auto;
+      padding: 40px;
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .login-title {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 24px;
+    }
+
+    .checkbox-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .checkbox-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .checkbox-item input[type="checkbox"] {
+      width: auto;
+    }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 44px;
+      height: 24px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 24px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: var(--success);
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(20px);
+    }
+  </style>
+</head>
+<body>
+  <!-- Основной интерфейс -->
+  <div id="mainScreen" style="display: none;">
+    <div class="container">
+      <header>
+        <h1>Админ-панель IlmiyStat</h1>
+        <div class="user-info">
+          <span id="currentUser"></span>
+          <button class="btn btn-secondary btn-small" onclick="openChangePasswordModal()">Сменить пароль</button>
+          <button class="btn btn-secondary btn-small" onclick="logout()">Выйти</button>
+        </div>
+      </header>
+
+      <div id="alertContainer"></div>
+
+      <div class="tabs" id="adminTabs">
+        <button class="tab" id="tabBtn-notifications" onclick="switchTab('notifications')">Уведомления</button>
+        <button class="tab active" id="tabBtn-users" onclick="switchTab('users')">Пользователи</button>
+        <button class="tab" id="tabBtn-institutes" onclick="switchTab('institutes')">Институты</button>
+        <button class="tab" id="tabBtn-deaneries" onclick="switchTab('deaneries')">Деканаты</button>
+        <button class="tab" id="tabBtn-departments" onclick="switchTab('departments')">Кафедры</button>
+        <button class="tab" id="tabBtn-settings" onclick="switchTab('settings')">Настройки</button>
+      </div>
+
+      <!-- Вкладка Уведомления -->
+      <div id="tab-notifications" class="tab-content">
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">Уведомления</h2>
+            <button class="btn btn-primary" id="btnCreateNotification" onclick="openNotificationModal()">+ Создать уведомление</button>
+          </div>
+          <div id="notificationsTableWrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Категория</th>
+                  <th>Заголовок</th>
+                  <th>Автор</th>
+                  <th>Дата</th>
+                  <th>Действия</th>
+                </tr>
+              </thead>
+              <tbody id="notificationsTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Вкладка Пользователи -->
+      <div id="tab-users" class="tab-content active">
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">Управление пользователями</h2>
+            <button class="btn btn-primary" onclick="openUserModal()">+ Создать пользователя</button>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Логин</th>
+                <th>Роль</th>
+                <th>Научная роль</th>
+                <th>Статус</th>
+                <th>Кафедра</th>
+                <th>Действия</th>
+              </tr>
+            </thead>
+            <tbody id="usersTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Вкладка Институты -->
+      <div id="tab-institutes" class="tab-content">
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">Управление институтами</h2>
+            <button class="btn btn-primary" onclick="openInstituteModal()">+ Создать институт</button>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Название (RU)</th>
+                <th>Название (UZ)</th>
+                <th>Статус</th>
+                <th>Действия</th>
+              </tr>
+            </thead>
+            <tbody id="institutesTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Вкладка Деканаты -->
+      <div id="tab-deaneries" class="tab-content">
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">Управление деканатами</h2>
+            <button class="btn btn-primary" onclick="openDeaneryModal()">+ Создать деканат</button>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Институт</th>
+                <th>Название (RU)</th>
+                <th>Название (UZ)</th>
+                <th>Статус</th>
+                <th>Действия</th>
+              </tr>
+            </thead>
+            <tbody id="deaneriesTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Вкладка Кафедры -->
+      <div id="tab-departments" class="tab-content">
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">Управление кафедрами</h2>
+            <button class="btn btn-primary" onclick="openDepartmentModal()">+ Создать кафедру</button>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Название</th>
+                <th>Название (UZ)</th>
+                <th>Деканат</th>
+                <th>Статус</th>
+                <th>Действия</th>
+              </tr>
+            </thead>
+            <tbody id="departmentsTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Вкладка Настройки -->
+      <div id="tab-settings" class="tab-content">
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">Настройки системы</h2>
+          </div>
+
+          <div class="settings-row" style="display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid var(--border);">
+            <div>
+              <div style="font-weight:600;font-size:15px;">Страница дашборда</div>
+              <div style="color:var(--text-muted);font-size:13px;margin-top:4px;">
+                Публичная read-only страница со сводной статистикой для руководства.
+                Доступна по ссылке <a href="/dashboard.html" target="_blank" id="dashboardLink">/dashboard.html</a>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span id="dashboardStatusBadge" class="badge badge-danger">Выкл</span>
+              <label class="switch">
+                <input type="checkbox" id="dashboardEnabledToggle" onchange="toggleDashboard(this.checked)">
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="settings-row" style="padding:16px 0;border-bottom:1px solid var(--border);">
+            <div style="margin-bottom:12px;">
+              <div style="font-weight:600;font-size:15px;">reCAPTCHA (защита входа от ботов)</div>
+              <div style="color:var(--text-muted);font-size:13px;margin-top:4px;">
+                Ключи из <a href="https://www.google.com/recaptcha/admin" target="_blank" rel="noopener">Google reCAPTCHA</a>. При наличии обоих ключей на странице входа отображается проверка «Я не робот». Приоритет: настройки ниже, затем переменные .env.
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:600px;">
+              <div class="form-group" style="margin:0;">
+                <label>Site Key (публичный)</label>
+                <input type="text" id="recaptchaSiteKey" placeholder="6Lc..." autocomplete="off">
+              </div>
+              <div class="form-group" style="margin:0;">
+                <label>Secret Key (приватный)</label>
+                <input type="password" id="recaptchaSecretKey" placeholder="6Lc..." autocomplete="new-password">
+              </div>
+            </div>
+            <button type="button" class="btn btn-primary" style="margin-top:12px;" onclick="saveRecaptchaSettings()">Сохранить reCAPTCHA</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Модальное окно деканата -->
+  <div id="deaneryModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="deaneryModalTitle">Создать деканат</h3>
+        <button class="close" onclick="closeDeaneryModal()">&times;</button>
+      </div>
+      <form id="deaneryForm">
+        <input type="hidden" id="deaneryId">
+        <div class="form-group">
+          <label>Институт *</label>
+          <select id="deaneryInstituteId" required>
+            <option value="">— Выберите институт —</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Название (RU) *</label>
+          <input type="text" id="deaneryName" required>
+        </div>
+        <div class="form-group">
+          <label>Название (UZ)</label>
+          <input type="text" id="deaneryNameUz">
+        </div>
+        <div class="form-group">
+          <label>Статус</label>
+          <label class="switch">
+            <input type="checkbox" id="deaneryIsActive" checked>
+            <span class="slider"></span>
+          </label>
+          <span style="margin-left: 10px;">Активен</span>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" onclick="closeDeaneryModal()">Отмена</button>
+          <button type="submit" class="btn btn-primary">Сохранить</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Модальное окно института -->
+  <div id="instituteModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="instituteModalTitle">Создать институт</h3>
+        <button class="close" onclick="closeInstituteModal()">&times;</button>
+      </div>
+      <form id="instituteForm">
+        <input type="hidden" id="instituteId">
+        <div class="form-group">
+          <label>Название (RU) *</label>
+          <input type="text" id="instituteName" required>
+        </div>
+        <div class="form-group">
+          <label>Название (UZ)</label>
+          <input type="text" id="instituteNameUz">
+        </div>
+        <div class="form-group">
+          <label>Статус</label>
+          <label class="switch">
+            <input type="checkbox" id="instituteIsActive" checked>
+            <span class="slider"></span>
+          </label>
+          <span style="margin-left: 10px;">Активен</span>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" onclick="closeInstituteModal()">Отмена</button>
+          <button type="submit" class="btn btn-primary">Сохранить</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Модальное окно пользователя -->
+  <div id="userModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="userModalTitle">Создать пользователя</h3>
+        <button class="close" onclick="closeUserModal()">&times;</button>
+      </div>
+      <form id="userForm">
+        <input type="hidden" id="userId">
+        <div class="form-group">
+          <label>Логин *</label>
+          <input type="text" id="userUsername" required>
+        </div>
+        <div class="form-group">
+          <label>Пароль <span id="passwordRequired">*</span></label>
+          <input type="password" id="userPassword">
+        </div>
+        <div class="form-group">
+          <label>Роль</label>
+          <select id="userRole">
+            <option value="user">Пользователь</option>
+            <option value="admin">Администратор</option>
+            <option value="partner">Партнёр</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Научная роль</label>
+          <select id="userScienceRole">
+            <option value="">— Не назначена —</option>
+            <option value="1">1 — Ответственный по науке кафедры</option>
+            <option value="2">2 — Научный отдел института</option>
+            <option value="3">3 — Отдел мониторинга института</option>
+          </select>
+          <small class="form-text text-muted">Роли 1 и 2 участвуют в создании и утверждении планов кафедры</small>
+        </div>
+        <div class="form-group">
+          <label>Статус</label>
+          <label class="switch">
+            <input type="checkbox" id="userIsActive" checked>
+            <span class="slider"></span>
+          </label>
+          <span style="margin-left: 10px;">Активен</span>
+        </div>
+        <div class="form-group">
+          <label>Привязка к структуре *</label>
+          <label class="checkbox-item" style="margin-bottom:12px;display:block">
+            <input type="checkbox" id="userMinistryLevel"> Министерство — доступ ко всем институтам
+          </label>
+          <small class="form-text text-muted" style="display:block;margin-bottom:8px" id="userStructureHint">Выбор появляется поэтапно: институт → деканат(ы) → кафедра(ы)</small>
+        </div>
+        <div class="form-group" id="userStructureGroup">
+          <label>1. Институт *</label>
+          <select id="userInstituteId">
+            <option value="">— Выберите институт —</option>
+          </select>
+        </div>
+        <div class="form-group" id="userDeaneryGroup" style="display:none">
+          <label>2. Деканат(ы) *</label>
+          <label class="checkbox-item" style="margin-bottom:8px">
+            <input type="checkbox" id="userDeaneryAll"> Все деканаты института
+          </label>
+          <div id="userDeaneryCheckboxes" class="checkbox-group"></div>
+          <small class="form-text text-muted">Выберите один или несколько деканатов.</small>
+        </div>
+        <div class="form-group" id="userDepartmentGroup" style="display:none">
+          <label>3. Кафедра(ы) *</label>
+          <label class="checkbox-item" style="margin-bottom:8px">
+            <input type="checkbox" id="userDepartmentAll"> Все кафедры выбранных деканатов
+          </label>
+          <div id="userDepartmentCheckboxes" class="checkbox-group"></div>
+          <small class="form-text text-muted">Выберите «Все кафедры» или конкретные кафедры.</small>
+        </div>
+        <div class="form-group">
+          <label>Права вкладок кабинета</label>
+          <div id="permissionsGrid" class="permissions-grid" style="display:grid;grid-template-columns:1fr auto auto;gap:8px 16px;align-items:center;font-size:13px">
+            <div style="font-weight:700">Вкладка</div>
+            <div style="font-weight:700">Просмотр</div>
+            <div id="permissionsEditHeader" style="font-weight:700">Редактирование</div>
+            <div>Педагоги</div><label><input type="checkbox" id="perm_teachers_view" checked></label><label class="perm-edit-cell"><input type="checkbox" id="perm_teachers_edit" checked></label>
+            <div>План</div><label><input type="checkbox" id="perm_plan_view" checked></label><label class="perm-edit-cell"><input type="checkbox" id="perm_plan_edit" checked></label>
+            <div>Научные работы</div><label><input type="checkbox" id="perm_works_view" checked></label><label class="perm-edit-cell"><input type="checkbox" id="perm_works_edit" checked></label>
+            <div>Статистика</div><label><input type="checkbox" id="perm_stats_view" checked></label><label class="perm-edit-cell"><input type="checkbox" id="perm_stats_edit" checked></label>
+            <div>Импорт/Экспорт</div><label><input type="checkbox" id="perm_backup_view" checked></label><label class="perm-edit-cell"><input type="checkbox" id="perm_backup_edit" checked></label>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" onclick="closeUserModal()">Отмена</button>
+          <button type="submit" class="btn btn-primary">Сохранить</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Модальное окно кафедры -->
+  <div id="departmentModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="departmentModalTitle">Создать кафедру</h3>
+        <button class="close" onclick="closeDepartmentModal()">&times;</button>
+      </div>
+      <form id="departmentForm">
+        <input type="hidden" id="departmentId">
+        <div class="form-group">
+          <label>Институт</label>
+          <select id="departmentInstituteId">
+            <option value="">— Выберите институт —</option>
+          </select>
+          <small class="form-text text-muted">Фильтр для выбора деканата</small>
+        </div>
+        <div class="form-group">
+          <label>Деканат</label>
+          <select id="departmentDeaneryId">
+            <option value="">— Сначала выберите институт —</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Название (RU) *</label>
+          <input type="text" id="departmentName" required>
+        </div>
+        <div class="form-group">
+          <label>Название (UZ)</label>
+          <input type="text" id="departmentNameUz">
+        </div>
+        <div class="form-group">
+          <label>Описание</label>
+          <textarea id="departmentDescription"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Статус</label>
+          <label class="switch">
+            <input type="checkbox" id="departmentIsActive" checked>
+            <span class="slider"></span>
+          </label>
+          <span style="margin-left: 10px;">Активна</span>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" onclick="closeDepartmentModal()">Отмена</button>
+          <button type="submit" class="btn btn-primary">Сохранить</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Модальное окно уведомления -->
+  <div id="notificationModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="notificationModalTitle">Создать уведомление</h3>
+        <button class="close" onclick="closeNotificationModal()">&times;</button>
+      </div>
+      <form id="notificationForm">
+        <input type="hidden" id="notificationId">
+        <div class="form-group">
+          <label>Категория *</label>
+          <select id="notificationCategory" required>
+            <option value="article_submission">Приём статей</option>
+            <option value="other">Прочее</option>
+          </select>
+          <small style="color:var(--text-muted);display:block;margin-top:4px;">«Приём статей» рассылается всем пользователям системы</small>
+        </div>
+        <div class="form-group">
+          <label>Заголовок *</label>
+          <input type="text" id="notificationTitle" required maxlength="500" placeholder="Заголовок уведомления">
+        </div>
+        <div class="form-group">
+          <label>Текст</label>
+          <textarea id="notificationBody" rows="4" placeholder="Основной текст уведомления"></textarea>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" onclick="closeNotificationModal()">Отмена</button>
+          <button type="submit" class="btn btn-primary">Сохранить</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Модальное окно смены пароля -->
+  <div id="changePasswordModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Сменить пароль</h3>
+        <button class="close" onclick="closeChangePasswordModal()">&times;</button>
+      </div>
+      <form id="changePasswordForm">
+        <div class="form-group">
+          <label>Текущий пароль *</label>
+          <input type="password" id="currentPassword" required>
+        </div>
+        <div class="form-group">
+          <label>Новый пароль *</label>
+          <input type="password" id="newPassword" required minlength="6">
+        </div>
+        <div class="form-group">
+          <label>Повторите новый пароль *</label>
+          <input type="password" id="newPassword2" required minlength="6">
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" onclick="closeChangePasswordModal()">Отмена</button>
+          <button type="submit" class="btn btn-primary">Сохранить</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="auth-storage.js?v=20260403b"></script>
+  <script>
+    function hydrateAuthTokenFromHash() {
+      try {
+        const raw = (window.location.hash || '').replace(/^#/, '');
+        if (!raw) return;
+        const params = new URLSearchParams(raw);
+        const hashToken = params.get('authToken') || params.get('t');
+        if (!hashToken) return;
+        setAuthToken(hashToken);
+        history.replaceState(null, '', window.location.pathname + window.location.search);
+      } catch (_e) {}
+    }
+
+    // API base: /api при размещении в корне; /путь/api при подпапке
+    const API_URL = (() => {
+      const p = window.location.pathname;
+      const base = p.includes('/') ? p.replace(/\/[^/]*$/, '') : '';
+      return (base || '') + '/api';
+    })();
+    hydrateAuthTokenFromHash();
+    let currentToken = getAuthToken();
+    let currentUser = null;
+    let departments = [];
+    let institutes = [];
+    let deaneries = [];
+    let isLoadingUserData = false;
+
+    // Инициализация
+    document.addEventListener('DOMContentLoaded', () => {
+      if (currentToken) checkAuth();
+      else redirectToLogin();
+      document.getElementById('userForm').addEventListener('submit', handleUserSubmit);
+      document.getElementById('userMinistryLevel').addEventListener('change', onUserMinistryChange);
+      document.getElementById('userInstituteId').addEventListener('change', onUserInstituteChange);
+      document.getElementById('userDeaneryAll').addEventListener('change', onUserDeaneryAllChange);
+      document.getElementById('userDepartmentAll').addEventListener('change', onUserDepartmentAllChange);
+      document.getElementById('userDeaneryCheckboxes').addEventListener('change', function(e) {
+        if (e.target.matches('input[name="userDeaneryIds"]')) onUserDeaneryChange();
+      });
+      document.getElementById('instituteForm').addEventListener('submit', handleInstituteSubmit);
+      document.getElementById('deaneryForm').addEventListener('submit', handleDeanerySubmit);
+      document.getElementById('departmentForm').addEventListener('submit', handleDepartmentSubmit);
+      document.getElementById('departmentInstituteId').addEventListener('change', onDepartmentInstituteChange);
+      document.getElementById('changePasswordForm').addEventListener('submit', handleChangePasswordSubmit);
+      document.getElementById('notificationForm').addEventListener('submit', handleNotificationSubmit);
+    });
+
+    function redirectToLogin() {
+      // Вход админа — остаёмся в текущей папке приложения
+      const base = (window.location.pathname.includes('/') ? window.location.pathname.replace(/\/[^/]*$/, '') : '') || '';
+      const url = new URL(base + '/login.html', window.location.origin);
+      url.searchParams.set('mode', 'admin');
+      window.location.replace(url.toString());
+    }
+
+    // Проверка авторизации
+    async function checkAuth() {
+      try {
+        const response = await fetch(`${API_URL}/auth/me`, {
+          headers: { 'Authorization': `Bearer ${currentToken}` }
+        });
+        if (response.ok) {
+          currentUser = await response.json();
+          document.getElementById('currentUser').textContent = currentUser.username;
+          document.getElementById('mainScreen').style.display = 'block';
+          if (currentUser.role === 'partner') {
+            document.querySelectorAll('#adminTabs .tab').forEach((t, i) => {
+              t.style.display = t.id === 'tabBtn-notifications' ? '' : 'none';
+            });
+            document.getElementById('btnCreateNotification').style.display = '';
+            switchTab('notifications');
+          } else {
+            document.querySelectorAll('#adminTabs .tab').forEach(t => { t.style.display = ''; });
+            loadData();
+          }
+        } else {
+          clearAuthToken();
+          currentToken = null;
+          redirectToLogin();
+        }
+      } catch (error) {
+        console.error('Ошибка проверки авторизации:', error);
+        // Если сервер недоступен, не перекидываем бесконечно; просто остаёмся на странице
+      }
+    }
+
+    // Выход
+    function logout() {
+      clearAuthToken();
+      currentToken = null;
+      currentUser = null;
+      // Возврат на главную — остаёмся в текущей папке приложения
+      const base = (window.location.pathname.includes('/') ? window.location.pathname.replace(/\/[^/]*$/, '') : '') || '';
+      location.href = base + '/';
+    }
+
+    // Смена пароля
+    function openChangePasswordModal() {
+      document.getElementById('currentPassword').value = '';
+      document.getElementById('newPassword').value = '';
+      document.getElementById('newPassword2').value = '';
+      document.getElementById('changePasswordModal').classList.add('active');
+    }
+
+    function closeChangePasswordModal() {
+      document.getElementById('changePasswordModal').classList.remove('active');
+      try { document.getElementById('changePasswordForm').reset(); } catch (_e) {}
+    }
+
+    async function handleChangePasswordSubmit(e) {
+      e.preventDefault();
+      const currentPassword = document.getElementById('currentPassword').value;
+      const newPassword = document.getElementById('newPassword').value;
+      const newPassword2 = document.getElementById('newPassword2').value;
+
+      if (newPassword !== newPassword2) {
+        showAlert('Новый пароль и подтверждение не совпадают', 'error');
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_URL}/auth/change-password`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${currentToken}`
+          },
+          body: JSON.stringify({ currentPassword, newPassword })
+        });
+
+        const data = await response.json().catch(() => ({}));
+        if (response.ok) {
+          showAlert(data.message || 'Пароль обновлён', 'success');
+          closeChangePasswordModal();
+        } else {
+          showAlert(data.error || 'Ошибка при смене пароля', 'error');
+        }
+      } catch (error) {
+        showAlert('Ошибка соединения', 'error');
+      }
+    }
+
+    // Переключение вкладок
+    function switchTab(tab) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      const tabBtn = document.getElementById(`tabBtn-${tab}`);
+      if (tabBtn) tabBtn.classList.add('active');
+      const content = document.getElementById(`tab-${tab}`);
+      if (content) content.classList.add('active');
+      if (tab === 'notifications') loadNotifications();
+      else if (tab === 'users' || tab === 'institutes' || tab === 'deaneries') loadData();
+    }
+
+    // Загрузка данных
+    async function loadData() {
+      await loadInstitutes();
+      await loadDeaneries();
+      await Promise.all([
+        loadUsers(),
+        loadDepartments(),
+        loadSettings()
+      ]);
+    }
+
+    // ── Уведомления ─────────────────────────────────────
+    const CATEGORY_LABELS = { article_submission: 'Приём статей', other: 'Прочее' };
+
+    async function loadNotifications() {
+      try {
+        const res = await fetch(`${API_URL}/notifications`, {
+          headers: { 'Authorization': `Bearer ${currentToken}` }
+        });
+        if (!res.ok) throw new Error('Ошибка загрузки');
+        const list = await res.json();
+        const tbody = document.getElementById('notificationsTableBody');
+        tbody.innerHTML = list.map(n => {
+          const author = n.author || {};
+          const authorLabel = author.username || '-';
+          const catLabel = CATEGORY_LABELS[n.category] || n.category;
+          const date = n.createdAt ? new Date(n.createdAt).toLocaleString('ru-RU') : '-';
+          return `<tr>
+            <td>${n.id}</td>
+            <td>${catLabel}</td>
+            <td>${escapeHtml(n.title || '')}</td>
+            <td>${escapeHtml(authorLabel)}</td>
+            <td>${date}</td>
+            <td class="actions">
+              <button class="btn btn-primary btn-small" onclick="editNotification(${n.id})">Изменить</button>
+              <button class="btn btn-danger btn-small" onclick="deleteNotification(${n.id})">Удалить</button>
+            </td>
+          </tr>`;
+        }).join('');
+      } catch (e) {
+        console.error('Ошибка загрузки уведомлений:', e);
+        document.getElementById('notificationsTableBody').innerHTML = '<tr><td colspan="6">Ошибка загрузки</td></tr>';
+      }
+    }
+
+    function escapeHtml(s) {
+      const d = document.createElement('div');
+      d.textContent = s;
+      return d.innerHTML;
+    }
+
+    function openNotificationModal(id) {
+      document.getElementById('notificationModalTitle').textContent = id ? 'Редактировать уведомление' : 'Создать уведомление';
+      document.getElementById('notificationId').value = id || '';
+      document.getElementById('notificationCategory').value = 'article_submission';
+      document.getElementById('notificationTitle').value = '';
+      document.getElementById('notificationBody').value = '';
+      if (id) {
+        fetch(`${API_URL}/notifications/${id}`, { headers: { 'Authorization': `Bearer ${currentToken}` } })
+          .then(r => r.ok ? r.json() : null)
+          .then(n => {
+            if (n) {
+              document.getElementById('notificationCategory').value = n.category || 'article_submission';
+              document.getElementById('notificationTitle').value = n.title || '';
+              document.getElementById('notificationBody').value = n.body || '';
+            }
+          });
+      }
+      document.getElementById('notificationModal').classList.add('active');
+    }
+
+    function closeNotificationModal() {
+      document.getElementById('notificationModal').classList.remove('active');
+    }
+
+    async function handleNotificationSubmit(e) {
+      e.preventDefault();
+      const id = document.getElementById('notificationId').value;
+      const category = document.getElementById('notificationCategory').value;
+      const title = document.getElementById('notificationTitle').value.trim();
+      const body = document.getElementById('notificationBody').value.trim();
+      try {
+        const url = id ? `${API_URL}/notifications/${id}` : `${API_URL}/notifications`;
+        const method = id ? 'PUT' : 'POST';
+        const res = await fetch(url, {
+          method,
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${currentToken}` },
+          body: JSON.stringify({ category, title, body })
+        });
+        if (res.ok) {
+          showAlert(id ? 'Уведомление обновлено' : 'Уведомление создано', 'success');
+          closeNotificationModal();
+          loadNotifications();
+        } else {
+          const data = await res.json().catch(() => ({}));
+          showAlert(data.error || `Ошибка ${res.status}`, 'error');
+        }
+      } catch (err) {
+        console.error('Notification save error:', err);
+        showAlert(err.message || 'Ошибка соединения', 'error');
+      }
+    }
+
+    function editNotification(id) {
+      openNotificationModal(id);
+    }
+
+    async function deleteNotification(id) {
+      if (!confirm('Удалить уведомление?')) return;
+      try {
+        const res = await fetch(`${API_URL}/notifications/${id}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${currentToken}` }
+        });
+        if (res.ok) {
+          showAlert('Уведомление удалено', 'success');
+          loadNotifications();
+        } else {
+          const data = await res.json();
+          showAlert(data.error || 'Ошибка удаления', 'error');
+        }
+      } catch (err) {
+        showAlert('Ошибка соединения', 'error');
+      }
+    }
+
+    // Загрузка пользователей
+    async function loadUsers() {
+      try {
+        const response = await fetch(`${API_URL}/users`, {
+          headers: { 'Authorization': `Bearer ${currentToken}` }
+        });
+        const users = await response.json();
+        const tbody = document.getElementById('usersTableBody');
+        const scienceRoleLabels = { 1: 'Ответств. по науке', 2: 'Научный отдел', 3: 'Мониторинг' };
+        tbody.innerHTML = users.map(user => {
+          const sr = user.scienceRole ? scienceRoleLabels[user.scienceRole] || user.scienceRole : '-';
+          const accessLabel = user.accessLevel === 'ministry' ? 'Министерство' : (user.institute?.name || user.department?.name || '-');
+          return `
+          <tr>
+            <td>${user.id}</td>
+            <td>${user.username}</td>
+            <td><span class="badge ${user.role === 'admin' ? 'badge-primary' : user.role === 'partner' ? 'badge-warning' : ''}">${user.role === 'admin' ? 'Админ' : user.role === 'partner' ? 'Партнёр' : 'Пользователь'}</span></td>
+            <td>${sr}</td>
+            <td><span class="badge ${user.isActive ? 'badge-success' : 'badge-danger'}">${user.isActive ? 'Активен' : 'Неактивен'}</span></td>
+            <td>${accessLabel}</td>
+            <td class="actions">
+              <button class="btn btn-primary btn-small" onclick="editUser(${user.id})">Изменить</button>
+              <button class="btn btn-danger btn-small" onclick="deleteUser(${user.id})">Удалить</button>
+            </td>
+          </tr>
+        `}).join('');
+      } catch (error) {
+        console.error('Ошибка загрузки пользователей:', error);
+      }
+    }
+
+    // Загрузка кафедр
+    async function loadDepartments() {
+      try {
+        const response = await fetch(`${API_URL}/departments`, {
+          headers: { 'Authorization': `Bearer ${currentToken}` }
+        });
+        departments = await response.json();
+        const deanMap = {};
+        (deaneries || []).forEach(d => { deanMap[d.id] = d.name; });
+        const tbody = document.getElementById('departmentsTableBody');
+        tbody.innerHTML = departments.map(dept => `
+          <tr>
+            <td>${dept.id}</td>
+            <td>${dept.name}</td>
+            <td>${dept.nameUz || '-'}</td>
+            <td>${deanMap[dept.deaneryId] || '-'}</td>
+            <td><span class="badge ${dept.isActive ? 'badge-success' : 'badge-danger'}">${dept.isActive ? 'Активна' : 'Неактивна'}</span></td>
+            <td class="actions">
+              <button class="btn btn-primary btn-small" onclick="editDepartment(${dept.id})">Изменить</button>
+              <button class="btn btn-danger btn-small" onclick="deleteDepartment(${dept.id})">Удалить</button>
+            </td>
+          </tr>
+        `).join('');
+
+        // Обновить селект института в форме кафедры
+        const deptInstSelect = document.getElementById('departmentInstituteId');
+        if (deptInstSelect && institutes.length > 0) {
+          const prev = deptInstSelect.value;
+          deptInstSelect.innerHTML = '<option value="">— Не назначен —</option>' +
+            institutes.filter(i => i.isActive).map(i =>
+              `<option value="${i.id}">${i.name}</option>`
+            ).join('');
+          if (prev) deptInstSelect.value = prev;
+        }
+      } catch (error) {
+        console.error('Ошибка загрузки кафедр:', error);
+      }
+    }
+
+    // Модальные окна пользователей
+    const PERM_TABS = ['teachers', 'plan', 'works', 'stats', 'backup'];
+    function setPermissionsUI(perms) {
+      let pObj = perms;
+      if (typeof perms === 'string') {
+        try { pObj = JSON.parse(perms); } catch { pObj = null; }
+      }
+      const def = { teachers: { view: true, edit: true }, plan: { view: true, edit: true }, works: { view: true, edit: true }, stats: { view: true, edit: true }, backup: { view: true, edit: true } };
+      const p = pObj && typeof pObj === 'object' ? { ...def, ...pObj } : def;
+      PERM_TABS.forEach(tab => {
+        const v = document.getElementById('perm_' + tab + '_view');
+        const e = document.getElementById('perm_' + tab + '_edit');
+        if (v) v.checked = p[tab]?.view !== false;
+        if (e) e.checked = p[tab]?.edit !== false;
+      });
+    }
+    function getPermissionsFromUI() {
+      const isMinistry = document.getElementById('userMinistryLevel')?.checked;
+      const p = {};
+      PERM_TABS.forEach(tab => {
+        const v = document.getElementById('perm_' + tab + '_view');
+        const e = document.getElementById('perm_' + tab + '_edit');
+        p[tab] = { view: v ? v.checked : true, edit: isMinistry ? false : (e ? e.checked : true) };
+      });
+      return p;
+    }
+
+    async function openUserModal(userId = null) {
+      document.getElementById('userModalTitle').textContent = userId ? 'Изменить пользователя' : 'Создать пользователя';
+      document.getElementById('userId').value = userId || '';
+      document.getElementById('userUsername').value = '';
+      document.getElementById('userPassword').value = '';
+      document.getElementById('userRole').value = 'user';
+      document.getElementById('userScienceRole').value = '';
+      document.getElementById('userIsActive').checked = true;
+      document.getElementById('userMinistryLevel').checked = false;
+      document.getElementById('userInstituteId').value = '';
+      document.getElementById('userDeaneryAll').checked = false;
+      document.getElementById('userDepartmentAll').checked = false;
+      setPermissionsUI(null);
+      document.getElementById('passwordRequired').style.display = userId ? 'none' : 'inline';
+      document.getElementById('userPassword').required = !userId;
+
+      document.getElementById('userStructureGroup').style.display = 'block';
+      document.getElementById('userStructureHint').style.display = 'block';
+      document.getElementById('userDeaneryGroup').style.display = 'none';
+      document.getElementById('userDepartmentGroup').style.display = 'none';
+      document.getElementById('userDeaneryCheckboxes').innerHTML = '';
+      document.getElementById('userDepartmentCheckboxes').innerHTML = '';
+      onUserMinistryChange();
+
+      if (!departments || departments.length === 0) await loadDepartments();
+      if (!institutes || institutes.length === 0) await loadInstitutes();
+
+      const userInstSelect = document.getElementById('userInstituteId');
+      if (userInstSelect) {
+        userInstSelect.innerHTML = '<option value="">— Выберите институт —</option>' +
+          (institutes || []).filter(i => i.isActive).map(i =>
+            `<option value="${i.id}">${i.name}</option>`
+          ).join('');
+      }
+
+      if (userId) {
+        await loadUserData(userId);
+      }
+      document.getElementById('userModal').classList.add('active');
+    }
+
+    function onUserMinistryChange() {
+      const isMinistry = document.getElementById('userMinistryLevel').checked;
+      const structGrp = document.getElementById('userStructureGroup');
+      const hint = document.getElementById('userStructureHint');
+      if (structGrp) structGrp.style.display = isMinistry ? 'none' : 'block';
+      if (hint) hint.style.display = isMinistry ? 'none' : 'block';
+      if (isMinistry) {
+        document.getElementById('userDeaneryGroup').style.display = 'none';
+        document.getElementById('userDepartmentGroup').style.display = 'none';
+        document.getElementById('permissionsEditHeader').style.display = 'none';
+        document.querySelectorAll('.perm-edit-cell').forEach(el => { el.style.display = 'none'; });
+        document.getElementById('permissionsGrid').style.gridTemplateColumns = '1fr auto';
+        PERM_TABS.forEach(tab => {
+          const e = document.getElementById('perm_' + tab + '_edit');
+          if (e) e.checked = false;
+        });
+      } else {
+        document.getElementById('permissionsEditHeader').style.display = '';
+        document.querySelectorAll('.perm-edit-cell').forEach(el => { el.style.display = ''; });
+        document.getElementById('permissionsGrid').style.gridTemplateColumns = '1fr auto auto';
+        onUserInstituteChange();
+      }
+    }
+
+    async function onUserInstituteChange() {
+      if (document.getElementById('userMinistryLevel').checked) return;
+      if (isLoadingUserData) return;
+      const instId = document.getElementById('userInstituteId').value;
+      const deanGrp = document.getElementById('userDeaneryGroup');
+      const deptGrp = document.getElementById('userDepartmentGroup');
+      deanGrp.style.display = 'none';
+      deptGrp.style.display = 'none';
+      document.getElementById('userDeaneryAll').checked = false;
+      document.getElementById('userDepartmentAll').checked = false;
+      document.getElementById('userDeaneryCheckboxes').innerHTML = '';
+      document.getElementById('userDepartmentCheckboxes').innerHTML = '';
+
+      if (!instId || !instId.trim()) return;
+      const list = await loadDeaneries(parseInt(instId, 10));
+      renderUserDeaneryCheckboxes([], list);
+      deanGrp.style.display = 'block';
+    }
+
+    function onUserDeaneryAllChange() {
+      const checked = document.getElementById('userDeaneryAll').checked;
+      document.querySelectorAll('input[name="userDeaneryIds"]').forEach(cb => { cb.checked = checked; });
+      onUserDeaneryChange();
+    }
+
+    async function onUserDeaneryChange() {
+      const deanIds = Array.from(document.querySelectorAll('input[name="userDeaneryIds"]:checked')).map(cb => parseInt(cb.value, 10)).filter(id => !isNaN(id));
+      const deptGrp = document.getElementById('userDepartmentGroup');
+      deptGrp.style.display = deanIds.length > 0 ? 'block' : 'none';
+      document.getElementById('userDepartmentAll').checked = false;
+      if (deanIds.length === 0) {
+        document.getElementById('userDepartmentCheckboxes').innerHTML = '';
+        return;
+      }
+      const filtered = (departments || []).filter(d => d.isActive && d.deaneryId && deanIds.includes(d.deaneryId));
+      renderUserDepartmentCheckboxes([], filtered);
+    }
+
+    function onUserDepartmentAllChange() {
+      const checked = document.getElementById('userDepartmentAll').checked;
+      document.querySelectorAll('input[name="userDepartmentIds"]').forEach(cb => {
+        cb.disabled = checked;
+        if (checked) cb.checked = false;
+      });
+    }
+
+    function renderUserDeaneryCheckboxes(selectedIds = [], deaneryList = []) {
+      const container = document.getElementById('userDeaneryCheckboxes');
+      if (!container) return;
+      const ids = Array.isArray(selectedIds) ? selectedIds.map(Number) : [];
+      const list = deaneryList.length ? deaneryList : (deaneries || []);
+      container.innerHTML = list.filter(d => d.isActive).map(d =>
+        `<label class="checkbox-item"><input type="checkbox" name="userDeaneryIds" value="${d.id}" ${ids.includes(d.id) ? 'checked' : ''}> ${d.name}</label>`
+      ).join('');
+    }
+
+    function renderUserDepartmentCheckboxes(selectedIds = [], departmentList = null) {
+      const container = document.getElementById('userDepartmentCheckboxes');
+      if (!container) return;
+      const ids = Array.isArray(selectedIds) ? selectedIds.map(Number) : [];
+      const list = departmentList && departmentList.length ? departmentList : (departments || []).filter(d => d.isActive);
+      container.innerHTML = list.map(d =>
+        `<label class="checkbox-item"><input type="checkbox" name="userDepartmentIds" value="${d.id}" ${ids.includes(d.id) ? 'checked' : ''}> ${d.name}</label>`
+      ).join('');
+    }
+
+    async function loadInstitutes() {
+      try {
+        const response = await fetch(`${API_URL}/institutes`, {
+          headers: { 'Authorization': `Bearer ${currentToken}` }
+        });
+        institutes = await response.json();
+        const tbody = document.getElementById('institutesTableBody');
+        if (tbody) {
+          tbody.innerHTML = institutes.map(inst => `
+            <tr>
+              <td>${inst.id}</td>
+              <td>${inst.name}</td>
+              <td>${inst.nameUz || '-'}</td>
+              <td><span class="badge ${inst.isActive ? 'badge-success' : 'badge-danger'}">${inst.isActive ? 'Активен' : 'Неактивен'}</span></td>
+              <td class="actions">
+                <button class="btn btn-primary btn-small" onclick="editInstitute(${inst.id})">Изменить</button>
+                <button class="btn btn-danger btn-small" onclick="deleteInstitute(${inst.id})">Удалить</button>
+              </td>
+            </tr>
+          `).join('');
+        }
+      } catch (error) {
+        console.error('Ошибка загрузки институтов:', error);
+        institutes = [];
+      }
+    }
+
+    async function loadDeaneries(instituteId = null) {
+      try {
+        const url = instituteId ? `${API_URL}/deaneries?instituteId=${instituteId}` : `${API_URL}/deaneries`;
+        const response = await fetch(url, {
+          headers: { 'Authorization': `Bearer ${currentToken}` }
+        });
+        const list = await response.json();
+        if (!instituteId) {
+          deaneries = list;
+          const tbody = document.getElementById('deaneriesTableBody');
+          if (tbody) {
+            const instMap = {};
+            (institutes || []).forEach(i => { instMap[i.id] = i.name; });
+            tbody.innerHTML = deaneries.map(d => `
+              <tr>
+                <td>${d.id}</td>
+                <td>${instMap[d.instituteId] || '-'}</td>
+                <td>${d.name}</td>
+                <td>${d.nameUz || '-'}</td>
+                <td><span class="badge ${d.isActive ? 'badge-success' : 'badge-danger'}">${d.isActive ? 'Активен' : 'Неактивен'}</span></td>
+                <td class="actions">
+                  <button class="btn btn-primary btn-small" onclick="editDeanery(${d.id})">Изменить</button>
+                  <button class="btn btn-danger btn-small" onclick="deleteDeanery(${d.id})">Удалить</button>
+                </td>
+              </tr>
+            `).join('');
+          }
+        }
+        return list;
+      } catch (error) {
+        console.error('Ошибка загрузки деканатов:', error);
+        if (!instituteId) deaneries = [];
+        return [];
+      }
+    }
+
+    async function loadUserData(userId) {
+      isLoadingUserData = true;
+      try {
+        const response = await fetch(`${API_URL}/users/${userId}`, {
+          headers: { 'Authorization': `Bearer ${currentToken}` }
+        });
+        const user = await response.json();
+        document.getElementById('userUsername').value = user.username;
+        document.getElementById('userRole').value = user.role;
+        document.getElementById('userScienceRole').value = user.scienceRole ? String(user.scienceRole) : '';
+        document.getElementById('userIsActive').checked = user.isActive;
+        setPermissionsUI(user.permissions);
+
+        const isMinistry = (user.accessLevel || '').toString().toLowerCase() === 'ministry';
+        const ministryCb = document.getElementById('userMinistryLevel');
+        if (ministryCb) ministryCb.checked = isMinistry;
+        onUserMinistryChange();
+
+        const deptIds = user.departmentIds && user.departmentIds.length ? user.departmentIds : (user.departmentId ? [user.departmentId] : []);
+        let instId = user.instituteId ? String(user.instituteId) : '';
+        if (!instId && deptIds.length > 0) {
+          const firstDept = (departments || []).find(d => deptIds.includes(d.id));
+          if (firstDept && firstDept.instituteId) instId = String(firstDept.instituteId);
+        }
+        const isInstituteLevel = user.accessLevel === 'institute' && instId && deptIds.length === 0;
+
+        document.getElementById('userInstituteId').value = instId;
+        if (instId && !isMinistry) {
+          const deanList = await loadDeaneries(parseInt(instId, 10));
+          if (isInstituteLevel) {
+            document.getElementById('userDeaneryAll').checked = true;
+            renderUserDeaneryCheckboxes(deanList.map(d => d.id), deanList);
+          } else {
+            const deanIdsFromDepts = [...new Set((departments || []).filter(d => deptIds.includes(d.id) && d.deaneryId).map(d => d.deaneryId))];
+            renderUserDeaneryCheckboxes(deanIdsFromDepts, deanList);
+          }
+          document.getElementById('userDeaneryGroup').style.display = 'block';
+
+          const selectedDeanIds = isInstituteLevel ? deanList.map(d => d.id) : [...new Set((departments || []).filter(d => deptIds.includes(d.id) && d.deaneryId).map(d => d.deaneryId))];
+          document.getElementById('userDepartmentGroup').style.display = 'block';
+          if (isInstituteLevel) {
+            document.getElementById('userDepartmentAll').checked = true;
+            const filtered = (departments || []).filter(d => d.isActive && d.deaneryId && selectedDeanIds.includes(d.deaneryId));
+            renderUserDepartmentCheckboxes([], filtered);
+            document.querySelectorAll('input[name="userDepartmentIds"]').forEach(cb => { cb.disabled = true; });
+          } else {
+            const filtered = (departments || []).filter(d => d.isActive && d.deaneryId && selectedDeanIds.includes(d.deaneryId));
+            renderUserDepartmentCheckboxes(deptIds, filtered);
+          }
+        }
+      } catch (error) {
+        console.error('Ошибка загрузки пользователя:', error);
+      } finally {
+        isLoadingUserData = false;
+      }
+    }
+
+    function closeUserModal() {
+      document.getElementById('userModal').classList.remove('active');
+      document.getElementById('userForm').reset();
+      document.getElementById('userMinistryLevel').checked = false;
+    }
+
+    async function handleUserSubmit(e) {
+      e.preventDefault();
+      const ministryCheckbox = document.getElementById('userMinistryLevel');
+      const isMinistry = ministryCheckbox && ministryCheckbox.checked;
+      const userId = document.getElementById('userId').value;
+      const scienceRoleRaw = document.getElementById('userScienceRole').value;
+      const formData = {
+        username: document.getElementById('userUsername').value.trim(),
+        role: document.getElementById('userRole').value,
+        scienceRole: scienceRoleRaw ? parseInt(scienceRoleRaw, 10) : null,
+        isActive: document.getElementById('userIsActive').checked,
+        permissions: getPermissionsFromUI()
+      };
+
+      const password = document.getElementById('userPassword').value;
+      if (password) formData.password = password;
+      if (isMinistry) {
+        formData.accessLevel = 'ministry';
+        formData.instituteId = null;
+        formData.departmentIds = [];
+      } else {
+        const instIdRaw = document.getElementById('userInstituteId').value;
+        const instituteId = (instIdRaw && instIdRaw.trim()) ? parseInt(instIdRaw, 10) : null;
+        if (!instituteId) {
+          showAlert('Выберите институт или отметьте «Министерство»', 'error');
+          return;
+        }
+
+        const deanIds = Array.from(document.querySelectorAll('input[name="userDeaneryIds"]:checked')).map(cb => parseInt(cb.value, 10)).filter(id => !isNaN(id));
+        if (deanIds.length === 0) {
+          showAlert('Выберите хотя бы один деканат', 'error');
+          return;
+        }
+
+        const allDepts = document.getElementById('userDepartmentAll').checked;
+        if (allDepts) {
+          formData.accessLevel = 'institute';
+          formData.instituteId = instituteId;
+          formData.departmentIds = [];
+        } else {
+          const checked = Array.from(document.querySelectorAll('input[name="userDepartmentIds"]:checked')).map(cb => parseInt(cb.value, 10));
+          formData.departmentIds = checked.filter(id => !isNaN(id));
+          if (formData.departmentIds.length === 0) {
+            showAlert('Выберите «Все кафедры» или хотя бы одну кафедру', 'error');
+            return;
+          }
+          formData.accessLevel = 'department';
+          formData.instituteId = null;
+        }
+      }
+
+      try {
+        const url = userId ? `${API_URL}/users/${userId}` : `${API_URL}/auth/register`;
+        const method = userId ? 'PUT' : 'POST';
+        console.log('Sending user data:', { ...formData, password: formData.password ? '***' : undefined });
+        const response = await fetch(url, {
+          method,
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${currentToken}`
+          },
+          body: JSON.stringify(formData)
+        });
+
+        const text = await response.text();
+        let result = null;
+        try { result = text && text.trim().startsWith('{') ? JSON.parse(text) : null; } catch (_e) {}
+        if (response.ok && result) {
+          console.log('User saved successfully:', result);
+          showAlert(userId ? 'Пользователь обновлен' : 'Пользователь создан', 'success');
+          closeUserModal();
+          loadUsers();
+        } else {
+          let errMsg = 'Ошибка';
+          const data = result;
+          errMsg = (data && data.error) ? data.error : (`Ошибка ${response.status}` + (text ? ': ' + text.substring(0, 150).replace(/\s+/g, ' ') : ''));
+          console.error('Error saving user:', text);
+          showAlert(errMsg, 'error');
+        }
+      } catch (error) {
+        console.error('User save network error:', error);
+        showAlert('Ошибка соединения: ' + (error.message || ''), 'error');
+      }
+    }
+
+    function editUser(id) {
+      openUserModal(id);
+    }
+
+    async function deleteUser(id) {
+      if (!confirm('Удалить пользователя?')) return;
+      try {
+        const response = await fetch(`${API_URL}/users/${id}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${currentToken}` }
+        });
+        if (response.ok) {
+          showAlert('Пользователь удален', 'success');
+          loadUsers();
+        } else {
+          showAlert('Ошибка удаления', 'error');
+        }
+      } catch (error) {
+        showAlert('Ошибка соединения', 'error');
+      }
+    }
+
+    // Модальные окна институтов
+    async function openInstituteModal(instId = null) {
+      document.getElementById('instituteModalTitle').textContent = instId ? 'Изменить институт' : 'Создать институт';
+      document.getElementById('instituteId').value = instId || '';
+      document.getElementById('instituteForm').reset();
+      if (instId) await loadInstituteData(instId);
+      document.getElementById('instituteModal').classList.add('active');
+    }
+
+    async function loadInstituteData(instId) {
+      try {
+        const response = await fetch(`${API_URL}/institutes/${instId}`, {
+          headers: { 'Authorization': `Bearer ${currentToken}` }
+        });
+        const inst = await response.json();
+        document.getElementById('instituteName').value = inst.name;
+        document.getElementById('instituteNameUz').value = inst.nameUz || '';
+        document.getElementById('instituteIsActive').checked = inst.isActive;
+      } catch (error) {
+        console.error('Ошибка загрузки института:', error);
+      }
+    }
+
+    function closeInstituteModal() {
+      document.getElementById('instituteModal').classList.remove('active');
+    }
+
+    async function handleInstituteSubmit(e) {
+      e.preventDefault();
+      const instId = document.getElementById('instituteId').value;
+      const formData = {
+        name: document.getElementById('instituteName').value.trim(),
+        nameUz: document.getElementById('instituteNameUz').value.trim() || null,
+        isActive: document.getElementById('instituteIsActive').checked
+      };
+      try {
+        const url = instId ? `${API_URL}/institutes/${instId}` : `${API_URL}/institutes`;
+        const method = instId ? 'PUT' : 'POST';
+        const response = await fetch(url, {
+          method,
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${currentToken}`
+          },
+          body: JSON.stringify(formData)
+        });
+        let data;
+        try { data = await response.json(); } catch (_) { data = { error: 'Ответ сервера не JSON (возможно ошибка PHP)' }; }
+        if (response.ok) {
+          showAlert(instId ? 'Институт обновлён' : 'Институт создан', 'success');
+          closeInstituteModal();
+          await loadInstitutes();
+          loadDeaneries();
+          loadDepartments();
+          const userInstSelect = document.getElementById('userInstituteId');
+          if (userInstSelect) {
+            const prev = userInstSelect.value;
+            userInstSelect.innerHTML = '<option value="">— Выберите институт —</option>' +
+              institutes.filter(i => i.isActive).map(i => `<option value="${i.id}">${i.name}</option>`).join('');
+            if (prev) userInstSelect.value = prev;
+          }
+        } else {
+          showAlert(data.error || `Ошибка ${response.status}`, 'error');
+        }
+      } catch (error) {
+        console.error('Institute save error:', error);
+        showAlert('Ошибка соединения: ' + (error.message || error), 'error');
+      }
+    }
+
+    function editInstitute(id) {
+      openInstituteModal(id);
+    }
+
+    async function deleteInstitute(id) {
+      if (!confirm('Удалить институт? Деканаты, кафедры и пользователи должны быть отвязаны.')) return;
+      try {
+        const response = await fetch(`${API_URL}/institutes/${id}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${currentToken}` }
+        });
+        if (response.ok) {
+          showAlert('Институт удалён', 'success');
+          loadInstitutes();
+          loadDeaneries();
+          loadDepartments();
+        } else {
+          const data = await response.json();
+          showAlert(data.error || 'Ошибка удаления', 'error');
+        }
+      } catch (error) {
+        showAlert('Ошибка соединения', 'error');
+      }
+    }
+
+    // Модальные окна деканатов
+    async function openDeaneryModal(deanId = null) {
+      document.getElementById('deaneryModalTitle').textContent = deanId ? 'Изменить деканат' : 'Создать деканат';
+      document.getElementById('deaneryId').value = deanId || '';
+      document.getElementById('deaneryForm').reset();
+      if (!institutes || institutes.length === 0) await loadInstitutes();
+      const instSelect = document.getElementById('deaneryInstituteId');
+      if (instSelect) {
+        instSelect.innerHTML = '<option value="">— Выберите институт —</option>' +
+          (institutes || []).filter(i => i.isActive).map(i => `<option value="${i.id}">${i.name}</option>`).join('');
+      }
+      if (deanId) await loadDeaneryData(deanId);
+      document.getElementById('deaneryModal').classList.add('active');
+    }
+
+    async function loadDeaneryData(deanId) {
+      try {
+        const response = await fetch(`${API_URL}/deaneries/${deanId}`, {
+          headers: { 'Authorization': `Bearer ${currentToken}` }
+        });
+        const d = await response.json();
+        document.getElementById('deaneryInstituteId').value = d.instituteId ? String(d.instituteId) : '';
+        document.getElementById('deaneryName').value = d.name;
+        document.getElementById('deaneryNameUz').value = d.nameUz || '';
+        document.getElementById('deaneryIsActive').checked = d.isActive;
+      } catch (error) {
+        console.error('Ошибка загрузки деканата:', error);
+      }
+    }
+
+    function closeDeaneryModal() {
+      document.getElementById('deaneryModal').classList.remove('active');
+    }
+
+    async function handleDeanerySubmit(e) {
+      e.preventDefault();
+      const deanId = document.getElementById('deaneryId').value;
+      const instIdRaw = document.getElementById('deaneryInstituteId').value;
+      if (!instIdRaw || !instIdRaw.trim()) {
+        showAlert('Выберите институт', 'error');
+        return;
+      }
+      const formData = {
+        instituteId: parseInt(instIdRaw, 10),
+        name: document.getElementById('deaneryName').value.trim(),
+        nameUz: document.getElementById('deaneryNameUz').value.trim() || null,
+        isActive: document.getElementById('deaneryIsActive').checked
+      };
+      try {
+        const url = deanId ? `${API_URL}/deaneries/${deanId}` : `${API_URL}/deaneries`;
+        const method = deanId ? 'PUT' : 'POST';
+        const response = await fetch(url, {
+          method,
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${currentToken}`
+          },
+          body: JSON.stringify(formData)
+        });
+        if (response.ok) {
+          showAlert(deanId ? 'Деканат обновлён' : 'Деканат создан', 'success');
+          closeDeaneryModal();
+          await loadDeaneries();
+          loadDepartments();
+        } else {
+          const data = await response.json();
+          showAlert(data.error || 'Ошибка', 'error');
+        }
+      } catch (error) {
+        showAlert('Ошибка соединения', 'error');
+      }
+    }
+
+    function editDeanery(id) {
+      openDeaneryModal(id);
+    }
+
+    async function deleteDeanery(id) {
+      if (!confirm('Удалить деканат? Кафедры должны быть отвязаны.')) return;
+      try {
+        const response = await fetch(`${API_URL}/deaneries/${id}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${currentToken}` }
+        });
+        if (response.ok) {
+          showAlert('Деканат удалён', 'success');
+          loadDeaneries();
+          loadDepartments();
+        } else {
+          const data = await response.json();
+          showAlert(data.error || 'Ошибка удаления', 'error');
+        }
+      } catch (error) {
+        showAlert('Ошибка соединения', 'error');
+      }
+    }
+
+    async function onDepartmentInstituteChange() {
+      const instId = document.getElementById('departmentInstituteId').value;
+      const deanSelect = document.getElementById('departmentDeaneryId');
+      if (!instId || !instId.trim()) {
+        deanSelect.innerHTML = '<option value="">— Сначала выберите институт —</option>';
+        return;
+      }
+      const list = await loadDeaneries(parseInt(instId, 10));
+      const prev = deanSelect.value;
+      deanSelect.innerHTML = '<option value="">— Не назначен —</option>' +
+        list.filter(d => d.isActive).map(d => `<option value="${d.id}">${d.name}</option>`).join('');
+      if (prev) deanSelect.value = prev;
+    }
+
+    // Модальные окна кафедр
+    async function openDepartmentModal(deptId = null) {
+      document.getElementById('departmentModalTitle').textContent = deptId ? 'Изменить кафедру' : 'Создать кафедру';
+      document.getElementById('departmentId').value = deptId || '';
+      document.getElementById('departmentForm').reset();
+      if (!institutes || institutes.length === 0) await loadInstitutes();
+      const deptInstSelect = document.getElementById('departmentInstituteId');
+      if (deptInstSelect) {
+        deptInstSelect.innerHTML = '<option value="">— Выберите институт —</option>' +
+          (institutes || []).filter(i => i.isActive).map(i =>
+            `<option value="${i.id}">${i.name}</option>`
+          ).join('');
+      }
+      document.getElementById('departmentDeaneryId').innerHTML = '<option value="">— Сначала выберите институт —</option>';
+      if (deptId) {
+        await loadDepartmentData(deptId);
+      }
+      document.getElementById('departmentModal').classList.add('active');
+    }
+
+    async function loadDepartmentData(deptId) {
+      try {
+        const response = await fetch(`${API_URL}/departments/${deptId}`, {
+          headers: { 'Authorization': `Bearer ${currentToken}` }
+        });
+        const dept = await response.json();
+        document.getElementById('departmentInstituteId').value = dept.instituteId ? String(dept.instituteId) : '';
+        await onDepartmentInstituteChange();
+        document.getElementById('departmentDeaneryId').value = dept.deaneryId ? String(dept.deaneryId) : '';
+        document.getElementById('departmentName').value = dept.name;
+        document.getElementById('departmentNameUz').value = dept.nameUz || '';
+        document.getElementById('departmentDescription').value = dept.description || '';
+        document.getElementById('departmentIsActive').checked = dept.isActive;
+      } catch (error) {
+        console.error('Ошибка загрузки кафедры:', error);
+      }
+    }
+
+    function closeDepartmentModal() {
+      document.getElementById('departmentModal').classList.remove('active');
+    }
+
+    async function handleDepartmentSubmit(e) {
+      e.preventDefault();
+      const deptId = document.getElementById('departmentId').value;
+      const deanIdRaw = document.getElementById('departmentDeaneryId').value;
+      const formData = {
+        deaneryId: (deanIdRaw && deanIdRaw.trim()) ? parseInt(deanIdRaw, 10) : null,
+        name: document.getElementById('departmentName').value,
+        nameUz: document.getElementById('departmentNameUz').value,
+        description: document.getElementById('departmentDescription').value,
+        isActive: document.getElementById('departmentIsActive').checked
+      };
+
+      try {
+        const url = deptId ? `${API_URL}/departments/${deptId}` : `${API_URL}/departments`;
+        const method = deptId ? 'PUT' : 'POST';
+        const response = await fetch(url, {
+          method,
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${currentToken}`
+          },
+          body: JSON.stringify(formData)
+        });
+
+        if (response.ok) {
+          showAlert(deptId ? 'Кафедра обновлена' : 'Кафедра создана', 'success');
+          closeDepartmentModal();
+          loadDepartments();
+        } else {
+          const data = await response.json();
+          showAlert(data.error || 'Ошибка', 'error');
+        }
+      } catch (error) {
+        showAlert('Ошибка соединения', 'error');
+      }
+    }
+
+    function editDepartment(id) {
+      openDepartmentModal(id);
+    }
+
+    async function deleteDepartment(id) {
+      if (!confirm('Удалить кафедру? Все связанные кабинеты также будут удалены.')) return;
+      try {
+        const response = await fetch(`${API_URL}/departments/${id}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${currentToken}` }
+        });
+        if (response.ok) {
+          showAlert('Кафедра удалена', 'success');
+          loadDepartments();
+        } else {
+          showAlert('Ошибка удаления', 'error');
+        }
+      } catch (error) {
+        showAlert('Ошибка соединения', 'error');
+      }
+    }
+
+    // ── Настройки ──────────────────────────────────────
+
+    async function loadSettings() {
+      try {
+        const res = await fetch(`${API_URL}/settings`, {
+          headers: { 'Authorization': `Bearer ${currentToken}` }
+        });
+        if (!res.ok) return;
+        const settings = await res.json();
+        const enabled = settings.dashboardEnabled === 'true';
+        document.getElementById('dashboardEnabledToggle').checked = enabled;
+        renderDashboardBadge(enabled);
+        const siteEl = document.getElementById('recaptchaSiteKey');
+        const secretEl = document.getElementById('recaptchaSecretKey');
+        if (siteEl) siteEl.value = settings.recaptchaSiteKey || '';
+        if (secretEl) secretEl.value = settings.recaptchaSecretKey || '';
+      } catch (e) {
+        console.error('Ошибка загрузки настроек:', e);
+      }
+    }
+
+    async function saveRecaptchaSettings() {
+      const siteKey = (document.getElementById('recaptchaSiteKey')?.value || '').trim();
+      const secretKey = (document.getElementById('recaptchaSecretKey')?.value || '').trim();
+      try {
+        await Promise.all([
+          fetch(`${API_URL}/settings/recaptchaSiteKey`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${currentToken}` },
+            body: JSON.stringify({ value: siteKey })
+          }),
+          fetch(`${API_URL}/settings/recaptchaSecretKey`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${currentToken}` },
+            body: JSON.stringify({ value: secretKey })
+          })
+        ]);
+        showAlert('Настройки reCAPTCHA сохранены', 'success');
+      } catch (e) {
+        showAlert('Ошибка сохранения', 'error');
+      }
+    }
+
+    function renderDashboardBadge(enabled) {
+      const badge = document.getElementById('dashboardStatusBadge');
+      badge.textContent = enabled ? 'Вкл' : 'Выкл';
+      badge.className = 'badge ' + (enabled ? 'badge-success' : 'badge-danger');
+    }
+
+    async function toggleDashboard(enabled) {
+      try {
+        const res = await fetch(`${API_URL}/settings/dashboardEnabled`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${currentToken}`
+          },
+          body: JSON.stringify({ value: String(enabled) })
+        });
+        if (res.ok) {
+          renderDashboardBadge(enabled);
+          showAlert(enabled ? 'Дашборд включён' : 'Дашборд выключен', 'success');
+        } else {
+          document.getElementById('dashboardEnabledToggle').checked = !enabled;
+          showAlert('Ошибка сохранения настройки', 'error');
+        }
+      } catch (e) {
+        document.getElementById('dashboardEnabledToggle').checked = !enabled;
+        showAlert('Ошибка соединения', 'error');
+      }
+    }
+
+    // Утилиты
+    function showAlert(message, type) {
+      const container = document.getElementById('alertContainer');
+      container.innerHTML = `<div class="alert alert-${type} active">${message}</div>`;
+      setTimeout(() => {
+        container.innerHTML = '';
+      }, 3000);
+    }
+  </script>
+</body>
+</html>
+

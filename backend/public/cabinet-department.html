@@ -1,0 +1,826 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="Служебный кабинет кафедры в системе IlmiyStat." />
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet" />
+  <title>IlmiySTAT — Кабинет кафедры</title>
+  <link rel="stylesheet" href="cabinet-department.css?v=20260624e" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="cabinet-i18n.js"></script>
+  <script src="education-directions.js"></script>
+</head>
+<body>
+<aside id="mainNavSidebar" role="navigation" aria-label="Главное меню">
+  <div class="nav-header" id="navMenuLabel">ILMIYSTAT</div>
+  <div class="nav-user-block">
+    <div class="nav-lang-row">
+      <span class="muted small" id="langLabel">Язык:</span>
+      <button class="btn secondary small" id="langRuBtn" type="button" aria-pressed="true">RU</button>
+      <button class="btn secondary small" id="langUzBtn" type="button" aria-pressed="false">UZ</button>
+    </div>
+    <div class="nav-user-info muted small" id="userInfo"></div>
+    <h2 id="mainTitle">Кабинет кафедры</h2>
+  </div>
+  <div class="nav-items" role="tablist">
+    <button class="tabbtn" role="tab" id="tab-notifications" aria-controls="panel-notifications" aria-selected="false"><span class="nav-tab-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></span><span id="tabNotificationsLabel">Уведомления</span><span class="nav-badge" id="notificationBadge" style="display:none">0</span></button>
+    <button class="tabbtn" role="tab" id="tab-teachers" aria-controls="panel-teachers" aria-selected="true"><span class="nav-tab-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="9" cy="7" r="3"/><path d="M4 20v-2a4 4 0 0 1 4-4h2"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/><path d="M20 20v-2a4 4 0 0 0-4-4h-2"/></svg></span><span id="tabTeachersLabel">Педагоги</span></button>
+    <button class="tabbtn" role="tab" id="tab-plan" aria-controls="panel-plan" aria-selected="false"><span class="nav-tab-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M9 11h6"/><path d="M9 15h6"/><path d="M9 19h4"/></svg></span><span id="tabPlanLabel">План</span></button>
+    <button class="tabbtn" role="tab" id="tab-works" aria-controls="panel-works" aria-selected="false"><span class="nav-tab-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8"/><path d="M8 17h8"/><path d="M8 9h4"/></svg></span><span id="tabWorksLabel">Научные работы</span></button>
+    <button class="tabbtn" role="tab" id="tab-stats" aria-controls="panel-stats" aria-selected="false"><span class="nav-tab-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 18V9"/><path d="M10 18v-5"/><path d="M14 18v-7"/><path d="M18 18V6"/><path d="M5 18h14"/></svg></span><span id="tabStatsLabel">Статистика</span></button>
+    <button class="tabbtn" role="tab" id="tab-backup" aria-controls="panel-backup" aria-selected="false"><span class="nav-tab-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 5v8"/><path d="M9 8l3-3 3 3"/><path d="M12 19v-8"/><path d="M9 16l3 3 3-3"/><path d="M4 12h16"/></svg></span><span id="tabBackupLabel">Импорт / Экспорт</span></button>
+  </div>
+  <div class="nav-logout-row">
+    <button class="btn secondary small" onclick="logout()" id="logoutBtn">Выйти</button>
+  </div>
+</aside>
+<div id="mainContentOverlay" onclick="toggleMainNav()" aria-hidden="true"></div>
+<button id="mainNavToggle" type="button" onclick="toggleMainNav()" title="Меню" aria-label="Открыть меню">
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M4 7h16M4 12h16M4 17h16"/>
+  </svg>
+</button>
+
+<div class="main-content" id="mainContent">
+<header id="mainContentHeader" style="display:none">
+  <div class="wrap" style="padding:12px 18px">
+    <div id="ministryHeaderFilterRow" class="grid" style="display:none;align-items:end">
+      <div class="col-4">
+        <label><span id="ministryInstLabel">Институт</span>
+          <select id="ministryInstSel"><option value="">— выберите —</option></select>
+        </label>
+      </div>
+      <div class="col-4">
+        <label><span id="ministryDeanLabel">Деканат</span>
+          <select id="ministryDeanSel"><option value="">— выберите —</option></select>
+        </label>
+      </div>
+      <div class="col-4">
+        <label><span id="ministryDeptLabel">Кафедра</span>
+          <select id="ministryDeptSel"><option value="">— выберите —</option></select>
+        </label>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- УВЕДОМЛЕНИЯ -->
+  <section id="panel-notifications" class="section" role="tabpanel">
+    <div class="card">
+      <div class="row" style="justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:10px">
+        <div class="muted" id="notificationsIntro">Уведомления от администрации и министерства.</div>
+        <div class="row" style="gap:8px;align-items:center">
+          <label style="display:flex;align-items:center;gap:6px;font-weight:normal">
+            <span class="muted small" id="notificationSenderLabel">Отправитель:</span>
+            <select id="notificationSenderFilter">
+              <option value="">— все —</option>
+              <option value="admin">Администратор</option>
+              <option value="ministry">Министерство</option>
+            </select>
+          </label>
+          <button class="btn secondary small" id="notificationMarkAllReadBtn" style="display:none">Прочитаны все</button>
+          <button class="btn" id="notificationCreateBtn" style="display:none">+ Создать уведомление</button>
+        </div>
+      </div>
+      <div id="notificationsList" class="notifications-list"></div>
+    </div>
+  </section>
+
+  <!-- Модальное окно создания уведомления (для министерства) -->
+  <div id="notificationModal" class="modal-overlay hidden">
+    <div class="modal" style="max-width:560px">
+      <div class="modal-header" style="display:flex;justify-content:space-between;align-items:center">
+        <h3 style="margin:0">Создать уведомление</h3>
+        <button type="button" class="btn secondary small" onclick="closeNotificationModal()">&times;</button>
+      </div>
+      <form id="notificationForm">
+        <div class="form-group">
+          <label>Категория *</label>
+          <select id="notificationCategory" required>
+            <option value="other">Прочее</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Институты (рассылка на кафедры)</label>
+          <label class="checkItem"><input type="checkbox" id="notificationAllInstitutes" checked><span id="notificationAllInstitutesLbl">Все институты</span></label>
+          <div id="notificationInstituteChecks" style="margin-top:8px;max-height:200px;overflow-y:auto;display:none"></div>
+        </div>
+        <div class="form-group">
+          <label>Заголовок *</label>
+          <input type="text" id="notificationTitle" required maxlength="500" placeholder="Заголовок">
+        </div>
+        <div class="form-group">
+          <label>Текст</label>
+          <textarea id="notificationBody" rows="4" placeholder="Текст уведомления"></textarea>
+        </div>
+        <div class="form-actions" style="display:flex;gap:8px;margin-top:12px">
+          <button type="button" class="btn secondary" onclick="closeNotificationModal()">Отмена</button>
+          <button type="submit" class="btn">Сохранить</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ПЕДАГОГИ -->
+  <section id="panel-teachers" class="section active" role="tabpanel">
+    <div class="card">
+      <div class="muted" style="margin-bottom:10px">Добавляйте педагогов кафедры. Данные сохраняются в базе данных сервера.</div>
+      <div class="grid">
+        <div class="col-6"><label>Ф.И.О.<input id="teacherFullName" placeholder="Иванов Иван Иванович" /></label></div>
+        <div class="col-2"><button class="btn" id="teacherAddBtn">Добавить</button></div>
+      </div>
+      <div class="divider"></div>
+      <div class="row" style="justify-content:space-between">
+        <div class="muted"><b>Список педагогов</b> <span id="teacherCount" class="muted"></span></div>
+        <button class="btn secondary small" id="teachersRefreshBtn">Обновить</button>
+      </div>
+      <table><thead><tr><th style="width:50px">ID</th><th>Ф.И.О.</th><th style="width:180px">Действия</th></tr></thead><tbody id="teachersTbody"></tbody></table>
+    </div>
+  </section>
+
+  <!-- ПЛАН -->
+  <section id="panel-plan" class="section" role="tabpanel">
+    <div class="card">
+      <div class="row" style="justify-content:space-between;align-items:center;margin-bottom:12px">
+        <div class="muted" style="flex:1;min-width:0;margin-right:12px">План закрепляется за педагогом и учебным годом. Статус выполнения рассчитывается автоматически по вкладке «Научные работы».</div>
+      </div>
+      <div class="grid">
+        <div class="col-6"><label>Педагог<select id="planTeacherSel"><option value="">— все педагоги —</option></select></label></div>
+        <div class="col-6"><label>Учебный год<select id="planYearSel"></select></label></div>
+
+        <div class="col-12">
+          <div class="note">
+            <div class="grid">
+              <div class="col-3">
+                <label>Статус
+                  <div class="row" style="gap:12px;margin-top:4px">
+                    <label class="checkItem small"><input type="checkbox" id="planFilterDone" checked><span>Выполнено</span></label>
+                    <label class="checkItem small"><input type="checkbox" id="planFilterNotDone" checked><span>Невыполнено</span></label>
+                  </div>
+                  <div class="row" style="gap:12px;margin-top:8px">
+                    <label class="checkItem small"><input type="checkbox" id="planFilterH1" checked><span>1-е полугодие (авг–дек)</span></label>
+                    <label class="checkItem small"><input type="checkbox" id="planFilterH2" checked><span>2-е полугодие (янв–июл)</span></label>
+                  </div>
+                </label>
+              </div>
+              <div class="col-3"><label>Месяц<select id="planFilterMonth"></select></label></div>
+              <div class="col-3"><label>Тип научной работы<select id="planFilterIndicator"></select></label></div>
+              <div class="col-3"><label>Тип статьи<select id="planFilterArticleType"></select></label></div>
+              <div class="col-12 row" style="justify-content:flex-end">
+                <button class="btn secondary small" id="planFilterResetBtn">Сбросить фильтры</button>
+                <button class="btn secondary small" id="planExportBtn">Экспорт Excel</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="row" style="justify-content:space-between">
+        <div class="muted"><b>Плановые показатели</b> <span id="planCount" class="muted"></span></div>
+        <div class="row">
+          <button class="btn secondary small" id="planRefreshBtn">Обновить</button>
+          <button class="btn secondary small" id="planApproveAllBtn" style="display:none">Утвердить все</button>
+          <button class="btn secondary small" id="planUnapproveAllBtn" style="display:none">Снять все утверждения</button>
+          <button class="btn" id="planAddOpenBtn2">+ Добавить план</button>
+        </div>
+      </div>
+      <table><thead><tr><th style="width:50px">ID</th><th style="width:160px">Педагог</th><th style="width:170px">Тип научной работы</th><th style="width:120px">Цитаты (план)</th><th style="width:120px">Патенты (план)</th><th style="width:220px">Тип статьи</th><th style="width:140px">Месяц</th><th style="width:160px">Статус</th><th style="width:120px">Утверждение</th><th style="width:200px">Действия</th></tr></thead><tbody id="planTbody"></tbody></table>
+      <div id="planLegend" class="muted small" style="margin-top:8px;display:none"><span class="plan-cell-changed-by-institute" style="display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:middle"></span> <span id="planLegendText"></span></div>
+    </div>
+  </section>
+
+  <!-- НАУЧНЫЕ РАБОТЫ -->
+  <section id="panel-works" class="section" role="tabpanel">
+    <div class="card">
+      <div class="muted" style="margin-bottom:10px">Фиксируйте научные работы «по плану» или «вне плана». Для статуса «Выполнена работа» требуется ссылка на файл.</div>
+      <div class="grid">
+        <div class="col-3"><label>Педагог<select id="workTeacherSel"><option value="">— все педагоги —</option></select></label></div>
+        <div class="col-3"><label>Учебный год<select id="workYearSel"></select></label></div>
+        <div class="col-3"><label>Показатель<select id="workFilterInd"><option value="">— все —</option></select></label></div>
+        <div class="col-3"><label>Тип статьи<select id="workFilterArticleType"><option value="">— все —</option></select></label></div>
+        <div class="col-3"><label>Источник<select id="workFilterSrc"><option value="">— все —</option><option value="PLAN">По плану</option><option value="OUT_OF_PLAN">Вне плана</option></select></label></div>
+      </div>
+    </div>
+    <div class="card works-card">
+      <div class="row" style="justify-content:space-between">
+        <div class="muted"><b>Научные работы</b> <span id="workCount" class="muted"></span></div>
+        <div class="row">
+          <button class="btn secondary small" id="workRefreshBtn">Обновить</button>
+          <button class="btn secondary small" id="workExportBtn">Экспорт Excel</button>
+          <button class="btn" id="workAddOpenBtn">+ Добавить работу</button>
+        </div>
+      </div>
+      <div class="works-table-wrap">
+        <table aria-label="Научные работы" id="worksTable">
+          <thead>
+            <tr>
+              <th data-col="id" style="width:60px">ID</th>
+              <th data-col="source" style="width:120px">Источник</th>
+              <th data-col="indicator" style="width:160px">Тип научной работы</th>
+              <th data-col="grantName" style="width:140px">Название гранта</th>
+              <th data-col="grantDuration" style="width:90px">Срок</th>
+              <th data-col="grantPartner" style="width:160px">Партнёр (заруб. вуз)</th>
+              <th data-col="grantParticipantsDept" style="width:200px">Участники гранта (кафедра)</th>
+              <th data-col="grantParticipantsOther" style="width:200px">Участники гранта (прочие)</th>
+              <th data-col="grantAmount" style="width:100px">Сумма (USD)</th>
+              <th data-col="patentNo" style="width:160px">Патент №</th>
+              <th data-col="patentDate" style="width:150px">Дата патента</th>
+              <th data-col="patentIssued" style="width:200px">Кем выдан</th>
+              <th data-col="citations" style="width:80px">Цитаты</th>
+              <th data-col="hIndex" style="width:70px">h-index</th>
+              <th data-col="profile" style="width:140px">Профиль</th>
+              <th data-col="artType" style="width:200px">Тип статьи</th>
+              <th data-col="title">Название</th>
+              <th data-col="receivingOrg" style="width:280px">Название принимающей организации</th>
+              <th data-col="publisher" style="width:180px">Издатель</th>
+              <th data-col="council" style="width:240px">Коорд. совет</th>
+              <th data-col="certNo" style="width:170px">Сертификат №</th>
+              <th data-col="certDate" style="width:150px">Дата сертификата</th>
+              <th data-col="certForeignLang" style="width:130px">Chet tili nomi</th>
+              <th data-col="certDarajasi" style="width:100px">Darajasi</th>
+              <th data-col="certUmumiyBali" style="width:100px">Umumiy bali</th>
+              <th data-col="ilmiyDaraja" style="width:120px">Ilmiy daraja</th>
+              <th data-col="ilmiyUnvon" style="width:110px">Ilmiy unvon</th>
+              <th data-col="educationDirection" style="width:140px">Код направления</th>
+              <th data-col="specialtyCode" style="width:120px">Код специальности</th>
+              <th data-col="diplomRaqami" style="width:120px">Diplom raqami</th>
+              <th data-col="degreeDate" style="width:110px">Дата</th>
+              <th data-col="fanNomi" style="width:140px">Fan nomi</th>
+              <th data-col="fanYonalish" style="width:140px">Fan yo'nalish</th>
+              <th data-col="mashgulotTuri" style="width:130px">Mashg'ulot turi</th>
+              <th data-col="xorijiyTil" style="width:130px">Qaysi xorijiy tilda</th>
+              <th data-col="mashgulotSoati" style="width:110px">Mashg'ulot soati</th>
+              <th data-col="month" style="width:120px">Месяц</th>
+              <th data-col="year" style="width:110px">Год</th>
+              <th data-col="coAuthorsCount" style="width:90px">Соавт.</th>
+              <th data-col="coAuthorNames" style="width:260px">Соавторы (педагоги)</th>
+              <th data-col="planned" style="width:190px">Засчитать за (план)</th>
+              <th data-col="siteUrl" style="width:160px">Сайт</th>
+              <th data-col="fileUrl" style="width:220px">Файл (Google Drive)</th>
+              <th data-col="pdf" style="width:200px">Файл (PDF, JPG, PNG, TIFF)</th>
+              <th data-col="status" style="width:170px">Статус</th>
+              <th data-col="actions" style="width:200px">Действия</th>
+            </tr>
+          </thead>
+          <tbody id="worksTbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- СТАТИСТИКА -->
+  <section id="panel-stats" class="section" role="tabpanel" aria-labelledby="tab-stats">
+    <div class="card statsDashboard">
+      <div class="statsHero">
+        <div class="statsHeroText">
+          <div class="statsHeroKicker">научные показатели</div>
+          <h1 class="statsHeroTitle" id="statsDashboardTitle">Статистика кафедры</h1>
+          <div class="muted" id="statsFiltersIntro">
+            Фильтры для анализа выполненных и невыполненных работ по учебным и календарным годам, по плану и вне плана.
+          </div>
+        </div>
+      </div>
+
+      <div class="statsAssistantCard" id="statsAssistantCard">
+        <div class="statsAssistantHead">
+          <div class="statsAssistantHeadTop">
+          <div>
+            <div class="statsAssistantKicker" id="statsAssistantKicker">AI-чат по базе</div>
+            <div class="statsAssistantTitle" id="statsAssistantTitle">Задайте вопрос по публикациям кафедры</div>
+          </div>
+          <button class="statsAssistantClearBtn" id="statsAssistantClearBtn" type="button">Очистить</button>
+          </div>
+          <div class="statsAssistantHint muted small" id="statsAssistantHint">Например: «Сколько статей за 2025-2026 учебный год?»</div>
+        </div>
+        <div class="statsAssistantFeed" id="statsAssistantFeed" aria-live="polite"></div>
+        <div class="statsAssistantComposer">
+          <textarea id="statsAssistantInput" rows="3" placeholder="Напишите вопрос по данным кафедры"></textarea>
+          <div class="statsAssistantActions">
+            <button class="btn" id="statsAssistantSendBtn" type="button">Спросить</button>
+          </div>
+        </div>
+      </div>
+      <button class="statsAssistantToggleBtn" id="statsAssistantToggleBtn" type="button" aria-controls="statsAssistantCard" aria-expanded="true">
+        <span class="statsAssistantToggleKicker" id="statsAssistantToggleKicker">AI-ЧАТ</span>
+        <span class="statsAssistantToggleText" id="statsAssistantToggleText">Скрыть</span>
+      </button>
+
+      <div class="statsToolbarShell">
+        <div class="statsToolbarTitle">Фильтры</div>
+        <div class="statsToolbarGrid">
+          <label><span id="statsPeriodLabel">Тип периода</span>
+            <select id="statsPeriod">
+              <option value="academic">Учебный год</option>
+              <option value="calendar">Календарный год</option>
+            </select>
+          </label>
+          <label><span id="statsYearLabel">Учебный год</span>
+            <select id="statsYearSel"></select>
+          </label>
+          <label><span id="statsTeacherLabel">Педагог</span>
+            <select id="statsTeacherSel"><option value="">— все педагоги —</option></select>
+          </label>
+          <label><span id="statsQuarterLabel">Четверть</span>
+            <select id="statsQuarter">
+              <option value="">Все</option>
+              <option value="1">I (авг-окт)</option>
+              <option value="2">II (ноя-дек)</option>
+              <option value="3">III (янв-мар)</option>
+              <option value="4">IV (апр-июл)</option>
+            </select>
+          </label>
+          <div class="statsToolbarActions">
+            <button class="btn secondary" id="statsResetBtn" type="button">Сбросить фильтры</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="statsFilterGrid">
+        <div class="statsFilterCard">
+          <div class="statsFilterCardHeader">
+            <span id="statsWorkTypeTitle">Тип научной работы</span>
+            <span class="statsFilterChevron" aria-hidden="true">&#8963;</span>
+          </div>
+          <div class="checkGroup">
+            <div class="checkGroupBody" id="statsWorkTypeChecks"></div>
+          </div>
+          <div class="statsSubgroup statsDependentBlock" id="statsArticleTypeBlock">
+            <div class="statsSubgroupTitle" id="statsArticleTypeTitle">Тип статьи</div>
+            <div class="checkGroupBody cols-2" id="statsArticleTypeChecks"></div>
+          </div>
+          <div class="statsSubgroup statsDependentBlock" id="statsLiteratureTypeBlock">
+            <div class="statsSubgroupTitle" id="statsLiteratureTypeTitle">Тип литературы</div>
+            <div class="checkGroupBody cols-2" id="statsLiteratureTypeChecks"></div>
+          </div>
+          <div class="statsCardHint muted small" id="statsTypeHint"></div>
+        </div>
+
+        <div class="statsFilterCard">
+          <div class="statsFilterCardHeader">
+            <span>Статусы и источники</span>
+            <span class="statsFilterChevron" aria-hidden="true">&#8963;</span>
+          </div>
+          <div class="statsMiniFields">
+            <label><span id="statsMonthLabel">Месяц</span>
+              <select id="statsMonth"></select>
+            </label>
+          </div>
+          <div class="statsInlineChecks">
+            <div>
+              <div class="statsInlineLabel" id="statsHalfLabel">Полугодие</div>
+              <div class="checkGroupBody">
+                <label class="checkItem small" title="1-е полугодие: август — декабрь"><input type="checkbox" id="statsHalf1" checked><span id="statsHalf1Text">1-е (авг–дек)</span></label>
+                <label class="checkItem small" title="2-е полугодие: январь — июль"><input type="checkbox" id="statsHalf2" checked><span id="statsHalf2Text">2-е (янв–июл)</span></label>
+              </div>
+            </div>
+            <div>
+              <div class="statsInlineLabel" id="statsSourceLabel">Источник</div>
+              <div class="checkGroupBody">
+                <label class="checkItem small"><input type="checkbox" id="statsSourcePlan" checked><span id="statsSourcePlanText">По плану</span></label>
+                <label class="checkItem small"><input type="checkbox" id="statsSourceOut" checked><span id="statsSourceOutText">Вне плана</span></label>
+              </div>
+            </div>
+            <div>
+              <div class="statsInlineLabel" id="statsStatusLabel">Статус выполнения</div>
+              <div class="checkGroupBody">
+                <label class="checkItem small"><input type="checkbox" id="statsStatusDone" checked><span id="statsStatusDoneText">Выполнено</span></label>
+                <label class="checkItem small"><input type="checkbox" id="statsStatusPartial" checked><span id="statsStatusPartialText">Частично</span></label>
+                <label class="checkItem small"><input type="checkbox" id="statsStatusNotDone" checked><span id="statsStatusNotDoneText">Не выполнено</span></label>
+              </div>
+            </div>
+          </div>
+          <div class="statsCardHint muted small" id="statsPeriodHint"></div>
+        </div>
+
+        <div class="statsFilterCard">
+          <div class="statsFilterCardHeader">
+            <span>СТОЛБЦЫ ДЛЯ EXCEL</span>
+            <span class="statsFilterChevron" aria-hidden="true">&#8963;</span>
+          </div>
+          <div class="muted small statsCardHint" id="statsExportColsHint" style="margin-top:12px"></div>
+          <div class="statsColumnsPanel" id="statsColumnsPanel">
+            <div class="checkGroupBody cols-3" id="statsExportColsChecks"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="statsInsightsGrid statsTopRow" id="statsTopRow">
+        <div id="statsPlanPctBox" class="statsAggBox" style="display:none">
+          <div class="statsAggTitle" id="statsPlanPctTitle">Выполнение относительно плана</div>
+          <div class="statsAggCol" id="statsPlanPctList"></div>
+          <div class="statsPlanScheme" id="statsPlanScheme"></div>
+          <div class="statsAggHint" id="statsPlanPctHint"></div>
+        </div>
+      </div>
+
+      <div id="statsTableSection" class="collapsible-section">
+        <div class="statsTableHeaderRow">
+        <h3 id="statsTableHeader" class="collapsible-header" role="button" tabindex="0" aria-expanded="true" aria-controls="statsTableWrap">
+          <span class="collapsible-icon" aria-hidden="true">&#9660;</span>
+          <span id="statsTableTitle">Таблица статистики</span>
+        </h3>
+        <div class="statsActionRow">
+          <button class="btn secondary" id="statsExportXlsBtn" type="button">Экспорт статистики в Excel</button>
+          <button class="btn secondary" id="statsExportPdfBtn" type="button">Экспорт научных публикаций</button>
+          <button class="btn secondary" id="statsExportPdfByIndicatorBtn" type="button">Экспорт по показателям</button>
+        </div>
+        <div id="statsTableColsWarning" class="statsTableColsWarning" hidden role="status" aria-live="polite"></div>
+        </div>
+        <div id="statsTableWrap" class="statsTableWrap collapsible-content">
+          <div id="statsTableInner">
+        <table id="statsTable" aria-label="Статистика научных работ">
+          <colgroup id="statsColgroup">
+            <col data-col="rowNum" data-default-w="50" style="width:50px"><col data-col="id" data-default-w="60" style="width:60px"><col data-col="teacher" data-default-w="120" style="width:120px"><col data-col="role" data-default-w="90" style="width:90px"><col data-col="author" data-default-w="140" style="width:140px"><col data-col="coAuthorNames" data-default-w="160" style="width:160px"><col data-col="sourceText" data-default-w="100" style="width:100px"><col data-col="indicator" data-default-w="130" style="width:130px"><col data-col="citations" data-default-w="80" style="width:80px"><col data-col="hIndex" data-default-w="65" style="width:65px"><col data-col="profileLink" data-default-w="120" style="width:120px"><col data-col="scientificPlatform" data-default-w="120" style="width:120px"><col data-col="articleType" data-default-w="130" style="width:130px"><col data-col="title" data-default-w="160" style="width:160px"><col data-col="publisher" data-default-w="120" style="width:120px"><col data-col="siteUrl" data-default-w="140" style="width:140px"><col data-col="fileUrl" data-default-w="150" style="width:150px"><col data-col="pdf" data-default-w="70" style="width:70px"><col data-col="monthText" data-default-w="90" style="width:90px"><col data-col="year" data-default-w="80" style="width:80px"><col data-col="calendarYear" data-default-w="100" style="width:100px"><col data-col="academicYear" data-default-w="110" style="width:110px"><col data-col="creditedPlan" data-default-w="130" style="width:130px"><col data-col="patentNumber" data-default-w="100" style="width:100px"><col data-col="patentDate" data-default-w="100" style="width:100px"><col data-col="patentIssuedBy" data-default-w="130" style="width:130px"><col data-col="coordCouncilName" data-default-w="130" style="width:130px"><col data-col="decisionNumber" data-default-w="120" style="width:120px"><col data-col="certDate" data-default-w="110" style="width:110px"><col data-col="certForeignLang" data-default-w="100" style="width:100px"><col data-col="certDarajasi" data-default-w="80" style="width:80px"><col data-col="certUmumiyBali" data-default-w="80" style="width:80px"><col data-col="ilmiyDaraja" data-default-w="100" style="width:100px"><col data-col="ilmiyUnvon" data-default-w="90" style="width:90px"><col data-col="educationDirectionCode" data-default-w="110" style="width:110px"><col data-col="specialtyCode" data-default-w="90" style="width:90px"><col data-col="diplomRaqami" data-default-w="90" style="width:90px"><col data-col="degreeDate" data-default-w="90" style="width:90px"><col data-col="fanNomi" data-default-w="110" style="width:110px"><col data-col="fanYonalish" data-default-w="110" style="width:110px"><col data-col="mashgulotTuri" data-default-w="100" style="width:100px"><col data-col="xorijiyTil" data-default-w="100" style="width:100px"><col data-col="mashgulotSoati" data-default-w="90" style="width:90px"><col data-col="grantName" data-default-w="140" style="width:140px"><col data-col="grantDuration" data-default-w="80" style="width:80px"><col data-col="grantPartner" data-default-w="120" style="width:120px"><col data-col="grantParticipantsDept" data-default-w="140" style="width:140px"><col data-col="grantParticipantsOther" data-default-w="140" style="width:140px"><col data-col="grantAmount" data-default-w="80" style="width:80px"><col data-col="top1000Direction" data-default-w="110" style="width:110px"><col data-col="top1000Specialty" data-default-w="90" style="width:90px"><col data-col="top1000Hours" data-default-w="80" style="width:80px"><col data-col="top1000CertNumbers" data-default-w="110" style="width:110px"><col data-col="quarter" data-default-w="70" style="width:70px"><col data-col="coAuthors" data-default-w="90" style="width:90px"><col data-col="coPoints" data-default-w="90" style="width:90px"><col data-col="statusText" data-default-w="110" style="width:110px">
+          </colgroup>
+          <thead>
+            <tr>
+              <th data-col="rowNum"><span class="th-label">№</span><span class="th-resize" aria-hidden="true"></span></th>
+              <th data-col="id"><span class="th-label">ID</span><span class="th-resize" aria-hidden="true"></span></th>
+              <th data-col="teacher"><span class="th-label">Педагог</span><span class="th-resize" aria-hidden="true"></span></th>
+              <th data-col="role"><span class="th-label">Роль</span><span class="th-resize" aria-hidden="true"></span></th>
+              <th data-col="author"><span class="th-label">Автор записи</span><span class="th-resize" aria-hidden="true"></span></th>
+              <th data-col="coAuthorNames"><span class="th-label">Соавторы (педагоги)</span><span class="th-resize" aria-hidden="true"></span></th>
+              <th data-col="sourceText"><span class="th-label">Источник</span><span class="th-resize" aria-hidden="true"></span></th>
+              <th data-col="indicator"><span class="th-label">Тип научной работы</span><span class="th-resize" aria-hidden="true"></span></th>
+              <th data-col="citations"><span class="th-label">Цитаты</span><span class="th-resize" aria-hidden="true"></span></th>
+              <th data-col="hIndex"><span class="th-label">h-index</span><span class="th-resize" aria-hidden="true"></span></th>
+              <th data-col="profileLink"><span class="th-label">Профиль</span><span class="th-resize" aria-hidden="true"></span></th>
+              <th data-col="scientificPlatform"><span class="th-label">Научная платформа</span><span class="th-resize" aria-hidden="true"></span></th>
+              <th data-col="articleType"><span class="th-label">Тип статьи</span><span class="th-resize" aria-hidden="true"></span></th>
+              <th data-col="title"><span class="th-label">Название</span><span class="th-resize" aria-hidden="true"></span></th>
+              <th data-col="publisher"><span class="th-label">Издатель</span><span class="th-resize" aria-hidden="true"></span></th>
+              <th data-col="siteUrl"><span class="th-label">Сайт</span><span class="th-resize" aria-hidden="true"></span></th>
+              <th data-col="fileUrl"><span class="th-label">Ссылка на файл (Google Drive)</span><span class="th-resize" aria-hidden="true"></span></th>
+              <th data-col="pdf"><span class="th-label">Файл</span><span class="th-resize" aria-hidden="true"></span></th>
+              <th data-col="monthText"><span class="th-label">Месяц</span><span class="th-resize" aria-hidden="true"></span></th>
+              <th data-col="year"><span class="th-label">Год</span><span class="th-resize" aria-hidden="true"></span></th>
+              <th data-col="calendarYear"><span class="th-label">Год календарный</span><span class="th-resize" aria-hidden="true"></span></th>
+              <th data-col="academicYear"><span class="th-label">Год учебный</span><span class="th-resize" aria-hidden="true"></span></th>
+              <th data-col="creditedPlan"><span class="th-label">Засчитать за (план)</span><span class="th-resize" aria-hidden="true"></span></th>
+              <th data-col="patentNumber"><span class="th-label">Патент №</span><span class="th-resize" aria-hidden="true"></span></th>
+              <th data-col="patentDate"><span class="th-label">Дата патента</span><span class="th-resize" aria-hidden="true"></span></th>
+              <th data-col="patentIssuedBy"><span class="th-label">Кем выдан</span><span class="th-resize" aria-hidden="true"></span></th>
+              <th data-col="coordCouncilName"><span class="th-label">Коорд. совет</span><span class="th-resize" aria-hidden="true"></span></th>
+              <th data-col="decisionNumber"><span class="th-label">Сертификат (гриф) №</span><span class="th-resize" aria-hidden="true"></span></th>
+              <th data-col="certDate"><span class="th-label">Дата сертификата</span><span class="th-resize" aria-hidden="true"></span></th>
+              <th data-col="certForeignLang"><span class="th-label">Chet tili nomi</span><span class="th-resize" aria-hidden="true"></span></th>
+              <th data-col="certDarajasi"><span class="th-label">Darajasi</span><span class="th-resize" aria-hidden="true"></span></th>
+              <th data-col="certUmumiyBali"><span class="th-label">Umumiy bali</span><span class="th-resize" aria-hidden="true"></span></th>
+              <th data-col="ilmiyDaraja"><span class="th-label">Ilmiy daraja</span><span class="th-resize" aria-hidden="true"></span></th>
+              <th data-col="ilmiyUnvon"><span class="th-label">Ilmiy unvon</span><span class="th-resize" aria-hidden="true"></span></th>
+              <th data-col="educationDirectionCode"><span class="th-label">Код направления</span><span class="th-resize" aria-hidden="true"></span></th>
+              <th data-col="specialtyCode"><span class="th-label">Код специальности</span><span class="th-resize" aria-hidden="true"></span></th>
+              <th data-col="diplomRaqami"><span class="th-label">Diplom raqami</span><span class="th-resize" aria-hidden="true"></span></th>
+              <th data-col="degreeDate"><span class="th-label">Дата</span><span class="th-resize" aria-hidden="true"></span></th>
+              <th data-col="fanNomi"><span class="th-label">Fan nomi</span><span class="th-resize" aria-hidden="true"></span></th>
+              <th data-col="fanYonalish"><span class="th-label">Fan yo'nalish</span><span class="th-resize" aria-hidden="true"></span></th>
+              <th data-col="mashgulotTuri"><span class="th-label">Mashg'ulot turi</span><span class="th-resize" aria-hidden="true"></span></th>
+              <th data-col="xorijiyTil"><span class="th-label">Qaysi xorijiy tilda</span><span class="th-resize" aria-hidden="true"></span></th>
+              <th data-col="mashgulotSoati"><span class="th-label">Mashg'ulot soati</span><span class="th-resize" aria-hidden="true"></span></th>
+              <th data-col="grantName"><span class="th-label">Название гранта</span><span class="th-resize" aria-hidden="true"></span></th>
+              <th data-col="grantDuration"><span class="th-label">Срок гранта</span><span class="th-resize" aria-hidden="true"></span></th>
+              <th data-col="grantPartner"><span class="th-label">Партнёр (грант)</span><span class="th-resize" aria-hidden="true"></span></th>
+              <th data-col="grantParticipantsDept"><span class="th-label">Участники гранта (кафедра)</span><span class="th-resize" aria-hidden="true"></span></th>
+              <th data-col="grantParticipantsOther"><span class="th-label">Участники гранта (прочие)</span><span class="th-resize" aria-hidden="true"></span></th>
+              <th data-col="grantAmount"><span class="th-label">Сумма (USD)</span><span class="th-resize" aria-hidden="true"></span></th>
+              <th data-col="top1000Direction"><span class="th-label">Код направления (TOP1000)</span><span class="th-resize" aria-hidden="true"></span></th>
+              <th data-col="top1000Specialty"><span class="th-label">Код специальности (TOP1000)</span><span class="th-resize" aria-hidden="true"></span></th>
+              <th data-col="top1000Hours"><span class="th-label">Учебные часы</span><span class="th-resize" aria-hidden="true"></span></th>
+              <th data-col="top1000CertNumbers"><span class="th-label">Номера сертификатов</span><span class="th-resize" aria-hidden="true"></span></th>
+              <th data-col="quarter"><span class="th-label">Четверть</span><span class="th-resize" aria-hidden="true"></span></th>
+              <th data-col="coAuthors"><span class="th-label">Кол-во авторов</span><span class="th-resize" aria-hidden="true"></span></th>
+              <th data-col="coPoints"><span class="th-label">Балл за соавт.</span><span class="th-resize" aria-hidden="true"></span></th>
+              <th data-col="statusText"><span class="th-label">Статус</span><span class="th-resize" aria-hidden="true"></span></th>
+            </tr>
+          </thead>
+          <tbody id="statsTbody"></tbody>
+        </table>
+          </div>
+        </div>
+      </div>
+
+      <div id="planTableSection" class="collapsible-section">
+        <h3 id="planTableHeader" class="collapsible-header" role="button" tabindex="0" aria-expanded="true" aria-controls="planTableWrap">
+          <span class="collapsible-icon" aria-hidden="true">&#9660;</span>
+          <span id="planTableTitle">Таблица план научных работ</span>
+        </h3>
+        <div id="planTableWrap" class="statsTableWrap collapsible-content">
+          <div id="planTableInner">
+            <table id="planStatsTable">
+              <colgroup id="planStatsColgroup"></colgroup>
+              <thead id="planStatsHead"></thead>
+              <tbody id="planStatsTbody"></tbody>
+              <tfoot id="planStatsTfoot"></tfoot>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div id="statsAggBox" class="statsAggBox statsSummaryShell" style="display:none">
+        <div class="statsSectionTitle" id="statsResultsSectionTitle">Результаты</div>
+        <div id="statsSummary" class="muted small"></div>
+        <div class="statsAggTitle" id="statsAggTitle">Зачтённые работы (выполненные и частично) по текущим фильтрам</div>
+        <div class="statsAggGroup">
+          <span class="statsAggLabel" id="statsAggLabelIndicators">По типу научной работы:</span>
+          <div id="statsAggIndicators" class="statsAggGrid"></div>
+        </div>
+        <div class="statsAggGroup" id="statsAggDetailGroup" hidden>
+          <span class="statsAggLabel" id="statsAggDetailLabel">Детализация</span>
+          <div id="statsAggDetailGrid" class="statsAggGrid"></div>
+        </div>
+        <div class="statsAggGroup">
+          <span class="statsAggLabel" id="statsAggLabelCoauthor">Балл за соавторство:</span>
+          <div id="statsAggCoauthor" class="statsAggGrid"></div>
+        </div>
+        <div class="statsAggHint" id="statsAggHint"></div>
+      </div>
+
+      <div class="card" id="statsPlanFactReportCard">
+        <div style="font-weight:900;margin-bottom:6px" id="statsPlanFactReportTitle">Интерактивный отчёт план/выполнено</div>
+        <div class="muted small" id="statsPlanFactReportDesc">Помесячные графики по каждому показателю.</div>
+        <div class="row" style="margin-top:10px">
+          <button class="btn secondary" type="button" id="statsPlanFactReportBtn" onclick="openPlanFactMonthlyReport()">Открыть отчёт</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ИМПОРТ / ЭКСПОРТ -->
+  <section id="panel-backup" class="section" role="tabpanel">
+    <div class="card">
+      <div class="muted" style="margin-bottom:10px" id="backupIntro">Экспорт и импорт данных кафедры в формате JSON. Экспортируется и импортируется: <b>педагоги</b>, <b>плановые показатели</b>, <b>научные работы</b>. При импорте можно очистить базу перед загрузкой.</div>
+      <div class="grid">
+        <div class="col-6">
+          <label>Импорт JSON
+            <input type="file" id="importFile" accept=".json,application/json" />
+          </label>
+          <label class="checkItem" style="margin-top:8px" id="importWipeLabel"><input type="checkbox" id="importWipe"><span>Очистить базу перед импортом</span></label>
+          <div class="row" style="margin-top:8px"><button class="btn" id="importBtn">Импортировать</button></div>
+          <div class="muted small" id="importHint"></div>
+        </div>
+        <div class="col-6">
+          <label>Экспорт JSON<textarea id="exportArea" readonly placeholder="Нажмите Экспорт — данные появятся здесь"></textarea></label>
+          <div class="row" style="margin-top:8px">
+            <button class="btn" id="exportBtn">Экспортировать</button>
+            <button class="btn secondary" id="downloadBtn" disabled>Скачать JSON</button>
+          </div>
+          <div class="muted small" id="exportHint"></div>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <div class="grid">
+        <div class="col-12">
+          <div class="note" style="border-color:var(--danger);background:#fff5f5">
+            <div class="muted" style="margin-bottom:8px"><b style="color:var(--danger)">Опасная зона</b> — удаление данных кафедры</div>
+            <div class="row" style="gap:12px">
+              <button class="btn danger" id="clearAllDataBtn">Очистить все данные кафедры</button>
+              <span class="muted small" id="backupDangerDesc">Удалит всех педагогов, планы и научные работы этой кафедры</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+<div id="worksStickyScrollbar" aria-hidden="true"><div id="worksStickyScrollbarTrack"></div></div>
+<div id="statsStickyScrollbar" aria-hidden="true"><div id="statsStickyScrollbarTrack"></div></div>
+</div><!-- .main-content -->
+
+<!-- Stats filter sidebar -->
+<button id="statsFilterSidebarToggle" onclick="toggleStatsFilterSidebar()" title="Фильтры" aria-label="Фильтры">
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M3 5h18l-7 8v5l-4 2v-7L3 5z"/>
+  </svg>
+</button>
+<button id="statsExcelDockToggle" onclick="toggleStatsExcelDock()" title="Столбцы Excel" aria-label="Столбцы Excel">
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M4 3h10l6 6v12H4z"/>
+    <path d="M14 3v6h6"/>
+    <path d="M8 10l3 4 3-4"/>
+    <path d="M8 16l3-4 3 4"/>
+  </svg>
+</button>
+<div id="statsExcelDock" class="closed">
+  <div class="seDockHead">
+    <span class="seDockTitle" id="seDockTitle">Столбцы для Excel</span>
+    <button class="seDockClose" type="button" onclick="toggleStatsExcelDock(true)" aria-label="Закрыть">&times;</button>
+  </div>
+</div>
+<div id="statsFilterSidebar" class="closed">
+  <div class="sfSidebarHead">
+    <span class="sfSidebarTitle" id="sfTitle">Фильтры</span>
+    <button class="sfSidebarClose" type="button" onclick="toggleStatsFilterSidebar()">&times;</button>
+  </div>
+  <div class="sfGroup">
+    <div class="sfLabel" id="sfMonthLabel" title="Фильтр по месяцу выполнения работы">Месяц</div>
+    <select id="sfMonth" onchange="syncMainFromSidebar()" title="Выберите месяц для фильтрации"></select>
+  </div>
+  <div class="sfGroup">
+    <div class="sfLabel" id="sfHalfLabel" title="Фильтр по полугодию учебного года">Полугодие</div>
+    <div class="sfRow">
+      <label class="checkItem small" title="1-е полугодие: август — декабрь"><input type="checkbox" id="sfHalf1" checked onchange="syncMainFromSidebar()"><span id="sfHalf1Text">1-е</span></label>
+      <label class="checkItem small" title="2-е полугодие: январь — июль"><input type="checkbox" id="sfHalf2" checked onchange="syncMainFromSidebar()"><span id="sfHalf2Text">2-е</span></label>
+    </div>
+  </div>
+  <div class="sfGroup">
+    <div class="sfLabel" id="sfSourceLabel" title="Фильтр по источнику: плановые или внеплановые работы">Источник</div>
+    <div class="sfRow">
+      <label class="checkItem small" title="Показать работы, созданные по плану"><input type="checkbox" id="sfSourcePlan" checked onchange="syncMainFromSidebar()"><span id="sfSourcePlanText">По плану</span></label>
+      <label class="checkItem small" title="Показать работы, добавленные вне плана"><input type="checkbox" id="sfSourceOut" checked onchange="syncMainFromSidebar()"><span id="sfSourceOutText">Вне плана</span></label>
+    </div>
+  </div>
+  <div class="sfGroup">
+    <div class="sfLabel" id="sfStatusLabel" title="Фильтр по статусу выполнения работы">Статус</div>
+    <div class="sfRow">
+      <label class="checkItem small" title="Выполнено — работа завершена, файл прикреплён"><input type="checkbox" id="sfStatusDone" checked onchange="syncMainFromSidebar()"><span id="sfStatusDoneText">Выполнено</span></label>
+      <label class="checkItem small" title="Частично — работа в процессе выполнения"><input type="checkbox" id="sfStatusPartial" checked onchange="syncMainFromSidebar()"><span id="sfStatusPartialText">Частично</span></label>
+      <label class="checkItem small" title="Не выполнено — работа ещё не начата или не завершена"><input type="checkbox" id="sfStatusNotDone" checked onchange="syncMainFromSidebar()"><span id="sfStatusNotDoneText">Не выполнено</span></label>
+    </div>
+  </div>
+</div>
+
+<!-- PDF split-panel viewer -->
+<div id="pdfViewerOverlay">
+  <div id="pdfViewerPanel">
+    <div id="pdfViewerLeft">
+      <div id="pdfViewerInfo"></div>
+    </div>
+    <div id="pdfViewerRight">
+      <div id="pdfViewerBar">
+        <span id="pdfViewerTitle">PDF</span>
+        <div style="display:flex;gap:8px">
+          <button id="pdfDownloadBtn" onclick="downloadCurrentPdf()" title="Скачать">&#8681; Скачать</button>
+          <button id="pdfCloseBtn" onclick="closePdfViewer()" title="Закрыть">&#10005; Закрыть</button>
+        </div>
+      </div>
+      <iframe id="pdfViewerFrame"></iframe>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Plan -->
+<div id="planModal" class="modal-overlay hidden">
+  <div class="modal">
+    <h3 id="planModalTitle">Добавить план</h3>
+    <div id="pmGrantHint" class="muted small" style="display:none;margin-bottom:10px"></div>
+    <div class="grid">
+      <div class="col-6" id="pmTeacherWrap"><label>Педагог<select id="pmTeacher"></select></label></div>
+      <div class="col-6"><label>Учебный год<select id="pmYear"></select></label></div>
+      <div class="col-4"><label>Показатель<select id="pmIndicator"></select></label></div>
+      <div class="col-4" id="pmArticleTypeWrap"><label>Тип статьи<select id="pmArticleType"></select></label></div>
+      <div class="col-12" id="pmCoAuthorTeachersWrap" style="display:none"><label>Соавторы по кафедре (для WOS/Scopus)
+        <select id="pmCoAuthorTeachers" multiple size="5"></select>
+        <div class="small muted" id="pmCoAuthorHelp" style="margin-top:4px">Отметьте педагогов кафедры, которые могут участвовать как соавторы по этому плану.</div>
+      </label></div>
+      <div class="col-12" id="pmWosDistributionWrap" style="display:none">
+        <label>Распределение по месяцам (WOS/Scopus)</label>
+        <div id="pmWosDistributionRows" style="display:flex;flex-direction:column;gap:10px;margin-top:8px"></div>
+        <div class="row" style="gap:8px;align-items:center;margin-top:8px">
+          <button class="btn secondary small" type="button" id="pmWosDistAddBtn">+ Добавить месяц</button>
+          <button class="btn secondary small" type="button" id="pmWosDistClearBtn">Очистить</button>
+        </div>
+        <div class="small muted" style="margin-top:6px">Для каждого месяца отметьте педагогов кафедры массово. При сохранении создаются отдельные плановые записи по каждому выбранному педагогу.</div>
+      </div>
+      <div class="col-4" id="pmCitationsWrap" style="display:none"><label>Цитаты (план)<input type="number" id="pmCitations" min="0" placeholder="0" /></label></div>
+      <div class="col-4" id="pmPatentsWrap" style="display:none"><label>Патенты (план)<input type="number" id="pmPatents" min="0" placeholder="0" /></label></div>
+      <div class="col-4" id="pmMonthWrap"><label>Месяц<select id="pmMonth"></select></label></div>
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="btn secondary" onclick="closePlanModal()">Отмена</button>
+      <button type="button" class="btn" id="pmSaveBtn">Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Work -->
+<div id="workModal" class="modal-overlay hidden">
+  <div class="modal">
+    <h3 id="workModalTitle">Добавить работу</h3>
+    <div class="grid">
+      <div class="col-4" id="wmTeacherWrap"><label>Педагог<select id="wmTeacher"></select></label></div>
+      <div class="col-4" id="wmYearWrap"><label>Учебный год<select id="wmYear"></select></label></div>
+      <div class="col-4" id="wmSourceWrap"><label>Источник<select id="wmSource"><option value="PLAN">По плану</option><option value="OUT_OF_PLAN">Вне плана</option></select></label></div>
+      <div class="col-4" id="wmIndicatorWrap"><label>Показатель<select id="wmIndicator"></select></label></div>
+      <div class="col-4" id="wmArticleTypeWrap"><label>Тип статьи<select id="wmArticleType"></select></label></div>
+      <div class="col-4" id="wmCitationsWrap" style="display:none"><label><span id="wmCitationsLabel">Цитаты (кол-во)</span><input type="number" id="wmCitations" min="0" placeholder="0" /></label></div>
+      <div class="col-4" id="wmHIndexWrap" style="display:none"><label><span id="wmHIndexLabel">h-index</span><input type="number" id="wmHIndex" min="0" placeholder="0" /></label></div>
+      <div class="col-12" id="wmTitleWrap"><label>Название работы<input id="wmTitle" placeholder="Название статьи / учебника / ..." /></label></div>
+      <div class="col-6" id="wmPublisherWrap"><label><span id="wmPublisherLabel">Издательство / журнал</span><input id="wmPublisher" placeholder="Издательство" /></label></div>
+      <div class="col-6" id="wmCouncilWrap" style="display:none"><label>Координационный совет<input id="wmCouncil" placeholder="Название совета" /></label></div>
+      <div class="col-4" id="wmCertNoWrap" style="display:none"><label>Номер сертификата (грифа)<input id="wmCertNo" placeholder="№ ..." /></label></div>
+      <div class="col-4" id="wmMonthWrap"><label>Месяц (фактический)<select id="wmMonth"></select></label></div>
+      <div class="col-4" id="wmPubYearWrap"><label>Год публикации<input type="number" id="wmPubYear" min="1900" max="2100" placeholder="2025" /></label></div>
+      <div class="col-4" id="wmPlannedMonthWrap"><label>Засчитать за месяц (план)<select id="wmPlannedMonth"></select></label></div>
+      <div class="col-12 muted small" id="wmPlannedInfo" style="margin-top:6px"></div>
+      <div class="col-4" id="wmCoAuthorsWrap"><label>Кол-во соавторов (всего авторов)<input type="number" id="wmCoAuthors" min="1" placeholder="1" /></label></div>
+      <div class="col-4" id="wmCoAuthorTeachersWrap"><label>Соавторы (педагоги кафедры)<select id="wmCoAuthorTeachers" multiple size="5"></select>
+        <div class="row" style="gap:8px;align-items:center;margin-top:6px">
+          <button class="btn secondary small" id="wmCoAuthorClearBtn" type="button">Очистить выбор</button>
+        </div>
+        <div class="small muted" id="wmCoAuthorHelp" style="margin-top:4px">Выберите педагогов-соавторов из кафедры. Баллы распределяются поровну: 1 / «Всего авторов». Если есть внешние соавторы (не из списка), увеличьте поле «Кол-во соавторов (всего авторов)».</div>
+      </label></div>
+      <div class="col-4" id="wmSiteUrlWrap"><label>Ссылка на сайт<input id="wmSiteUrl" placeholder="https://..." /></label></div>
+      <div class="col-4" id="wmFileUrlWrap"><label>Ссылка на файл (Google Drive)<input id="wmFileUrl" placeholder="https://..." /></label></div>
+      <div class="col-4" id="wmPdfWrap">
+        <label><span id="wmPdfLabel">Файл (PDF, JPG, PNG, TIFF)</span>
+          <div id="wmPdfList" style="display:flex;flex-direction:column;gap:6px;margin-top:6px;max-height:180px;overflow-y:auto"></div>
+          <label class="btn secondary small" style="cursor:pointer;margin:6px 0 0 0;display:inline-block" id="wmPdfAddBtn">+ Файл<input type="file" accept=".pdf,.jpg,.jpeg,.png,.tiff,.tif,application/pdf,image/jpeg,image/png,image/tiff" id="wmPdfInput" style="display:none"></label>
+        </label>
+      </div>
+      <div class="col-4" id="wmStatusWrap"><label>Статус выполнения<select id="wmStatus"><option value="NOT_DONE">Не выполнена</option><option value="PARTIAL">Частично</option><option value="DONE">Выполнена работа</option></select></label></div>
+    </div>
+    <div id="wmPatentFields" class="grid" style="display:none;margin-top:10px">
+      <div class="col-4"><label>Номер патента<input id="wmPatentNo" placeholder="UZ IAP 012345" /></label></div>
+      <div class="col-4"><label>Дата патента (ДД.ММ.ГГГГ)<div class="row"><input type="number" id="wmPatentDay" min="1" max="31" placeholder="ДД" style="width:60px" /><select id="wmPatentMonth" style="width:100px"></select><input type="number" id="wmPatentYear" min="1900" max="2100" placeholder="ГГГГ" style="width:80px" /></div></label></div>
+      <div class="col-4"><label>Кем выдан<input id="wmPatentIssuedBy" placeholder="Орган/ведомство" /></label></div>
+    </div>
+    <div id="wmCertDateFields" class="grid" style="display:none;margin-top:10px">
+      <div class="col-6"><label>Дата получения сертификата (ДД.ММ.ГГГГ)<div class="row"><input type="number" id="wmCertDay" min="1" max="31" placeholder="ДД" style="width:60px" /><select id="wmCertMonth" style="width:100px"></select><input type="number" id="wmCertYear" min="1900" max="2100" placeholder="ГГГГ" style="width:80px" /></div></label></div>
+    </div>
+    <div id="wmTop1000Fields" class="grid" style="display:none;margin-top:10px">
+      <div class="col-4"><label><span id="wmTop1000DirectionLabel">Yoʻnalish kodi</span><input type="text" id="wmTop1000Direction" list="wmTop1000DirectionList" placeholder="Поиск (код или название)" class="direction-search" autocomplete="off" /><datalist id="wmTop1000DirectionList"></datalist></label></div>
+      <div class="col-4"><label><span id="wmTop1000HoursLabel">Учебные часы</span><input id="wmTop1000Hours" placeholder="72" /></label></div>
+      <div class="col-4"><label><span id="wmTop1000CertLabel">Номера сертификатов</span><input id="wmTop1000Cert" placeholder="№ 12345, № 67890" /></label></div>
+    </div>
+    <div id="wmDegreeUnvonFields" class="grid" style="display:none;margin-top:10px">
+      <div class="col-4"><label><span id="wmIlmiyDarajaLabel">Ilmiy daraja</span><select id="wmIlmiyDaraja"><option value="">—</option><option value="CANDIDATE">кандидат наук</option><option value="PHD">PhD</option><option value="DSC">DSc</option></select></label></div>
+      <div class="col-4"><label><span id="wmIlmiyUnvonLabel">Ilmiy unvon</span><select id="wmIlmiyUnvon"><option value="">—</option><option value="DOTSENT">доцент</option><option value="PROFESSOR">профессор</option></select></label></div>
+      <div class="col-4"><label><span id="wmEducationDirectionCodeLabel">Yoʻnalish kodi</span><input type="text" id="wmEducationDirectionCode" list="wmEducationDirectionCodeList" placeholder="Поиск (код или название)" class="direction-search" autocomplete="off" /><datalist id="wmEducationDirectionCodeList"></datalist></label></div>
+      <div class="col-4"><label><span id="wmSpecialtyCodeLabel">Код специальности</span><input id="wmSpecialtyCode" placeholder="По классификатору" /></label></div>
+      <div class="col-4"><label><span id="wmDiplomRaqamiLabel">Diplom raqami</span><input id="wmDiplomRaqami" placeholder="№ диплома" /></label></div>
+      <div class="col-4"><label><span id="wmDegreeDateLabel">Дата</span><input type="date" id="wmDegreeDate" /></label></div>
+    </div>
+    <div id="wmXorijiyTilFields" class="grid" style="display:none;margin-top:10px">
+      <div class="col-4"><label><span id="wmXorijiyTilFanNomiLabel">Fan nomi</span><input id="wmXorijiyTilFanNomi" placeholder="" /></label></div>
+      <div class="col-4"><label><span id="wmXorijiyTilFanYonalishLabel">Fan yo'nalish</span><input id="wmXorijiyTilFanYonalish" placeholder="" /></label></div>
+      <div class="col-4"><label><span id="wmXorijiyTilMashgulotTuriLabel">Mashg'ulot turi</span><select id="wmXorijiyTilMashgulotTuri"></select></label></div>
+      <div class="col-4"><label><span id="wmXorijiyTilTilLabel">Qaysi xorijiy tilda</span><select id="wmXorijiyTilTil"></select></label></div>
+      <div class="col-4"><label><span id="wmXorijiyTilMashgulotSoatiLabel">Mashg'ulot soati</span><input id="wmXorijiyTilMashgulotSoati" type="number" min="0" placeholder="0" /></label></div>
+    </div>
+    <div id="wmXorijiyTilSertifikatFields" class="grid" style="display:none;margin-top:10px">
+      <div class="col-4"><label><span id="wmCertForeignLangLabel">Chet tili nomi</span><select id="wmCertForeignLang"></select></label></div>
+      <div class="col-4"><label><span id="wmCertDarajasiLabel">Darajasi</span><input id="wmCertDarajasi" placeholder="B2, C1, ..." /></label></div>
+      <div class="col-4"><label><span id="wmCertUmumiyBaliLabel">Umumiy bali</span><input id="wmCertUmumiyBali" type="text" placeholder="" /></label></div>
+    </div>
+    <div id="wmGrantFields" class="grid" style="display:none;margin-top:10px">
+      <div class="col-6"><label><span id="wmGrantNameLabel">Название гранта</span><input id="wmGrantName" placeholder="" /></label></div>
+      <div class="col-6"><label><span id="wmGrantDurationLabel">Срок</span><input id="wmGrantDuration" placeholder="2023-2025" /></label></div>
+      <div class="col-6"><label><span id="wmGrantPartnerLabel">Партнёр — зарубежный вуз</span><input id="wmGrantPartner" placeholder="" /></label></div>
+      <div class="col-6"><label><span id="wmGrantAmountLabel">Сумма гранта (USD)</span><input id="wmGrantAmount" type="number" min="0" step="0.01" placeholder="0" /></label></div>
+      <div class="col-12">
+        <label><span id="wmGrantParticipantsLabel">Участники гранта</span>
+          <select id="wmGrantParticipants" multiple size="4" style="margin-top:6px"></select>
+          <div id="wmGrantParticipantsHint" class="small muted" style="margin-top:4px"></div>
+          <div id="wmGrantParticipantNamesBlock" style="margin-top:6px">
+            <div id="wmGrantParticipantNamesList" style="display:flex;flex-direction:column;gap:6px;margin-bottom:8px;max-height:120px;overflow-y:auto"></div>
+            <div class="row" style="align-items:center;gap:8px;flex-wrap:wrap">
+              <input id="wmGrantParticipantNameInput" type="text" placeholder="Ф.И.О. участников (если не из списка педагогов)" style="flex:1;min-width:200px" />
+              <button type="button" class="btn secondary small" id="wmGrantParticipantNameAddBtn">+ Добавить</button>
+            </div>
+          </div>
+        </label>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="btn secondary" onclick="closeWorkModal()">Отмена</button>
+      <button type="button" class="btn" id="wmSaveBtn">Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<!-- Модальное окно редактирования педагога (Ф.И.О. + ссылки на профили) -->
+<div id="teacherModal" class="modal-overlay hidden">
+  <div class="modal">
+    <h3 id="teacherModalTitle">Редактировать педагога</h3>
+    <div class="grid">
+      <div class="col-12"><label><span id="tmFullNameLabel">Ф.И.О.</span><input id="tmFullName" placeholder="Иванов Иван Иванович" /></label></div>
+      <div class="col-12">
+        <label><span id="tmProfileLinksLabel">Ссылки на профили</span>
+          <div id="tmProfileLinksList" style="display:flex;flex-direction:column;gap:8px;margin-top:6px;max-height:200px;overflow-y:auto"></div>
+          <button type="button" class="btn secondary small" id="tmProfileLinkAddBtn" style="margin-top:6px">+ Добавить профиль</button>
+        </label>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="btn secondary" onclick="closeTeacherModal()">Отмена</button>
+      <button type="button" class="btn" id="tmSaveBtn">Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+<div id="similarWorksToast" class="toast similar-works-toast hidden" role="alert" aria-live="polite">
+  <div class="similar-works-header">
+    <span id="similarWorksTitle">Возможно, похожая работа уже добавлена:</span>
+    <button type="button" class="similar-works-close" onclick="closeSimilarWorksToast()" aria-label="Закрыть">&times;</button>
+  </div>
+  <ul id="similarWorksList" class="similar-works-list"></ul>
+</div>
+
+<script src="auth-storage.js?v=20260403b"></script>
+<script src="cabinet-department.js?v=20260624e"></script>
+</body>
+</html>

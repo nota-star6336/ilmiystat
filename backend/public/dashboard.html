@@ -1,0 +1,443 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Служебный дашборд IlmiyStat." />
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet" />
+  <title>IlmiySTAT — Дашборд</title>
+  <style>
+    :root {
+      --bg: #f4f6f9;
+      --card: #ffffff;
+      --text: #111;
+      --muted: #666;
+      --border: #dde3ec;
+      --primary: #111;
+      --success: #2e7d32;
+      --danger: #b00020;
+      --radius: 12px;
+      --shadow: 0 1px 3px rgba(0,0,0,.08);
+      --font: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0 }
+    body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh }
+
+    /* disabled overlay */
+    #disabledScreen {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      text-align: center;
+      padding: 40px;
+    }
+    #disabledScreen.active { display: flex }
+    #disabledScreen .icon { font-size: 64px; margin-bottom: 16px; opacity: .3 }
+    #disabledScreen h2 { font-size: 22px; margin-bottom: 8px }
+    #disabledScreen p { color: var(--muted); font-size: 15px }
+
+    /* loading */
+    #loadingScreen {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      font-size: 15px;
+      color: var(--muted);
+    }
+
+    /* main dashboard */
+    #dashboardScreen { display: none }
+    #dashboardScreen.active { display: block }
+
+    header {
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      padding: 18px 24px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(6px);
+    }
+    header h1 { font-size: 20px; font-weight: 700 }
+    header .sub { font-size: 13px; color: var(--muted); margin-top: 2px }
+
+    .container { max-width: 1280px; margin: 0 auto; padding: 24px }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .kpi-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+    }
+    .kpi-label { font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .3px }
+    .kpi-value { font-size: 28px; font-weight: 800; margin-top: 6px }
+    .kpi-hint { font-size: 12px; color: var(--muted); margin-top: 4px }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+      margin-bottom: 20px;
+    }
+    .card-title { font-size: 15px; font-weight: 700; margin-bottom: 14px }
+
+    table { width: 100%; border-collapse: collapse }
+    th, td { padding: 10px 8px; text-align: left; border-bottom: 1px solid var(--border); font-size: 13px }
+    th { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase }
+    tr:hover td { background: #fafafa }
+
+    .pill {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      border: 1px solid var(--border);
+    }
+    .pill.done { border-color: var(--success); color: var(--success); background: #e8f5e9 }
+    .pill.partial { border-color: #ef6c00; color: #ef6c00; background: #fff3e0 }
+    .pill.not { border-color: var(--danger); color: var(--danger); background: #ffebee }
+
+    .bar-bg {
+      height: 8px;
+      border-radius: 4px;
+      background: #eee;
+      overflow: hidden;
+      min-width: 80px;
+    }
+    .bar-fill {
+      height: 100%;
+      border-radius: 4px;
+      background: var(--success);
+      transition: width .4s;
+    }
+
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px }
+    @media(max-width:768px) { .two-col { grid-template-columns: 1fr } }
+
+    .dept-select-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .dept-select-row label { font-size: 13px; font-weight: 700; display: flex; flex-direction: row; align-items: center; gap: 8px }
+    .dept-select-row select { padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; min-width: 260px }
+    .langbar { display: flex; align-items: center; gap: 12px; margin-bottom: 12px }
+    .langbar .muted { font-size: 12px; color: var(--muted) }
+    .langbar button { padding: 4px 10px; border: 1px solid var(--border); border-radius: 6px; background: var(--card); cursor: pointer; font-size: 12px }
+    .langbar button[aria-pressed="true"] { background: var(--primary); color: #fff; border-color: var(--primary) }
+  </style>
+</head>
+<body>
+
+  <div id="loadingScreen"></div>
+
+  <div id="disabledScreen">
+    <div class="icon">&#128274;</div>
+    <h2 id="disabledTitle"></h2>
+    <p id="disabledMsg"></p>
+  </div>
+
+  <div id="dashboardScreen">
+    <header>
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+        <div>
+          <h1 id="pageTitle"></h1>
+          <div class="sub" id="headerSub"></div>
+        </div>
+        <div class="langbar">
+          <span class="muted" id="langLabel">Язык:</span>
+          <button id="langRuBtn" type="button" aria-pressed="true">RU</button>
+          <button id="langUzBtn" type="button" aria-pressed="false">UZ</button>
+        </div>
+      </div>
+    </header>
+
+    <div class="container">
+      <div class="dept-select-row">
+        <label><span id="deptLabel">Кафедра:</span> <select id="deptSelect" onchange="loadDashboard()"></select></label>
+        <label><span id="yearLabel">Учебный год:</span> <select id="yearSelect" onchange="loadDashboard()"></select></label>
+      </div>
+
+      <div class="kpi-grid" id="kpiGrid"></div>
+
+      <div class="two-col">
+        <div class="card">
+          <div class="card-title" id="byIndicatorTitle">По показателям</div>
+          <table>
+            <thead><tr><th id="thIndicator">Показатель</th><th id="thCount">Кол-во</th><th id="thDone">Выполнено</th><th id="thProgress">Прогресс</th></tr></thead>
+            <tbody id="byIndicatorBody"></tbody>
+          </table>
+        </div>
+        <div class="card">
+          <div class="card-title" id="topTeachersTitle">Топ преподавателей по баллам</div>
+          <table>
+            <thead><tr><th>#</th><th id="thTeacher">Преподаватель</th><th id="thWorks">Работ</th><th id="thPoints">Баллы</th></tr></thead>
+            <tbody id="topTeachersBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script src="auth-storage.js?v=20260403b"></script>
+<script>
+const API = '/api';
+const LANG_KEY = 'cabinetLang';
+const I18N = {
+  ru: {
+    loading: 'Загрузка...',
+    errLoad: 'Ошибка загрузки',
+    errDepts: 'Ошибка загрузки кафедр',
+    disabledTitle: 'Дашборд отключён',
+    disabledMsg: 'Администратор не активировал страницу дашборда.<br>Обратитесь к администратору системы.',
+    pageTitle: 'IlmiySTAT — Дашборд',
+    langLabel: 'Язык:',
+    deptLabel: 'Кафедра:',
+    yearLabel: 'Учебный год:',
+    chooseDept: '— Выберите кафедру —',
+    byIndicator: 'По показателям',
+    topTeachers: 'Топ преподавателей по баллам',
+    indicator: 'Показатель',
+    count: 'Кол-во',
+    done: 'Выполнено',
+    progress: 'Прогресс',
+    teacher: 'Преподаватель',
+    works: 'Работ',
+    points: 'Баллы',
+    totalWorks: 'Всего работ',
+    pointsCoauth: 'Баллы (с учётом соавт.)',
+    teachersWithWorks: 'Преподавателей с работами',
+    plannedItems: 'Плановых позиций',
+    hintDone: 'Выполнено',
+    hintPartial: 'Частично',
+    hintNotDone: 'Не выполнено',
+    hintOf: 'из',
+    indicators: {
+      ARTICLE_VAK: 'Статья ВАК', ARTICLE_SCOPUS: 'Scopus/WoS', ARTICLE_TYPE: 'Статья',
+      CONFERENCE: 'Конференция', TEXTBOOK: 'Учебник / пособие', MONOGRAPH: 'Монография',
+      PATENT: 'Патент', CERTIFICATE: 'Свидетельство', CITATIONS: 'Цитаты'
+    }
+  },
+  uz: {
+    loading: 'Yuklanmoqda...',
+    errLoad: 'Yuklash xatosi',
+    errDepts: 'Kafedralarni yuklash xatosi',
+    disabledTitle: 'Dashboard o‘chirilgan',
+    disabledMsg: 'Administrator dashboard sahifasini faollashtirmagan.<br>Tizim administratoriga murojaat qiling.',
+    pageTitle: 'IlmiySTAT — Dashboard',
+    langLabel: 'Til:',
+    deptLabel: 'Kafedra:',
+    yearLabel: 'O‘quv yili:',
+    chooseDept: '— Kafedrani tanlang —',
+    byIndicator: 'Ko‘rsatkichlar bo‘yicha',
+    topTeachers: 'Ballar bo‘yicha eng yaxshi o‘qituvchilar',
+    indicator: 'Ko‘rsatkich',
+    count: 'Soni',
+    done: 'Bajarilgan',
+    progress: 'Progress',
+    teacher: 'O‘qituvchi',
+    works: 'Ishlar',
+    points: 'Ballar',
+    totalWorks: 'Jami ishlar',
+    pointsCoauth: 'Ballar (ham mualliflik hisobida)',
+    teachersWithWorks: 'Ishlari bo‘lgan o‘qituvchilar',
+    plannedItems: 'Reja pozitsiyalari',
+    hintDone: 'Bajarilgan',
+    hintPartial: 'Qisman',
+    hintNotDone: 'Bajarilmagan',
+    hintOf: 'dan',
+    indicators: {
+      ARTICLE_VAK: 'OAK maqolasi', ARTICLE_SCOPUS: 'Scopus/WoS', ARTICLE_TYPE: 'Maqola',
+      CONFERENCE: 'Konferensiya', TEXTBOOK: 'Darslik / qo‘llanma', MONOGRAPH: 'Monografiya',
+      PATENT: 'Patent', CERTIFICATE: 'Guvohnoma', CITATIONS: 'Iqtiboslar'
+    }
+  }
+};
+let currentLang = (() => { try { return localStorage.getItem(LANG_KEY) === 'uz' ? 'uz' : 'ru'; } catch (_) { return 'ru'; } })();
+const t = (key) => { const d = I18N[currentLang] || I18N.ru; return d[key] ?? key; };
+const tInd = (code) => { const d = I18N[currentLang] || I18N.ru; return (d.indicators && d.indicators[code]) || code; };
+
+function applyLang() {
+  document.documentElement.lang = currentLang;
+  const d = I18N[currentLang] || I18N.ru;
+  document.title = d.pageTitle;
+  document.getElementById('loadingScreen').textContent = d.loading;
+  document.getElementById('disabledTitle').textContent = d.disabledTitle;
+  document.getElementById('disabledMsg').innerHTML = d.disabledMsg;
+  document.getElementById('pageTitle').textContent = d.pageTitle;
+  document.getElementById('langLabel').textContent = d.langLabel;
+  document.getElementById('deptLabel').textContent = d.deptLabel;
+  document.getElementById('yearLabel').textContent = d.yearLabel;
+  document.getElementById('byIndicatorTitle').textContent = d.byIndicator;
+  document.getElementById('topTeachersTitle').textContent = d.topTeachers;
+  document.getElementById('thIndicator').textContent = d.indicator;
+  document.getElementById('thCount').textContent = d.count;
+  document.getElementById('thDone').textContent = d.done;
+  document.getElementById('thProgress').textContent = d.progress;
+  document.getElementById('thTeacher').textContent = d.teacher;
+  document.getElementById('thWorks').textContent = d.works;
+  document.getElementById('thPoints').textContent = d.points;
+  document.getElementById('langRuBtn').setAttribute('aria-pressed', currentLang === 'ru');
+  document.getElementById('langUzBtn').setAttribute('aria-pressed', currentLang === 'uz');
+}
+function setLang(lang) {
+  currentLang = lang === 'uz' ? 'uz' : 'ru';
+  try { localStorage.setItem(LANG_KEY, currentLang); } catch (_) {}
+  applyLang();
+  const sel = document.getElementById('deptSelect');
+  if (sel && sel.options.length) {
+    const ph = t('chooseDept');
+    if (sel.options[0].value === '') sel.options[0].text = ph;
+  }
+  loadDashboard();
+}
+document.getElementById('langRuBtn').addEventListener('click', () => setLang('ru'));
+document.getElementById('langUzBtn').addEventListener('click', () => setLang('uz'));
+
+const STATUS_DONE = 'DONE', STATUS_PARTIAL = 'PARTIAL', STATUS_NOT = 'NOT_DONE';
+
+(async () => {
+  applyLang();
+  try {
+    const r = await fetch(`${API}/settings/public/dashboardEnabled`);
+    const d = await r.json();
+    document.getElementById('loadingScreen').style.display = 'none';
+    if (d.value !== 'true') {
+      document.getElementById('disabledScreen').classList.add('active');
+      return;
+    }
+    document.getElementById('dashboardScreen').classList.add('active');
+    await initDashboard();
+  } catch (e) {
+    document.getElementById('loadingScreen').textContent = t('errLoad');
+    document.getElementById('loadingScreen').style.display = 'flex';
+    console.error(e);
+  }
+})();
+
+async function initDashboard() {
+  const res = await fetch(`${API}/departments/public`);
+  if (!res.ok) {
+    console.error(t('errDepts'), res.status);
+    return;
+  }
+  const depts = await res.json();
+  const sel = document.getElementById('deptSelect');
+  const list = Array.isArray(depts) ? depts : [];
+  sel.innerHTML = '<option value="">' + t('chooseDept') + '</option>' + list.map(d => `<option value="${d.id}">${d.name}</option>`).join('');
+  if (list.length) sel.value = list[0].id;
+
+  const now = new Date();
+  const curYear = now.getMonth() >= 8 ? now.getFullYear() : now.getFullYear() - 1;
+  const yearSel = document.getElementById('yearSelect');
+  yearSel.innerHTML = '';
+  for (let y = curYear; y >= curYear - 3; y--) {
+    yearSel.innerHTML += `<option value="${y}-${y+1}">${y}-${y+1}</option>`;
+  }
+
+  await loadDashboard();
+}
+
+async function loadDashboard() {
+  const deptId = document.getElementById('deptSelect').value;
+  const year = document.getElementById('yearSelect').value;
+  if (!deptId) return;
+
+  const token = getAuthToken();
+  const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
+
+  let works, plans, teachers;
+  try {
+    const [wRes, pRes, tRes] = await Promise.all([
+      fetch(`${API}/departments/${deptId}/scientific-works?academicYear=${year}`, { headers }),
+      fetch(`${API}/departments/${deptId}/plan-items?academicYear=${year}`, { headers }),
+      fetch(`${API}/departments/${deptId}/teachers`, { headers })
+    ]);
+    works = await wRes.json(); if (!Array.isArray(works)) works = [];
+    plans = await pRes.json(); if (!Array.isArray(plans)) plans = [];
+    teachers = await tRes.json(); if (!Array.isArray(teachers)) teachers = [];
+  } catch (e) {
+    console.error('Ошибка загрузки данных:', e);
+    return;
+  }
+
+  const teacherMap = new Map(teachers.map(t => [t.id, t.fullName]));
+  const doneWorks = works.filter(w => w.completionStatus === STATUS_DONE || w.completionStatus === STATUS_PARTIAL);
+
+  const totalWorks = works.length;
+  const doneCount = works.filter(w => w.completionStatus === STATUS_DONE).length;
+  const partialCount = works.filter(w => w.completionStatus === STATUS_PARTIAL).length;
+  const notDoneCount = works.filter(w => w.completionStatus === STATUS_NOT).length;
+
+  let totalPts = 0;
+  works.forEach(w => {
+    const cnt = Math.max(1, w.coAuthorsCount || 1);
+    totalPts += +(1 / cnt).toFixed(3);
+  });
+
+  const uniqueTeachers = new Set(works.map(w => w.teacherId)).size;
+  const totalPlanned = plans.length;
+
+  const d = I18N[currentLang] || I18N.ru;
+  document.getElementById('kpiGrid').innerHTML = [
+    kpi(t('totalWorks'), totalWorks, `${d.hintDone}: ${doneCount}, ${d.hintPartial}: ${partialCount}, ${d.hintNotDone}: ${notDoneCount}`),
+    kpi(t('pointsCoauth'), totalPts.toFixed(2)),
+    kpi(t('teachersWithWorks'), uniqueTeachers, `${d.hintOf} ${teachers.length}`),
+    kpi(t('plannedItems'), totalPlanned)
+  ].join('');
+
+  // by indicator
+  const byInd = new Map();
+  works.forEach(w => {
+    const lbl = tInd(w.indicator) || w.indicator;
+    if (!byInd.has(lbl)) byInd.set(lbl, { total: 0, done: 0 });
+    const o = byInd.get(lbl);
+    o.total++;
+    if (w.completionStatus === STATUS_DONE) o.done++;
+    else if (w.completionStatus === STATUS_PARTIAL) o.done += 0.5;
+  });
+  document.getElementById('byIndicatorBody').innerHTML = [...byInd.entries()]
+    .sort((a, b) => b[1].total - a[1].total)
+    .map(([lbl, o]) => {
+      const pct = o.total ? Math.round(o.done / o.total * 100) : 0;
+      return `<tr><td>${lbl}</td><td>${o.total}</td><td>${Math.round(o.done)}</td><td><div class="bar-bg"><div class="bar-fill" style="width:${pct}%"></div></div> ${pct}%</td></tr>`;
+    }).join('');
+
+  // top teachers
+  const byTeacher = new Map();
+  works.forEach(w => {
+    const name = teacherMap.get(w.teacherId) || '—';
+    if (!byTeacher.has(name)) byTeacher.set(name, { count: 0, pts: 0 });
+    const o = byTeacher.get(name);
+    o.count++;
+    const cnt = Math.max(1, w.coAuthorsCount || 1);
+    o.pts += +(1 / cnt).toFixed(3);
+  });
+  document.getElementById('topTeachersBody').innerHTML = [...byTeacher.entries()]
+    .sort((a, b) => b[1].pts - a[1].pts)
+    .slice(0, 10)
+    .map(([name, o], i) => `<tr><td>${i + 1}</td><td>${name}</td><td>${o.count}</td><td>${o.pts.toFixed(2)}</td></tr>`)
+    .join('');
+}
+
+function kpi(label, value, hint) {
+  return `<div class="kpi-card"><div class="kpi-label">${label}</div><div class="kpi-value">${value}</div>${hint ? `<div class="kpi-hint">${hint}</div>` : ''}</div>`;
+}
+</script>
+</body>
+</html>
+

@@ -1,0 +1,621 @@
+﻿<!DOCTYPE html>
+<html lang="ru" data-seo-lang="ru" data-lang-url-ru="/" data-lang-url-uz="/uz/index.html" style="scroll-behavior:smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="IlmiyStat — система учёта научной работы кафедры. Планы, статьи, патенты, статистика." />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta name="theme-color" content="#0c1222" />
+  <title>IlmiyStat — учёт научной работы кафедры</title>
+  <link rel="canonical" href="https://ilmiystat.uz/" />
+  <meta property="og:locale" content="ru_RU" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="IlmiyStat" />
+  <meta property="og:title" content="IlmiyStat — учёт научной работы кафедры" />
+  <meta property="og:description" content="Система для учёта планов, статей, патентов и статистики научной работы кафедры." />
+  <meta property="og:url" content="https://ilmiystat.uz/" />
+  <meta property="og:image" content="https://ilmiystat.uz/og-image-ru.png" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="IlmiyStat — учёт научной работы кафедры" />
+  <meta name="twitter:description" content="Система для учёта научной работы кафедры: планы, статьи, патенты и статистика." />
+  <meta name="twitter:image" content="https://ilmiystat.uz/og-image-ru.png" />
+  <link rel="alternate" hreflang="ru" href="https://ilmiystat.uz/" />
+  <link rel="alternate" hreflang="uz" href="https://ilmiystat.uz/uz/index.html" />
+  <link rel="alternate" hreflang="x-default" href="https://ilmiystat.uz/" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+  <script src="/index-i18n.js" defer></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "SoftwareApplication",
+        "name": "IlmiyStat",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "Web",
+        "url": "https://ilmiystat.uz/",
+        "description": "Система учёта научной работы кафедры: планы, научные работы, патенты и статистика.",
+        "image": "https://ilmiystat.uz/og-image-ru.png",
+        "inLanguage": ["ru"],
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "UZS",
+          "description": "14 дней бесплатного доступа"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "IlmiyStat"
+        }
+      },
+      {
+        "@type": "Organization",
+        "name": "IlmiyStat",
+        "url": "https://ilmiystat.uz/",
+        "description": "Система учёта научной работы кафедры для планов, статей, патентов и статистики.",
+        "logo": "https://ilmiystat.uz/og-image-ru.png",
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "telephone": "+998909901543",
+          "contactType": "customer support",
+          "availableLanguage": ["ru"]
+        }
+      }
+    ]
+  }
+  </script>
+  <style>
+    :root{
+      --fg:#0c1222;
+      --fg-soft:#475569;
+      --fg-muted:#94a3b8;
+      --line:#e2e8f0;
+      --bg:#f8fafc;
+      --bg-soft:#f1f5f9;
+      --card:#ffffff;
+      --check:#f97316;
+      --primary:#2563eb;
+      --primary-hover:#1d4ed8;
+      --primary-light:#eff6ff;
+      --orange:#f97316;
+      --orange-hover:#ea580c;
+      --orange-light:#fff7ed;
+      --font:'Plus Jakarta Sans',system-ui,-apple-system,sans-serif;
+      --text-xs:0.75rem;
+      --text-sm:0.875rem;
+      --text-base:1rem;
+      --text-lg:1.125rem;
+      --text-xl:1.25rem;
+      --text-2xl:1.5rem;
+      --text-3xl:1.875rem;
+      --text-4xl:2.25rem;
+      --text-5xl:3rem;
+      --leading-tight:1.25;
+      --leading-snug:1.375;
+      --leading-normal:1.5;
+      --leading-relaxed:1.625;
+      --leading-loose:1.75;
+      --tracking-tight:-0.03em;
+      --tracking-wide:0.08em;
+      --tracking-wider:0.1em;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100vh;color:var(--fg);font-family:var(--font);font-size:var(--text-base);line-height:var(--leading-normal);background:var(--bg);-webkit-font-smoothing:antialiased}
+    .page{max-width:1100px;margin:0 auto;padding:0 24px 80px}
+
+    /* Header - Peec AI style */
+    .header{display:flex;align-items:center;justify-content:space-between;padding:16px 0;flex-wrap:wrap;gap:16px;position:relative}
+    .header::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:100vw;height:1px;background:var(--line);opacity:.6}
+    .header-left{display:flex;flex-direction:column;gap:2px;align-items:flex-start}
+    .header-logo{font-size:var(--text-lg);font-weight:700;letter-spacing:var(--tracking-tight);color:var(--fg);margin:0}
+    .header-tagline{font-size:var(--text-xs);color:var(--fg-soft);font-weight:400;line-height:var(--leading-snug)}
+    .header-right{display:flex;align-items:center;gap:16px}
+    .header-right .lang-wrap{display:flex;align-items:center;gap:4px}
+    .header-right .lang-label{font-size:var(--text-xs);color:var(--fg-soft);margin-right:4px}
+    .header-right .lang-btn{padding:6px 12px;border:1px solid var(--line);background:var(--card);border-radius:8px;font-size:var(--text-xs);font-weight:500;cursor:pointer;color:var(--fg-soft)}
+    .header-right .lang-btn[aria-pressed="true"]{background:var(--fg);color:#fff;border-color:var(--fg)}
+    .header-right .login-btn{padding:8px 18px;background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:8px;font-size:var(--text-sm);font-weight:500;cursor:pointer;text-decoration:none;display:inline-block}
+    .header-right .login-btn:hover{background:var(--bg-soft)}
+    .header-right .cta-btn{padding:8px 18px;background:var(--fg);color:var(--card);border:none;border-radius:8px;font-size:var(--text-sm);font-weight:600;cursor:pointer;text-decoration:none;display:inline-block}
+    .header-right .cta-btn:hover{opacity:.92}
+
+    /* Hero - Peec AI style */
+    .hero{padding:64px 0 80px;text-align:center}
+    .hero-inner{max-width:720px;margin:0 auto}
+    .hero-badge{display:inline-flex;align-items:center;gap:6px;margin-bottom:20px;padding:6px 14px;background:var(--card);border:1px solid var(--line);border-radius:999px;font-size:var(--text-xs);font-weight:500;letter-spacing:var(--tracking-wide);color:var(--fg-soft)}
+    .hero-badge-dot{width:6px;height:6px;background:#ef4444;border-radius:50%;animation:pulse 2s infinite}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+    .hero h1{font-size:clamp(1.875rem,5vw,3rem);font-weight:800;letter-spacing:var(--tracking-tight);margin:0 0 20px;line-height:var(--leading-tight);color:var(--fg)}
+    .hero h1 .hero-title-accent{color:var(--fg-soft);font-weight:600}
+    .hero-desc{font-size:var(--text-lg);color:var(--fg-soft);line-height:var(--leading-relaxed);margin:0 0 24px;max-width:560px;margin-left:auto;margin-right:auto}
+    .hero-pills{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 10px;margin:0 auto 32px;max-width:720px}
+    .hero-pill{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;background:none;border:none;font-size:var(--text-sm);font-weight:500;color:var(--fg)}
+    .hero-pill svg{width:16px;height:16px;opacity:.8;stroke:var(--fg);color:var(--fg)}
+    .hero-cta{display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
+    .hero-cta .btn-secondary{padding:12px 24px;background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:8px;font-size:var(--text-base);font-weight:600;cursor:pointer;text-decoration:none;display:inline-block}
+    .hero-cta .btn-secondary:hover{background:var(--bg-soft)}
+    .hero-cta .btn-primary{padding:12px 24px;background:var(--fg);color:var(--card);border:none;border-radius:8px;font-size:var(--text-base);font-weight:600;cursor:pointer;text-decoration:none;display:inline-block}
+    .hero-cta .btn-primary:hover{opacity:.92}
+
+    /* Demo section - dashboard style */
+    .demo-section{margin:0 0 80px}
+    .demo-section h2{font-size:var(--text-xs);font-weight:700;text-transform:uppercase;letter-spacing:var(--tracking-wider);color:var(--orange);margin:0 0 16px}
+    #demoEmbed{border:1px solid var(--line);border-radius:16px;background:var(--card);padding:24px 28px 32px;box-shadow:0 1px 3px rgba(0,0,0,.04);position:relative}
+    .demo-shell{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(320px,.95fr);gap:24px;align-items:center}
+    .demo-shell-copy h3{margin:0 0 12px;font-size:var(--text-2xl);line-height:var(--leading-tight)}
+    .demo-shell-copy p{margin:0 0 18px;color:var(--fg-soft);line-height:var(--leading-relaxed)}
+    .demo-shell-actions{display:flex;flex-wrap:wrap;gap:12px}
+    .demo-shell-actions .btn-primary{padding:12px 24px;background:var(--fg);color:var(--card);border:none;border-radius:8px;font-size:var(--text-base);font-weight:600;cursor:pointer;text-decoration:none;display:inline-block}
+    .demo-shell-actions .btn-primary:hover{opacity:.92}
+    .demo-shell-frame{border:1px solid var(--line);border-radius:14px;background:linear-gradient(180deg,#fff,#f8fafc);min-height:320px;overflow:hidden;position:relative}
+    .demo-shell-frame iframe{width:100%;height:100%;min-height:320px;border:0;display:block}
+    .demo-shell-placeholder{display:flex;flex-direction:column;justify-content:flex-start;align-items:stretch;height:100%;padding:20px;gap:14px}
+    .demo-shell-kicker{font-size:var(--text-xs);font-weight:700;letter-spacing:var(--tracking-wide);text-transform:uppercase;color:var(--orange)}
+    .demo-shell-note{font-size:var(--text-sm);color:var(--fg-muted)}
+    .demo-carousel{position:relative}
+    .demo-carousel-viewport{overflow:hidden;border-radius:16px}
+    .demo-carousel-track{display:flex;transition:transform .35s ease}
+    .demo-carousel-slide{flex:0 0 100%;min-width:100%}
+    .demo-carousel-img{width:100%;display:block;border-radius:16px;border:1px solid var(--line);box-shadow:0 14px 36px rgba(12,18,34,.08);background:#fff;cursor:zoom-in}
+    .demo-carousel-caption{margin-top:10px;font-size:var(--text-sm);color:var(--fg-soft);text-align:center}
+    .demo-lightbox{position:fixed;inset:0;z-index:10000;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(8,12,22,.86)}
+    .demo-lightbox.open{display:flex}
+    .demo-lightbox-img{max-width:96vw;max-height:92vh;width:auto;height:auto;display:block;border-radius:8px;box-shadow:0 24px 60px rgba(0,0,0,.4);background:#fff;cursor:zoom-out}
+    .demo-lightbox-close{position:fixed;top:20px;right:24px;width:40px;height:40px;border-radius:50%;border:none;background:rgba(255,255,255,.12);color:#fff;font-size:22px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center}
+    .demo-lightbox-close:hover{background:rgba(255,255,255,.22)}
+    .demo-carousel-arrow{position:absolute;top:50%;transform:translateY(-50%);width:32px;height:32px;border-radius:50%;border:1px solid var(--line);background:#fff;color:var(--fg);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;line-height:1;box-shadow:0 2px 8px rgba(0,0,0,.1);z-index:2;padding:0}
+    .demo-carousel-arrow.prev{left:-14px}
+    .demo-carousel-arrow.next{right:-14px}
+    .demo-carousel-arrow:hover{background:var(--bg-soft)}
+    .demo-carousel-dots{display:flex;justify-content:center;gap:8px;margin-top:14px}
+    .demo-carousel-dots button{width:8px;height:8px;border-radius:50%;border:none;background:#cbd5e1;padding:0;cursor:pointer}
+    .demo-carousel-dots button.active{background:var(--fg);width:20px;border-radius:4px;transition:all .2s}
+    @media(max-width:520px){.demo-carousel-arrow{display:none}}
+    @media(max-width:900px){.demo-shell{grid-template-columns:1fr}.demo-shell-frame{min-height:280px}}
+    #demoEmbed .demo-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;padding-bottom:8px}
+    #demoEmbed .demo-tabbtn{border:1px solid var(--line);background:var(--bg-soft);border-radius:999px;padding:8px 18px;cursor:pointer;font-weight:500;font-size:var(--text-sm);color:var(--fg-soft)}
+    #demoEmbed .demo-tabbtn:hover{background:var(--line);color:var(--fg)}
+    #demoEmbed .demo-tabbtn[aria-selected="true"]{background:var(--fg);color:var(--card);border-color:var(--fg)}
+    #demoEmbed .demo-panel{display:none}#demoEmbed .demo-panel.active{display:block}
+    #demoEmbed .demo-card{border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:12px;background:var(--card)}
+    #demoEmbed .demo-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:10px}
+    #demoEmbed .demo-col-12{grid-column:span 12}#demoEmbed .demo-col-8{grid-column:span 8}#demoEmbed .demo-col-6{grid-column:span 6}#demoEmbed .demo-col-4{grid-column:span 4}#demoEmbed .demo-col-3{grid-column:span 3}#demoEmbed .demo-col-2{grid-column:span 2}
+    #demoEmbed .demo-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    #demoEmbed .demo-muted{color:var(--fg-soft);font-size:var(--text-xs)}
+    #demoEmbed label{display:flex;flex-direction:column;gap:4px;font-size:var(--text-xs);font-weight:700}
+    #demoEmbed input,#demoEmbed select{padding:8px;border:1px solid var(--line);border-radius:8px;font-size:var(--text-sm);min-height:36px;width:100%;background:var(--card)}
+    #demoEmbed select[multiple]{min-height:100px}
+    #demoEmbed .demo-btn{border:1px solid var(--fg);background:var(--fg);color:#fff;padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:600;font-size:var(--text-xs)}
+    #demoEmbed .demo-btn.secondary{background:#fff;color:var(--fg);border-color:var(--line)}
+    #demoEmbed .demo-btn.danger{background:#dc2626;border-color:#dc2626;color:#fff}
+    #demoEmbed .demo-btn.small{padding:6px 10px;font-size:0.6875rem}
+    #demoEmbed .demo-btn.demo-blocked{opacity:.7;cursor:not-allowed}
+    #demoEmbed table{width:100%;border-collapse:collapse;font-size:var(--text-xs)}
+    #demoEmbed th,#demoEmbed td{border-bottom:1px solid var(--line);padding:8px 6px;text-align:left}
+    #demoEmbed .demo-pill{display:inline-block;padding:3px 8px;border-radius:6px;font-size:0.6875rem;font-weight:700}
+    #demoEmbed .demo-pill.done{border:1px solid #16a34a;color:#16a34a;background:#f0fdf4}
+    #demoEmbed .demo-pill.partial{border:1px solid #f59e0b;color:#d97706;background:#fffbeb}
+    #demoEmbed .demo-pill.not{border:1px solid #dc2626;color:#dc2626;background:#fef2f2}
+    #demoEmbed .demo-note{border:1px dashed var(--line);border-radius:10px;padding:12px;background:var(--card);margin:10px 0}
+    #demoEmbed .demo-checkItem{display:flex!important;flex-direction:row!important;align-items:center;gap:8px;font-size:var(--text-sm);font-weight:700;line-height:var(--leading-snug);cursor:pointer}
+    #demoEmbed .demo-checkItem input{width:16px;height:16px;margin:0;min-height:auto;padding:0;cursor:pointer;accent-color:var(--fg)}
+    #demoEmbed .demo-stats-checkgroups{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;align-items:start}
+    #demoEmbed .demo-checkgroup{border:1px solid var(--line);border-radius:12px;padding:10px;background:var(--card)}
+    #demoEmbed .demo-checkgroup-title{font-size:var(--text-xs);font-weight:800;margin:0 0 8px;color:var(--fg)}
+    #demoEmbed .demo-checkgroup-body{display:grid;grid-template-columns:1fr;gap:6px;max-height:170px;overflow:auto;padding-right:4px}
+    #demoEmbed .demo-checkgroup-body.demo-cols-2{grid-template-columns:1fr 1fr;max-height:none;overflow:visible}
+    #demoEmbed .demo-checkgroup-body.demo-cols-3{grid-template-columns:1fr 1fr 1fr;max-height:none;overflow:visible}
+    #demoEmbed .demo-checkgroup-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:8px}
+    #demoEmbed .demo-checkgroup-row .demo-checkgroup-title{margin-bottom:0}
+    #demoEmbed .demo-cols-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;max-height:none}
+    @media(max-width:768px){#demoEmbed .demo-stats-checkgroups{grid-template-columns:1fr}}
+    #demoEmbed .demo-stats-summary{margin:12px 0}
+    #demoEmbed .demo-stats-summary-title{font-size:var(--text-xs);font-weight:700;color:var(--fg);margin-bottom:10px}
+    #demoEmbed .demo-stats-totals{font-size:var(--text-xs);color:var(--fg-soft);margin-top:10px}
+    #demoEmbed .demo-divider{height:1px;background:var(--line);margin:12px 0}
+    #demoEmbed .demo-modal{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9998;display:none;align-items:center;justify-content:center;padding:16px}
+    #demoEmbed .demo-modal.open{display:flex}
+    #demoEmbed .demo-modal .modal{background:var(--card);border-radius:16px;padding:20px;width:min(600px,100%);max-height:90vh;overflow-y:auto}
+    #demoEmbed .demo-toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#111;color:#fff;padding:12px 20px;border-radius:8px;font-size:var(--text-sm);opacity:0;transition:opacity .2s;z-index:9999}
+    #demoEmbed .demo-toast.show{opacity:1}
+    #demoEmbed .demo-stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:10px;margin:12px 0}
+    #demoEmbed .demo-stat-card{background:#f8fafc;border:1px solid var(--line);border-radius:8px;padding:10px;text-align:center}
+    #demoEmbed .demo-stat-card .num{font-size:var(--text-lg);font-weight:800;color:var(--fg)}
+    #demoEmbed .demo-stat-card .lbl{font-size:0.6875rem;color:var(--fg-soft);margin-top:2px}
+    #demoEmbed .demo-stats-agg{background:#f0f4f8;border:1px solid var(--line);border-radius:10px;padding:12px}
+    #demoEmbed .demo-stats-agg-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:8px}
+    #demoEmbed .demo-stats-agg-row:last-child{margin-bottom:0}
+    #demoEmbed .demo-stats-agg-lbl{font-size:var(--text-xs);font-weight:700;color:var(--fg);flex-shrink:0}
+    #demoEmbed .demo-stats-chips{display:flex;flex-wrap:wrap;gap:6px}
+    #demoEmbed .demo-stats-chip{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:var(--card);border:1px solid var(--line);font-size:var(--text-xs);color:var(--fg)}
+    #demoEmbed .demo-stats-chip b{font-weight:800;color:var(--fg)}
+    #demoEmbed .demo-stats-top-row{display:flex;flex-wrap:wrap;gap:24px;margin:12px 0}
+    #demoEmbed .demo-stats-agg-box{background:#eef2f7;border:1px solid #dde3ec;border-radius:12px;padding:12px;flex:1;min-width:280px}
+    @media(max-width:640px){#demoEmbed .demo-col-8,#demoEmbed .demo-col-6,#demoEmbed .demo-col-4,#demoEmbed .demo-col-3,#demoEmbed .demo-col-2{grid-column:span 12}}
+
+    /* Problems - SaaS before/after */
+    .problems-section{margin:0 0 80px}
+    .problems-section h2{font-size:var(--text-xs);font-weight:700;text-transform:uppercase;letter-spacing:var(--tracking-wider);color:var(--orange);margin:0 0 28px}
+    .problems-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:stretch}
+    @media(max-width:640px){.problems-grid{grid-template-columns:1fr}}
+    .problem-card{padding:28px;border-radius:16px;border:1px solid;transition:all .25s ease}
+    .problem-card h3{font-size:var(--text-lg);font-weight:700;margin:0 0 14px;line-height:var(--leading-snug)}
+    .problem-card p{margin:0;font-size:var(--text-base);line-height:var(--leading-relaxed)}
+    .problem-card.before{border-color:#e2e8f0;background:#f8fafc;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+    .problem-card.before h3{color:var(--fg-soft)}
+    .problem-card.before p{color:var(--fg-muted)}
+    .problem-card.now{border-color:var(--line);background:var(--card);box-shadow:0 4px 12px rgba(0,0,0,.06)}
+    .problem-card.now h3{color:var(--fg)}
+    .problem-card.now p{color:var(--fg-soft)}
+    .problem-card.now:hover{box-shadow:0 12px 32px rgba(249,115,22,.18);transform:translateY(-2px)}
+
+    /* How it works */
+    .features-section{margin:0 0 80px}
+    .features-section h2{font-size:var(--text-xs);font-weight:700;text-transform:uppercase;letter-spacing:var(--tracking-wide);color:var(--orange);margin:0 0 24px}
+    .features-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+    @media(max-width:900px){.features-grid{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:480px){.features-grid{grid-template-columns:1fr}}
+    .feature-card{position:relative;padding:32px;border:1px solid var(--line);border-radius:20px;background:var(--card);transition:all .25s ease;overflow:visible;box-shadow:0 4px 6px -1px rgba(0,0,0,.05),0 2px 4px -2px rgba(0,0,0,.05);display:flex;flex-direction:column;align-items:flex-start}
+    .feature-card:hover{box-shadow:0 20px 25px -5px rgba(0,0,0,.08),0 8px 10px -6px rgba(0,0,0,.05)}
+    .feature-card .icon{width:40px;height:40px;margin-bottom:16px;opacity:.85;color:var(--orange)}
+    .feature-card strong{display:block;font-size:var(--text-xl);font-weight:700;margin-bottom:8px;color:var(--fg)}
+    .feature-card .feature-desc{font-size:var(--text-sm);color:var(--fg-soft);line-height:var(--leading-normal);margin-bottom:16px}
+    .feature-card-feats{margin:0;padding:0;list-style:none}
+    .feature-card-feats li{position:relative;padding:6px 0 6px 18px;font-size:var(--text-sm);line-height:var(--leading-snug);color:var(--fg-soft)}
+    .feature-card-feats li::before{content:'';position:absolute;left:0;top:10px;width:5px;height:5px;background:var(--orange);border-radius:50%}
+
+    /* Modal */
+    .modal-overlay{position:fixed;inset:0;z-index:9999;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,.4);backdrop-filter:blur(4px)}
+    .modal-overlay.open{display:flex}
+    .modal{max-width:520px;width:100%;max-height:85vh;overflow-y:auto;background:var(--card);border-radius:16px;padding:28px;box-shadow:0 24px 48px rgba(0,0,0,.12);border:1px solid var(--line)}
+    .modal h3{margin:0 0 16px;font-size:var(--text-xl);font-weight:700;color:var(--fg)}
+    .modal .desc{margin:0 0 20px;font-size:var(--text-sm);line-height:var(--leading-relaxed);color:var(--fg-soft)}
+    .modal .feat-list{margin:0;padding:0;list-style:none}
+    .modal .feat-list li{position:relative;padding:8px 0 8px 20px;font-size:var(--text-sm);line-height:var(--leading-normal);color:var(--fg-soft);border-bottom:1px solid var(--line)}
+    .modal .feat-list li:last-child{border-bottom:none}
+    .modal .feat-list li::before{content:'';position:absolute;left:0;top:14px;width:6px;height:6px;background:var(--fg);border-radius:50%}
+    .modal-close{float:right;background:none;border:none;font-size:24px;cursor:pointer;color:var(--fg-soft);line-height:1;padding:0}
+    .modal-close:hover{color:var(--fg)}
+    .modal label{display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:700;margin-bottom:14px}
+    .modal input{padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-size:var(--text-base);background:var(--card)}
+    .modal .btn{padding:10px 18px;border-radius:8px;font-size:var(--text-sm);font-weight:600;cursor:pointer;border:1px solid var(--fg);background:var(--fg);color:var(--card)}
+    .modal .btn:hover{opacity:.92}
+    .modal .btn.secondary{background:var(--card);color:var(--fg);border-color:var(--line)}
+    .modal .btn.secondary:hover{background:var(--bg-soft)}
+
+    /* Pricing - SaaS conversion optimized */
+    .pricing-section{margin:0 0 80px;padding:48px 0}
+    .pricing-section h2{font-size:var(--text-xs);font-weight:700;text-transform:uppercase;letter-spacing:var(--tracking-wider);color:var(--orange);margin:0 0 8px}
+    .pricing-subtitle{font-size:var(--text-base);color:var(--fg-soft);margin-bottom:48px;line-height:var(--leading-relaxed);max-width:640px;margin-left:auto;margin-right:auto}
+    .pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;align-items:stretch;position:relative}
+    @media(max-width:800px){.pricing-grid{grid-template-columns:1fr}}
+    .pricing-card{position:relative;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:32px;display:flex;flex-direction:column;box-shadow:0 4px 6px -1px rgba(0,0,0,.05),0 2px 4px -2px rgba(0,0,0,.05);transition:all .25s ease;overflow:visible}
+    .pricing-card:hover{box-shadow:0 20px 25px -5px rgba(0,0,0,.08),0 8px 10px -6px rgba(0,0,0,.05)}
+    .pricing-card.featured{background:linear-gradient(180deg,var(--orange-light) 0%,var(--card) 120px);border:2px solid var(--orange);box-shadow:0 25px 50px -12px rgba(249,115,22,.15);transform:scale(1.02);z-index:1}
+    @media(max-width:800px){.pricing-card.featured{transform:none}}
+    .pricing-card.featured:hover{box-shadow:0 25px 50px -12px rgba(249,115,22,.2)}
+    .pricing-badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,var(--orange),var(--orange-hover));color:#fff;font-size:0.6875rem;font-weight:700;text-transform:uppercase;letter-spacing:var(--tracking-wide);padding:6px 16px;border-radius:999px;box-shadow:0 4px 14px rgba(249,115,22,.4)}
+    .pricing-name{font-size:var(--text-xl);font-weight:700;margin-bottom:8px;color:var(--fg)}
+    .pricing-price{font-size:var(--text-4xl);font-weight:800;letter-spacing:var(--tracking-tight);margin-bottom:4px;color:var(--fg);line-height:var(--leading-tight)}
+    .pricing-price span{font-size:var(--text-base);font-weight:500;color:var(--fg-soft)}
+    .pricing-period{font-size:var(--text-sm);color:var(--fg-soft);margin-bottom:20px}
+    .pricing-save{font-size:var(--text-xs);color:var(--orange);font-weight:600;margin:0 0 12px}
+    .pricing-desc{font-size:var(--text-sm);color:var(--fg-soft);line-height:var(--leading-normal);margin-bottom:24px;min-height:2.5em}
+    .pricing-btn{padding:14px 28px;border-radius:12px;font-size:var(--text-base);font-weight:600;text-align:center;text-decoration:none;display:block;margin-bottom:28px;transition:all .2s}
+    .pricing-btn:hover{transform:translateY(-1px)}
+    .pricing-btn.secondary{background:var(--card);color:var(--fg);border:2px solid var(--line)}
+    .pricing-btn.secondary:hover{border-color:var(--orange);color:var(--orange)}
+    .pricing-btn.primary{background:linear-gradient(135deg,var(--orange),var(--orange-hover));color:#fff;border:none;box-shadow:0 4px 14px rgba(249,115,22,.4)}
+    .pricing-btn.primary:hover{box-shadow:0 6px 20px rgba(249,115,22,.5)}
+    .pricing-includes{font-size:var(--text-sm);font-weight:600;color:var(--fg-soft);margin-bottom:16px;text-transform:uppercase;letter-spacing:0.05em}
+    .pricing-features{list-style:none;margin:0;padding:0;flex:1}
+    .pricing-features li{display:flex;align-items:center;gap:12px;padding:10px 0;font-size:var(--text-sm);color:var(--fg);line-height:var(--leading-snug)}
+    .pricing-features li .check{width:22px;height:22px;flex-shrink:0;background:var(--orange);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:var(--text-sm);font-weight:700;line-height:1}
+    .pricing-features li .check::before{content:'✓'}
+    .pricing-features li:not(.disabled) .check{opacity:1}
+    .pricing-features li.disabled{color:var(--fg-muted)}
+    .pricing-features li.disabled .check{background:var(--line);color:var(--fg-soft);opacity:.6}
+    .pricing-features li.disabled .check::before{content:'−'}
+    .pricing-trust{padding:24px 0 0;margin-top:24px;border-top:1px solid var(--line);font-size:var(--text-sm);color:var(--fg-soft);text-align:center}
+    .pricing-compare{margin-top:56px;overflow-x:auto}
+    .pricing-compare h3{font-size:var(--text-xs);font-weight:700;text-transform:uppercase;letter-spacing:var(--tracking-wide);color:var(--orange);margin:0 0 16px}
+    .pricing-compare-table{width:100%;border-collapse:collapse;font-size:var(--text-sm);background:var(--card);border-radius:12px;overflow:hidden;border:1px solid var(--line)}
+    .pricing-compare-table th,.pricing-compare-table td{padding:12px 16px;text-align:left;border-bottom:1px solid var(--line)}
+    .pricing-compare-table th{background:var(--bg-soft);font-weight:600;color:var(--fg)}
+    .pricing-compare-table th:first-child{min-width:180px}
+    .pricing-compare-table th:nth-child(2),.pricing-compare-table th:nth-child(3),.pricing-compare-table th:nth-child(4){text-align:center;min-width:100px}
+    .pricing-compare-table td:nth-child(2),.pricing-compare-table td:nth-child(3),.pricing-compare-table td:nth-child(4){text-align:center}
+    .pricing-compare-table tr:last-child td{border-bottom:none}
+    .pricing-compare-table .check{color:var(--orange);font-weight:700}
+    .pricing-compare-table .cross{color:var(--fg-soft);opacity:.5}
+
+    /* Footer contacts */
+    .footer{padding:48px 0 32px;border-top:1px solid var(--line);margin-top:40px}
+    .footer h2{font-size:var(--text-xs);font-weight:700;text-transform:uppercase;letter-spacing:var(--tracking-wide);color:var(--orange);margin:0 0 20px}
+    .footer-contacts{display:flex;flex-wrap:wrap;gap:24px;font-size:var(--text-base);color:var(--fg)}
+    .footer-contacts a{color:var(--fg);text-decoration:none}
+    .footer-contacts a:hover{text-decoration:underline}
+  </style>
+</head>
+<body>
+  <script src="auth-storage.js?v=20260403b" defer></script>
+  <div class="page">
+    <header class="header">
+      <div class="header-left">
+        <p class="header-logo" id="headerLogo">IlmiyStat</p>
+        <span class="header-tagline" id="headerTagline">Система учёта научной работы кафедры</span>
+      </div>
+      <nav class="header-right" aria-label="Основная навигация">
+        <div class="lang-wrap">
+          <span class="lang-label" id="langLabel">Язык:</span>
+          <button class="lang-btn" id="langRuBtn" type="button" aria-pressed="true">RU</button>
+          <button class="lang-btn" id="langUzBtn" type="button" aria-pressed="false">UZ</button>
+        </div>
+        <a href="login.html" class="login-btn" id="loginBtn">Вход</a>
+        <button type="button" class="cta-btn" id="demoCabinetBtn">Демо-кабинет</button>
+      </nav>
+    </header>
+
+    <main id="main-content">
+    <section class="hero">
+      <div class="hero-inner">
+        <div class="hero-badge" id="heroBadge"><span class="hero-badge-dot"></span><span id="heroBadgeText">14 дней бесплатно</span></div>
+        <h1><span id="heroTitleMain">Учёт научной работы кафедры </span><span id="heroTitleAccent" class="hero-title-accent">в одном окне</span></h1>
+        <p class="hero-desc" id="heroDesc">Отслеживайте и анализируйте выполнение плана по ключевым показателям</p>
+        <div class="hero-pills" id="heroPills">
+          <span class="hero-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg><span id="pillArticle">Статья</span></span>
+          <span class="hero-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg><span id="pillTextbook">Учебник</span></span>
+          <span class="hero-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg><span id="pillTutorial">Учебное пособие</span></span>
+          <span class="hero-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg><span id="pillMethodGuidelines">Методические указания</span></span>
+          <span class="hero-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg><span id="pillMethodicalManual">Учебно-методическое пособие</span></span>
+          <span class="hero-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg><span id="pillUmk">Учебно-методический комплекс</span></span>
+          <span class="hero-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg><span id="pillETextbook">Электронный учебник</span></span>
+          <span class="hero-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg><span id="pillMonograph">Монография</span></span>
+          <span class="hero-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg><span id="pillPatents">Патенты</span></span>
+          <span class="hero-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/></svg><span id="pillCitations">Цитаты</span></span>
+        </div>
+        <div class="hero-cta">
+          <a href="#footer" class="btn-secondary" id="heroCtaSecondary">Связаться с нами</a>
+          <a href="#demoEmbed" class="btn-primary" id="heroCtaPrimary">Попробовать бесплатно</a>
+        </div>
+      </div>
+    </section>
+    <section class="demo-section">
+      <h2 id="demoTitle">Демо-версия</h2>
+      <div id="demoEmbed">
+        <div class="demo-shell">
+          <div class="demo-shell-copy">
+            <div class="demo-shell-kicker">Интерфейс кабинета</div>
+            <h3 id="demoShellTitle">Так выглядит рабочий кабинет кафедры</h3>
+            <p id="demoShellText">Список педагогов, годовой план, научные работы и статистика — в одном окне. Попробуйте живое демо с тестовыми данными бесплатно и без регистрации.</p>
+            <div class="demo-shell-actions">
+              <button type="button" class="btn-primary" id="demoSectionCabinetBtn">Демо-кабинет</button>
+            </div>
+          </div>
+          <div class="demo-shell-frame" id="demoFrameHost">
+            <div class="demo-shell-placeholder" id="demoShellPlaceholder">
+              <div class="demo-carousel" id="demoCarousel">
+                <div class="demo-carousel-viewport">
+                  <div class="demo-carousel-track" id="demoCarouselTrack">
+
+                    <div class="demo-carousel-slide">
+                      <img class="demo-carousel-img" src="screenshots/demo-teachers.png" alt="Вкладка «Педагоги» — список сотрудников кафедры" loading="lazy" />
+                      <div class="demo-carousel-caption">Педагоги: список сотрудников кафедры с быстрым добавлением</div>
+                    </div>
+
+                    <div class="demo-carousel-slide">
+                      <img class="demo-carousel-img" src="screenshots/demo-plan.png" alt="Вкладка «План» — годовой план по показателям со статусами выполнения" loading="lazy" />
+                      <div class="demo-carousel-caption">План: показатели по педагогам со статусом выполнения</div>
+                    </div>
+
+                    <div class="demo-carousel-slide">
+                      <img class="demo-carousel-img" src="screenshots/demo-works.png" alt="Вкладка «Научные работы» — статьи и патенты со статусами" loading="lazy" />
+                      <div class="demo-carousel-caption">Научные работы: статьи, патенты — с изданием и статусом</div>
+                    </div>
+
+                    <div class="demo-carousel-slide">
+                      <img class="demo-carousel-img" src="screenshots/demo-stats.png" alt="Вкладка «Статистика» — сводка выполнения плана кафедры" loading="lazy" />
+                      <div class="demo-carousel-caption">Статистика: сводка выполнения плана по кафедре</div>
+                    </div>
+
+                    <div class="demo-carousel-slide">
+                      <img class="demo-carousel-img" src="screenshots/demo-report.png" alt="Интерактивный отчёт план/выполнено — график и показатели по месяцам" loading="lazy" />
+                      <div class="demo-carousel-caption">Интерактивный отчёт: график план/выполнено по месяцам</div>
+                    </div>
+
+                  </div>
+                </div>
+                <button type="button" class="demo-carousel-arrow prev" id="demoCarouselPrev" aria-label="Предыдущий слайд">‹</button>
+                <button type="button" class="demo-carousel-arrow next" id="demoCarouselNext" aria-label="Следующий слайд">›</button>
+                <div class="demo-carousel-dots" id="demoCarouselDots">
+                  <button type="button" class="active" data-slide="0" aria-label="Слайд 1: Педагоги"></button>
+                  <button type="button" data-slide="1" aria-label="Слайд 2: План"></button>
+                  <button type="button" data-slide="2" aria-label="Слайд 3: Научные работы"></button>
+                  <button type="button" data-slide="3" aria-label="Слайд 4: Статистика"></button>
+                  <button type="button" data-slide="4" aria-label="Слайд 5: Интерактивный отчёт"></button>
+                </div>
+              </div>
+              <span class="demo-shell-note">Скриншоты настоящего интерфейса. Демо-кабинет открывается по кнопке выше — с тестовыми данными, без регистрации.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="problems-section"> 
+      <h2 id="sectionProblems">Какие проблемы решает система</h2>
+      <div class="problems-grid">
+        <div class="problem-card before">
+          <h3 id="problemsBeforeTitle">Раньше (без системы)</h3>
+          <p id="problemsBeforeText">Данные в разных файлах и переписках. Легко забыть, что уже сделано. Ошибки при подсчётах. Долгая подготовка отчётов в конце месяца и года.</p>
+        </div>
+        <div class="problem-card now">
+          <h3 id="problemsAfterTitle">Теперь с IlmiyStat</h3>
+          <p id="problemsAfterText">Всё в одном месте. Автоматический подсчёт. Готовые отчёты и экспорт в Excel за секунды.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="features-section">
+      <h2 id="sectionFeatures">Как это работает</h2>
+      <div class="features-grid" id="featuresList">
+        <div class="feature-card" data-feature="1">
+          <span class="icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+          <strong id="f1">Педагоги</strong>
+          <span id="f1d" class="feature-desc">Список сотрудников кафедры</span>
+          <ul class="feature-card-feats" id="f1featList"></ul>
+        </div>
+        <div class="feature-card" data-feature="2">
+          <span class="icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg></span>
+          <strong id="f2">План</strong>
+          <span id="f2d" class="feature-desc">Годовой план научной работы</span>
+          <ul class="feature-card-feats" id="f2featList"></ul>
+        </div>
+        <div class="feature-card" data-feature="3">
+          <span class="icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg></span>
+          <strong id="f3">Научные работы</strong>
+          <span id="f3d" class="feature-desc">Статьи, учебники, патенты, цитаты</span>
+          <ul class="feature-card-feats" id="f3featList"></ul>
+        </div>
+        <div class="feature-card" data-feature="4">
+          <span class="icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg></span>
+          <strong id="f4">Статистика</strong>
+          <span id="f4d" class="feature-desc">Сводки, отчёты, экспорт</span>
+          <ul class="feature-card-feats" id="f4featList"></ul>
+        </div>
+      </div>
+    </section>
+
+    <div class="modal-overlay" id="featureModal">
+      <div class="modal">
+        <button class="modal-close" id="modalClose" type="button" aria-label="Закрыть">×</button>
+        <h3 id="modalTitle"></h3>
+        <p class="desc" id="modalDesc"></p>
+        <ul class="feat-list" id="modalFeatList"></ul>
+      </div>
+    </div>
+
+    <div class="modal-overlay" id="demoLoginModal">
+      <div class="modal">
+        <button class="modal-close" id="demoLoginModalClose" type="button" aria-label="Закрыть">×</button>
+        <h3 id="demoLoginTitle">Демо-кабинет</h3>
+        <p class="desc" id="demoLoginDesc">Введите данные для входа. Админ: admin / admin123</p>
+        <div id="demoLoginError" style="display:none;margin-bottom:12px;padding:10px 12px;border-radius:8px;background:#ffebee;color:#b00020;font-size:13px;font-weight:600"></div>
+        <form id="demoLoginForm">
+          <label><span id="demoLoginLabel">Логин:</span>
+            <input id="demoLoginUsername" type="text" autocomplete="username" value="demo" />
+          </label>
+          <label><span id="demoPasswordLabel">Пароль:</span>
+            <input id="demoLoginPassword" type="password" autocomplete="current-password" value="demo123" />
+          </label>
+          <div style="margin-top:20px;display:flex;gap:10px;justify-content:flex-end">
+            <button class="btn secondary" type="button" id="demoLoginCancelBtn">Отмена</button>
+            <button class="btn" type="submit" id="demoLoginSubmitBtn">Войти</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="demo-lightbox" id="demoLightbox">
+      <button type="button" class="demo-lightbox-close" id="demoLightboxClose" aria-label="Закрыть">×</button>
+      <img class="demo-lightbox-img" id="demoLightboxImg" src="" alt="" />
+    </div>
+
+    <section class="pricing-section" id="pricingSection">
+      <h2 id="pricingTitle">Планы подписки</h2>
+      <p class="pricing-subtitle" id="pricingSubtitle">Выберите тариф для вашей кафедры. 14 дней бесплатно. Оплата за полугодие.</p>
+      <div class="pricing-grid">
+        <div class="pricing-card">
+          <h3 class="pricing-name" id="planStartName">Старт</h3>
+          <div class="pricing-price">224 995 <span>сум</span></div>
+          <div class="pricing-period" id="planStartPeriod">за полугодие</div>
+          <p class="pricing-desc" id="planStartDesc">Базовый набор для учёта научной работы.</p>
+          <span class="pricing-includes" data-i18n="pricingIncludes">Включено:</span>
+          <ul class="pricing-features">
+            <li><span class="check"></span><span id="planStartF1">Педагоги</span></li>
+            <li><span class="check"></span><span id="planStartF2">План</span></li>
+            <li><span class="check"></span><span id="planStartF3">Научные работы</span></li>
+            <li class="disabled"><span class="check"></span><span id="planStartF4">Выгрузка PDF</span></li>
+            <li class="disabled"><span class="check"></span><span id="planStartF5">Статистика</span></li>
+            <li class="disabled"><span class="check"></span><span id="planStartF6">Экспорт</span></li>
+          </ul>
+        </div>
+        <div class="pricing-card featured">
+          <span class="pricing-badge" id="planStandardBadge">Рекомендуем</span>
+          <h3 class="pricing-name" id="planStandardName">Стандарт</h3>
+          <div class="pricing-price">339 999 <span>сум</span></div>
+          <div class="pricing-period" id="planStandardPeriod">за полугодие</div>
+          <p class="pricing-desc" id="planStandardDesc">Оптимальный тариф для большинства кафедр.</p>
+          <span class="pricing-includes" data-i18n="pricingIncludes">Включено:</span>
+          <ul class="pricing-features">
+            <li><span class="check"></span><span id="planStandardF1">Педагоги</span></li>
+            <li><span class="check"></span><span id="planStandardF2">План</span></li>
+            <li><span class="check"></span><span id="planStandardF3">Научные работы</span></li>
+            <li><span class="check"></span><span id="planStandardF4">Выгрузка PDF</span></li>
+            <li><span class="check"></span><span id="planStandardF5">Статистика</span></li>
+            <li class="disabled"><span class="check"></span><span id="planStandardF6">Экспорт</span></li>
+          </ul>
+        </div>
+        <div class="pricing-card">
+          <h3 class="pricing-name" id="planProName">Профессиональный</h3>
+          <div class="pricing-price">449 000 <span>сум</span></div>
+          <div class="pricing-period" id="planProPeriod">за полугодие</div>
+          <p class="pricing-desc" id="planProDesc">Полный функционал для крупных кафедр.</p>
+          <span class="pricing-includes" data-i18n="pricingIncludes">Включено:</span>
+          <ul class="pricing-features">
+            <li><span class="check"></span><span id="planProF1">Педагоги</span></li>
+            <li><span class="check"></span><span id="planProF2">План</span></li>
+            <li><span class="check"></span><span id="planProF3">Научные работы</span></li>
+            <li><span class="check"></span><span id="planProF4">Выгрузка PDF</span></li>
+            <li><span class="check"></span><span id="planProF5">Статистика</span></li>
+            <li><span class="check"></span><span id="planProF6">Экспорт</span></li>
+          </ul>
+        </div>
+      </div>
+      <p class="pricing-trust" id="pricingTrust">14 дней бесплатно · Возврат средств при отмене</p>
+      <div class="pricing-compare">
+        <h3 id="pricingCompareTitle">Сравнение планов</h3>
+        <table class="pricing-compare-table">
+          <thead>
+            <tr>
+              <th id="pricingCompareFeatCol">Функция</th>
+              <th id="pricingCompareStartCol">Старт</th>
+              <th id="pricingCompareStandardCol">Стандарт</th>
+              <th id="pricingCompareProCol">Профессиональный</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td data-i18n="featTeachers">Педагоги</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
+            <tr><td data-i18n="featPlan">План</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
+            <tr><td data-i18n="featWorks">Научные работы</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
+            <tr><td data-i18n="featPdfWorksShort">Выгрузка PDF файлов научных работ</td><td class="cross">—</td><td class="check">✓</td><td class="check">✓</td></tr>
+            <tr><td data-i18n="featStats">Статистика</td><td class="cross">—</td><td class="check">✓</td><td class="check">✓</td></tr>
+            <tr><td data-i18n="featExportStatsPdf">Экспорт статистики и PDF научных работ</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td></tr>
+            <tr><td data-i18n="featExportImportJson">Экспорт и Импорт JSON</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td></tr>
+            <tr><td data-i18n="featScienceDept">Взаимодействие с научным отделом через IlmiyStat</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td></tr>
+            <tr><td data-i18n="featPrioritySupport">Приоритетная поддержка</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    </main>
+
+    <footer class="footer" id="footer">
+      <h2 id="footerTitle">Контакты администратора</h2>
+      <address class="footer-contacts">
+        <span>Тел.: <a href="tel:+998909901543">998 90 990 15 43</a></span>
+        <span>Telegram: <a href="https://t.me/turansounds" target="_blank" rel="noopener">turansounds</a></span>
+        <span>Email: <a href="mailto:khandamianvictor@gmail.com">khandamianvictor@gmail.com</a></span>
+      </address>
+    </footer>
+  </div>
+
+  <script src="/index-page.js" defer></script>
+</body>
+</html>

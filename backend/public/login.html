@@ -1,0 +1,234 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Вход в IlmiyStat для пользователей кафедры и администраторов." />
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet" />
+  <!-- CSP: разрешить reCAPTCHA (использует eval) и скрипты Google -->
+  <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.google.com https://www.gstatic.com https://www.recaptcha.net https://www.google.com/recaptcha/; frame-src 'self' https://www.google.com https://www.recaptcha.net;">
+  <title>IlmiyStat — вход</title>
+  <link rel="stylesheet" href="/theme-ilmiystat.css" />
+  <style>
+    .card{padding:22px}
+    h1{margin:0 0 6px 0;font-size:20px}
+    #desc{margin-top:6px;margin-bottom:12px;min-height:1.4em;display:block}
+  </style>
+</head>
+<body>
+  <div class="pageCenter">
+    <div class="wrap max520">
+      <div class="card">
+        <div class="langbar">
+          <div class="muted"><span id="langLabel">Язык:</span></div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="btn secondary small" id="langRuBtn" type="button" aria-pressed="true">RU</button>
+            <button class="btn secondary small" id="langUzBtn" type="button" aria-pressed="false">UZ</button>
+          </div>
+        </div>
+        <h1 id="title">Вход</h1>
+        <div class="muted" id="desc">Введите данные пользователя кафедры или института.</div>
+
+        <div class="alert" id="alert"></div>
+
+        <form id="form">
+          <label><span id="loginLabel">Логин</span>
+            <input id="username" autocomplete="username" />
+          </label>
+          <label><span id="passwordLabel">Пароль</span>
+            <input id="password" type="password" autocomplete="current-password" />
+          </label>
+
+          <div id="recaptchaContainer" style="margin-top:14px;min-height:78px;display:none">
+            <div id="recaptchaWidget"></div>
+          </div>
+
+          <div class="row" style="margin-top:14px;justify-content:space-between">
+            <button class="btn secondary" type="button" onclick="back()" id="backBtn">Назад</button>
+            <button class="btn" type="submit" id="submitBtn">Войти</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="auth-storage.js?v=20260403b"></script>
+  <script>
+    const API_URL = (() => {
+      const p = window.location.pathname;
+      const base = p.includes('/') ? p.replace(/\/[^/]*$/, '') : '';
+      return (base || '') + '/api';
+    })();
+    const LANG_KEY='cabinetLang';
+    const I18N={
+      ru:{
+        langLabel:'Язык:',
+        titleAdmin:'Вход администратора',
+        titleUser:'Вход пользователя',
+        descAdmin:'Введите данные администратора. Если вы пользователь — вернитесь назад и выберите <a href="/">вход пользователя</a>.',
+        descUser:'Введите данные пользователя кафедры или института.',
+        loginLabel:'Логин',
+        passwordLabel:'Пароль',
+        back:'Назад',
+        submit:'Войти',
+        errLogin:'Ошибка входа',
+        errNeedCreds:'Введите логин и пароль.',
+        errConn:'Ошибка соединения с сервером.',
+        errCaptcha:'Подтвердите, что вы не робот.',
+        errRateLimit:'Слишком много попыток. Попробуйте через минуту.'
+      },
+      uz:{
+        langLabel:'Til:',
+        titleAdmin:'Admin kirishi',
+        titleUser:'Foydalanuvchi kirishi',
+        descAdmin:'Admin ma’lumotlarini kiriting. Agar siz foydalanuvchi bo‘lsangiz — orqaga qayting va <a href="/">foydalanuvchi kirishi</a>ni tanlang.',
+        descUser:'Kafedra yoki institut foydalanuvchisi ma’lumotlarini kiriting.',
+        loginLabel:'Login',
+        passwordLabel:'Parol',
+        back:'Orqaga',
+        submit:'Kirish',
+        errLogin:'Kirish xatosi',
+        errNeedCreds:'Login va parolni kiriting.',
+        errConn:'Server bilan ulanish xatosi.',
+        errCaptcha:'Robot emasligingizni tasdiqlang.',
+        errRateLimit:'Juda ko\'p urinishlar. Bir daqiqadan keyin qaytadan urinib ko\'ring.'
+      }
+    };
+    let currentLang = (()=>{ try{ return localStorage.getItem(LANG_KEY)==='uz'?'uz':'ru'; }catch(_e){ return 'ru'; } })();
+    const qs = new URLSearchParams(location.search);
+    const mode = (qs.get('mode') === 'admin') ? 'admin' : 'user';
+
+    const title = document.getElementById('title');
+    const desc = document.getElementById('desc');
+    function setLangButtons(){
+      const ru=document.getElementById('langRuBtn');
+      const uz=document.getElementById('langUzBtn');
+      if(ru)ru.setAttribute('aria-pressed',String(currentLang==='ru'));
+      if(uz)uz.setAttribute('aria-pressed',String(currentLang==='uz'));
+    }
+    function applyLanguage(){
+      try{ document.documentElement.lang=currentLang; }catch(_e){}
+      const d=I18N[currentLang]||I18N.ru;
+      document.getElementById('langLabel').textContent=d.langLabel;
+      document.getElementById('loginLabel').textContent=d.loginLabel;
+      document.getElementById('passwordLabel').textContent=d.passwordLabel;
+      document.getElementById('backBtn').textContent=d.back;
+      document.getElementById('submitBtn').textContent=d.submit;
+      title.textContent = (mode === 'admin') ? d.titleAdmin : d.titleUser;
+      desc.innerHTML = (mode === 'admin') ? d.descAdmin : d.descUser;
+      setLangButtons();
+    }
+    function setLang(lang){
+      currentLang = (lang==='uz') ? 'uz' : 'ru';
+      try{ localStorage.setItem(LANG_KEY,currentLang);}catch(_e){}
+      applyLanguage();
+    }
+    document.getElementById('langRuBtn')?.addEventListener('click',()=>setLang('ru'));
+    document.getElementById('langUzBtn')?.addEventListener('click',()=>setLang('uz'));
+    applyLanguage();
+
+    let recaptchaSiteKey = null;
+    let recaptchaWidgetId = null;
+
+    async function initRecaptcha() {
+      try {
+        const r = await fetch(`${API_URL}/auth/config`);
+        const cfg = await r.json().catch(() => ({}));
+        recaptchaSiteKey = cfg.recaptchaSiteKey || null;
+        if (!recaptchaSiteKey) return;
+        const container = document.getElementById('recaptchaContainer');
+        if (container) container.style.display = 'block';
+        await new Promise((resolve, reject) => {
+          const s = document.createElement('script');
+          s.src = 'https://www.google.com/recaptcha/api.js?onload=onRecaptchaReady&render=explicit';
+          s.async = true;
+          s.onload = resolve;
+          s.onerror = reject;
+          document.head.appendChild(s);
+        });
+      } catch (_e) {}
+    }
+    window.onRecaptchaReady = function() {
+      if (recaptchaSiteKey && typeof grecaptcha !== 'undefined') {
+        const el = document.getElementById('recaptchaWidget');
+        if (el) recaptchaWidgetId = grecaptcha.render(el, { sitekey: recaptchaSiteKey, theme: 'light' });
+      }
+    };
+
+    initRecaptcha();
+
+    function getRecaptchaToken() {
+      if (!recaptchaSiteKey || typeof grecaptcha === 'undefined') return null;
+      try {
+        return grecaptcha.getResponse(recaptchaWidgetId) || null;
+      } catch (_e) { return null; }
+    }
+    function resetRecaptcha() {
+      if (recaptchaSiteKey && typeof grecaptcha !== 'undefined' && recaptchaWidgetId != null) {
+        try { grecaptcha.reset(recaptchaWidgetId); } catch (_e) {}
+      }
+    }
+
+    function showError(msg){
+      const el = document.getElementById('alert');
+      const d=I18N[currentLang]||I18N.ru;
+      el.textContent = msg || d.errLogin;
+      el.classList.add('show');
+    }
+    const getBase = () => (location.pathname.includes('/') ? location.pathname.replace(/\/[^/]*$/, '') : '') || '';
+    function back(){ location.href = getBase() + '/'; }
+
+    document.getElementById('form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      document.getElementById('alert').classList.remove('show');
+
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+      const d=I18N[currentLang]||I18N.ru;
+      if (!username || !password) return showError(d.errNeedCreds);
+
+      if (recaptchaSiteKey) {
+        const token = getRecaptchaToken();
+        if (!token) return showError(d.errCaptcha);
+      }
+
+      try{
+        const payload = { username, password };
+        if (recaptchaSiteKey) payload.recaptchaToken = getRecaptchaToken();
+
+        const resp = await fetch(`${API_URL}/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await resp.json().catch(() => ({}));
+        if (!resp.ok) {
+          if (resp.status === 429) return showError(d.errRateLimit || data.error);
+          resetRecaptcha();
+          return showError(data.error || `${d.errLogin} (${resp.status})`);
+        }
+
+        setAuthToken(data.token);
+
+        // Роутинг по роли (сохраняем базовый путь — остаёмся в текущей папке приложения)
+        const base = getBase();
+        const tokenHash = data?.token ? `#authToken=${encodeURIComponent(data.token)}` : '';
+        const withToken = (path) => `${base}${path}${tokenHash}`;
+        if (data?.user?.role === 'admin' || data?.user?.role === 'partner') {
+          location.href = withToken('/admin.html');
+        } else if (data?.user?.accessLevel === 'ministry') {
+          // Министерство — сразу в кабинет (выбор кафедры в шапке)
+          location.href = withToken('/cabinet-department.html');
+          return;
+        } else {
+          location.href = withToken('/cabinet.html');
+        }
+      } catch(err){
+        console.error(err);
+        showError(d.errConn);
+      }
+    });
+  </script>
+</body>
+</html>
+

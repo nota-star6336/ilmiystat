@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Заставка IlmiyStat." />
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet" />
+  <title>IlmiyStat — загрузка</title>
+  <script>
+    (function(){
+      var lang=(navigator.language||navigator.userLanguage||'').toLowerCase();
+      var isUz=lang.indexOf('uz')===0;
+      document.documentElement.lang=isUz?'uz':'ru';
+      document.title=isUz?'IlmiyStat — yuklanmoqda':'IlmiyStat — загрузка';
+    })();
+  </script>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{min-height:100vh;background:#000;color:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden;font-family:'Segoe UI',system-ui,-apple-system,sans-serif}
+    .splash{position:relative;width:100%;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;overflow:hidden}
+    .splash-bg{position:absolute;inset:0;overflow:hidden}
+    /* Gradient - black & white */
+    .splash-gradient{position:absolute;inset:0;background:radial-gradient(ellipse 80% 50% at 50% 50%,rgba(255,255,255,.06) 0%,transparent 50%),radial-gradient(ellipse 60% 40% at 20% 80%,rgba(255,255,255,.04) 0%,transparent 40%),#000}
+    /* Scientific grid */
+    .splash-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);background-size:60px 60px;animation:splashGridMove 25s linear infinite}
+    @keyframes splashGridMove{0%{transform:translate(0,0) perspective(500px) rotateX(60deg)}100%{transform:translate(0,-60px) perspective(500px) rotateX(60deg)}}
+    /* Golden ratio spiral */
+    .splash-spiral{position:absolute;width:400px;height:400px;top:50%;left:50%;margin:-200px 0 0 -200px;border:1px solid rgba(255,255,255,.12);border-radius:50%;animation:splashSpin 30s linear infinite}
+    .splash-spiral::before{content:'';position:absolute;inset:20%;border:1px solid rgba(255,255,255,.1);border-radius:50%;animation:splashSpin 25s linear infinite reverse}
+    .splash-spiral::after{content:'';position:absolute;inset:40%;border:1px solid rgba(255,255,255,.06);border-radius:50%;animation:splashSpin 20s linear infinite}
+    @keyframes splashSpin{to{transform:rotate(360deg)}}
+    /* DNA helix - two strands */
+    .splash-dna{position:absolute;width:200px;height:300px;top:50%;left:50%;margin:-150px 0 0 -100px;opacity:.08}
+    .splash-dna svg{width:100%;height:100%;animation:splashDnaPulse 4s ease-in-out infinite}
+    @keyframes splashDnaPulse{0%,100%{opacity:.6;transform:translateY(0)}50%{opacity:1;transform:translateY(-10px)}}
+    /* Floating formulas layer */
+    .splash-formulas{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+    .splash-formula{position:absolute;font-size:clamp(14px,2vw,22px);font-weight:300;font-style:italic;opacity:.1;color:#fff;font-family:Georgia,serif;white-space:nowrap}
+    .splash-formula:nth-child(1){top:12%;left:8%;animation:splashFloat1 8s ease-in-out infinite}
+    .splash-formula:nth-child(2){top:18%;right:12%;animation:splashFloat2 10s ease-in-out infinite .5s}
+    .splash-formula:nth-child(3){bottom:25%;left:15%;animation:splashFloat3 9s ease-in-out infinite 1s}
+    .splash-formula:nth-child(4){bottom:15%;right:8%;animation:splashFloat1 11s ease-in-out infinite 2s}
+    .splash-formula:nth-child(5){top:45%;left:5%;animation:splashFloat2 7s ease-in-out infinite}
+    .splash-formula:nth-child(6){top:55%;right:5%;animation:splashFloat3 8s ease-in-out infinite 1.5s}
+    @keyframes splashFloat1{0%,100%{transform:translate(0,0) scale(1);opacity:.06}50%{transform:translate(10px,-15px) scale(1.05);opacity:.14}}
+    @keyframes splashFloat2{0%,100%{transform:translate(0,0) scale(1);opacity:.08}50%{transform:translate(-8px,12px) scale(1.03);opacity:.16}}
+    @keyframes splashFloat3{0%,100%{transform:translate(0,0);opacity:.05}50%{transform:translate(5px,8px);opacity:.12}}
+    /* Data stream */
+    .splash-datastream{position:absolute;inset:0;background:linear-gradient(180deg,transparent 0%,rgba(255,255,255,.03) 50%,transparent 100%);animation:splashStream 3s linear infinite}
+    @keyframes splashStream{0%{transform:translateY(-100%)}100%{transform:translateY(100%)}}
+    /* Musical wave */
+    .splash-wave{position:absolute;bottom:15%;left:0;right:0;height:80px;opacity:.15}
+    .splash-wave svg{width:100%;height:100%;animation:splashWave 2s ease-in-out infinite}
+    @keyframes splashWave{0%,100%{transform:scaleY(1)}50%{transform:scaleY(1.3)}}
+    /* Particle orbs */
+    .splash-orb{position:absolute;border-radius:50%;filter:blur(40px);opacity:.35;animation:splashOrb 6s ease-in-out infinite}
+    .splash-orb:nth-child(1){width:300px;height:300px;background:radial-gradient(circle,rgba(255,255,255,.2) 0%,transparent 70%);top:10%;left:10%;animation-delay:0s}
+    .splash-orb:nth-child(2){width:200px;height:200px;background:radial-gradient(circle,rgba(255,255,255,.15) 0%,transparent 70%);bottom:20%;right:15%;animation-delay:2s}
+    .splash-orb:nth-child(3){width:150px;height:150px;background:radial-gradient(circle,rgba(255,255,255,.12) 0%,transparent 70%);top:60%;left:5%;animation-delay:1s}
+    @keyframes splashOrb{0%,100%{transform:translate(0,0) scale(1);opacity:.3}33%{transform:translate(20px,-30px) scale(1.1);opacity:.5}66%{transform:translate(-15px,20px) scale(.95);opacity:.4}}
+    /* Center glow */
+    .splash-glow{position:absolute;width:500px;height:500px;top:50%;left:50%;margin:-250px 0 0 -250px;background:radial-gradient(circle,rgba(255,255,255,.06) 0%,transparent 60%);pointer-events:none;animation:splashGlow 3s ease-in-out infinite}
+    @keyframes splashGlow{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.7;transform:scale(1.1)}}
+    /* Logo */
+    .splash-logo{position:relative;z-index:10;text-align:center;margin-bottom:20px}
+    .splash-logo-word{font-size:clamp(2.8rem,9vw,5rem);font-weight:900;letter-spacing:-0.03em;line-height:1;text-transform:uppercase;color:#fff;background:linear-gradient(135deg,#fff 0%,rgba(255,255,255,.9) 50%,#fff 100%);background-size:200% 200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:splashLogoGradient 4s ease infinite}
+    @supports (background-clip:text) or (-webkit-background-clip:text){.splash-logo-word{color:transparent}}
+    .splash-logo-word span{display:inline-block;animation:splashLetter 1s cubic-bezier(0.34,1.56,0.64,1) backwards;text-shadow:0 0 40px rgba(255,255,255,.2)}
+    .splash-logo-word span:nth-child(1){animation-delay:.05s}.splash-logo-word span:nth-child(2){animation-delay:.1s}.splash-logo-word span:nth-child(3){animation-delay:.15s}.splash-logo-word span:nth-child(4){animation-delay:.2s}.splash-logo-word span:nth-child(5){animation-delay:.25s}.splash-logo-word span:nth-child(6){animation-delay:.3s}.splash-logo-word span:nth-child(7){animation-delay:.35s}.splash-logo-word span:nth-child(8){animation-delay:.4s}
+    @keyframes splashLogoGradient{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+    @keyframes splashLetter{0%{opacity:0;transform:translateY(30px) scale(0.8)}100%{opacity:1;transform:translateY(0) scale(1)}}
+    /* Tagline */
+    .splash-tagline{position:relative;z-index:10;font-size:clamp(.7rem,1.8vw,.85rem);font-weight:600;letter-spacing:.35em;text-transform:uppercase;opacity:.7;margin-bottom:36px;animation:splashFadeIn 1.2s ease-out .5s backwards;text-shadow:0 0 20px rgba(255,255,255,.15)}
+    @keyframes splashFadeIn{0%{opacity:0;transform:translateY(15px)}100%{opacity:.7;transform:translateY(0)}}
+    /* Progress bar - data loading style */
+    .splash-bar-wrap{position:relative;z-index:10;width:180px;height:4px;background:rgba(255,255,255,.08);border-radius:2px;overflow:hidden;box-shadow:inset 0 0 10px rgba(0,0,0,.5)}
+    .splash-bar{height:100%;width:45%;background:#fff;border-radius:2px;animation:splashBar 1.2s ease-in-out infinite;box-shadow:0 0 15px rgba(255,255,255,.4)}
+    @keyframes splashBar{0%{transform:translateX(0)}50%{transform:translateX(100px)}100%{transform:translateX(0)}}
+    /* Stats ticker */
+    .splash-stats{position:absolute;bottom:8%;left:0;right:0;z-index:5;display:flex;justify-content:center;gap:clamp(20px,5vw,48px);font-size:clamp(10px,1.2vw,12px);font-weight:600;letter-spacing:.2em;opacity:.25;animation:splashFadeIn 1.5s ease-out 1s backwards}
+    .splash-stat{display:flex;align-items:center;gap:6px}
+    .splash-stat::before{content:'';width:6px;height:6px;background:#fff;border-radius:50%;animation:splashPulse 2s ease-in-out infinite}
+    @keyframes splashPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.2)}}
+    /* Scan/radar sweep */
+    .splash-scan{position:absolute;inset:0;background:conic-gradient(from 0deg at 50% 50%,transparent 0deg,rgba(255,255,255,.04) 30deg,transparent 60deg);animation:splashScan 4s linear infinite;pointer-events:none}
+    @keyframes splashScan{to{transform:rotate(360deg)}}
+    /* Floating data numbers */
+    .splash-numbers{position:absolute;inset:0;overflow:hidden;opacity:.08;font-variant-numeric:tabular-nums}
+    .splash-num{position:absolute;top:0;font-size:11px;font-weight:700;color:rgba(255,255,255,.6);animation:splashNumFall 8s linear infinite}
+    @keyframes splashNumFall{0%{transform:translateY(-20px);opacity:0}10%{opacity:.6}90%{opacity:.3}100%{transform:translateY(100vh);opacity:0}}
+  </style>
+</head>
+<body>
+  <div class="splash">
+    <div class="splash-bg">
+      <div class="splash-gradient"></div>
+      <div class="splash-grid"></div>
+      <div class="splash-spiral"></div>
+      <div class="splash-dna">
+        <svg viewBox="0 0 100 150" xmlns="http://www.w3.org/2000/svg">
+          <path d="M20 0 Q30 15 20 30 Q10 45 20 60 Q30 75 20 90 Q10 105 20 120 Q30 135 20 150" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="1.5"/>
+          <path d="M80 0 Q70 15 80 30 Q90 45 80 60 Q70 75 80 90 Q90 105 80 120 Q70 135 80 150" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="1.5"/>
+          <line x1="20" y1="15" x2="80" y2="15" stroke="rgba(255,255,255,.4)" stroke-width="1"/>
+          <line x1="20" y1="45" x2="80" y2="45" stroke="rgba(255,255,255,.4)" stroke-width="1"/>
+          <line x1="20" y1="75" x2="80" y2="75" stroke="rgba(255,255,255,.4)" stroke-width="1"/>
+          <line x1="20" y1="105" x2="80" y2="105" stroke="rgba(255,255,255,.4)" stroke-width="1"/>
+          <line x1="20" y1="135" x2="80" y2="135" stroke="rgba(255,255,255,.4)" stroke-width="1"/>
+        </svg>
+      </div>
+      <div class="splash-formulas">
+        <span class="splash-formula">E=mc²</span>
+        <span class="splash-formula">φ = 1.618</span>
+        <span class="splash-formula">π ≈ 3.14159</span>
+        <span class="splash-formula">∇×E = -∂B/∂t</span>
+        <span class="splash-formula">F=ma</span>
+        <span class="splash-formula">Σ</span>
+      </div>
+      <div class="splash-datastream"></div>
+      <div class="splash-wave">
+        <svg viewBox="0 0 400 80" preserveAspectRatio="none">
+          <path d="M0,40 Q50,10 100,40 T200,40 T300,40 T400,40" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="2"/>
+          <path d="M0,45 Q60,75 120,45 T240,45 T360,45 T400,45" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="1.5"/>
+        </svg>
+      </div>
+      <div class="splash-orb"></div>
+      <div class="splash-orb"></div>
+      <div class="splash-orb"></div>
+      <div class="splash-glow"></div>
+      <div class="splash-scan"></div>
+      <div class="splash-numbers" id="splashNumbers"></div>
+    </div>
+    <div class="splash-logo">
+      <div class="splash-logo-word"><span>I</span><span>l</span><span>m</span><span>i</span><span>y</span><span>S</span><span>t</span><span>a</span><span>t</span></div>
+    </div>
+    <div class="splash-tagline" id="splashTagline">Учёт научной работы</div>
+    <div class="splash-bar-wrap"><div class="splash-bar"></div></div>
+    <div class="splash-stats">
+      <span class="splash-stat">DATA</span>
+      <span class="splash-stat">STATS</span>
+      <span class="splash-stat">SCIENCE</span>
+    </div>
+  </div>
+  <script>
+    (function(){
+      var lang=(navigator.language||navigator.userLanguage||'').toLowerCase();
+      var isUz=lang.indexOf('uz')===0;
+      var tagline=document.getElementById('splashTagline');
+      if(tagline)tagline.textContent=isUz?'Ilmiy ishlarni hisobga olish':'Учёт научной работы';
+    })();
+    (function(){
+      var container=document.getElementById('splashNumbers');
+      if(!container)return;
+      var chars='0123456789πφΣ∫∞%';
+      for(var i=0;i<24;i++){
+        var el=document.createElement('span');
+        el.className='splash-num';
+        el.textContent=chars[Math.floor(Math.random()*chars.length)];
+        el.style.left=Math.random()*100+'%';
+        el.style.animationDelay=(Math.random()*6)+'s';
+        el.style.animationDuration=(5+Math.random()*6)+'s';
+        container.appendChild(el);
+      }
+    })();
+    var splashDuration=4000;
+    var qs=window.location.search?new URLSearchParams(window.location.search):null;
+    if(qs&&qs.get('stay')==='1')splashDuration=999999;
+    setTimeout(function(){ document.body.style.opacity='0'; document.body.style.transition='opacity .4s ease'; setTimeout(function(){ window.location.href='index.html?fromSplash=1'; }, 400); }, splashDuration);
+  </script>
+</body>
+</html>

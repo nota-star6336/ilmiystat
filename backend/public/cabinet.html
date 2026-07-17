@@ -1,0 +1,418 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Служебный кабинет пользователя IlmiyStat." />
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet" />
+  <title>IlmiyStat — кабинет</title>
+  <link rel="stylesheet" href="/theme-ilmiystat.css" />
+  <style>
+    .card{padding:22px}
+    h1{margin:0 0 6px 0;font-size:20px}
+    .demo-hint{margin-top:16px;padding:12px 16px;background:#f0fdf4;border:1px solid #86efac;border-radius:8px;font-size:14px;color:#166534}
+    .demo-hint strong{display:block;margin-bottom:6px;font-size:12px;text-transform:uppercase;letter-spacing:0.05em}
+  </style>
+</head>
+<body>
+  <div class="pageCenter">
+    <div class="wrap max760">
+      <div class="card">
+        <div class="langbar">
+          <div class="muted"><span id="langLabel">Язык:</span></div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="btn secondary small" id="langRuBtn" type="button" aria-pressed="true">RU</button>
+            <button class="btn secondary small" id="langUzBtn" type="button" aria-pressed="false">UZ</button>
+          </div>
+        </div>
+        <h1 id="title">Кабинет пользователя</h1>
+        <div class="muted" id="status">Проверяем доступ…</div>
+        <div class="demo-hint" id="demoHint" style="display:none">
+          <strong id="demoHintTitle">Демо-режим</strong>
+          <span id="demoHintText">Вы вошли в демо-кабинет. Данные кафедры будут сброшены через 15 минут.</span>
+        </div>
+        <div class="warn" id="warn" style="display:none"></div>
+
+        <div id="instituteSelectWrap" style="display:none;margin-top:12px">
+          <label style="display:block;font-weight:700;margin-bottom:6px" id="instituteSelectLabel">Выберите институт</label>
+          <select id="instituteSelect" style="width:100%;max-width:400px;padding:10px;border-radius:8px;margin-bottom:10px"></select>
+        </div>
+        <div id="deanerySelectWrap" style="display:none;margin-top:12px">
+          <label style="display:block;font-weight:700;margin-bottom:6px" id="deanerySelectLabel">Выберите деканат</label>
+          <select id="deanerySelect" style="width:100%;max-width:400px;padding:10px;border-radius:8px;margin-bottom:10px"></select>
+        </div>
+        <div id="deptSelectWrap" style="display:none;margin-top:12px">
+          <label style="display:block;font-weight:700;margin-bottom:6px" id="deptSelectLabel">Выберите кафедру</label>
+          <select id="deptSelect" style="width:100%;max-width:400px;padding:10px;border-radius:8px;margin-bottom:10px"></select>
+        </div>
+        <div class="row" style="margin-top:14px">
+          <button class="btn secondary" type="button" onclick="logout()" id="logoutBtn">Выйти</button>
+          <button class="btn" id="openBtn" type="button" style="display:none">Открыть кабинет кафедры</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="auth-storage.js?v=20260403b"></script>
+  <script>
+    const API_URL = (() => {
+      const p = window.location.pathname;
+      const base = p.includes('/') ? p.replace(/\/[^/]*$/, '') : '';
+      return (base || '') + '/api';
+    })();
+    const LANG_KEY='cabinetLang';
+    const I18N={
+      ru:{
+        langLabel:'Язык:',
+        title:'Кабинет пользователя',
+        checking:'Проверяем доступ…',
+        logout:'Выйти',
+        openDept:'Открыть кабинет кафедры',
+        notAuth:'Вы не авторизованы. Перенаправляем на вход…',
+        badSession:'Сессия недействительна. Перенаправляем на вход…',
+        isAdmin:'Вы вошли как администратор. Перенаправляем в админ‑панель…',
+        user:`Пользователь:`,
+        deptLabel:'Кафедра:',
+        deptWarn:(deptId)=>`Вам не назначена кафедра (departmentId: ${deptId}). Попросите администратора назначить кафедру в разделе "Пользователи".`,
+        chooseDept:'Выберите кафедру',
+        chooseDeanery:'Выберите деканат',
+        chooseInstitute:'Выберите институт',
+        ministryAccess:'Доступ ко всем институтам.',
+        noDeanery:'— Без деканата —',
+        connErr:'Ошибка соединения с сервером.',
+        demoHintTitle:'Демо-режим',
+        demoHintText:'Вы вошли в демо-кабинет. Данные кафедры будут сброшены через 15 минут.'
+      },
+      uz:{
+        langLabel:'Til:',
+        title:'Foydalanuvchi kabineti',
+        checking:'Kirish tekshirilmoqda…',
+        logout:'Chiqish',
+        openDept:'Kafedra kabinetini ochish',
+        notAuth:'Siz avtorizatsiyadan o‘tmagansiz. Kirishga yo‘naltirilmoqda…',
+        badSession:'Sessiya yaroqsiz. Kirishga yo‘naltirilmoqda…',
+        isAdmin:'Siz admin sifatida kirdingiz. Admin panelga yo‘naltirilmoqda…',
+        user:`Foydalanuvchi:`,
+        deptLabel:'Kafedra:',
+        deptWarn:(deptId)=>`Sizga kafedra biriktirilmagan (departmentId: ${deptId}). Admin’dan "Foydalanuvchilar" bo‘limida kafedrani biriktirishni so‘rang.`,
+        chooseDept:'Kafedrani tanlang',
+        chooseDeanery:'Dekanatni tanlang',
+        chooseInstitute:'Institutni tanlang',
+        ministryAccess:'Barcha institutlarga kirish.',
+        noDeanery:'— Dekanatsiz —',
+        connErr:'Server bilan ulanish xatosi.',
+        demoHintTitle:'Demo rejim',
+        demoHintText:'Demo kabinetga kirdingiz. Kafedra ma\'lumotlari 15 daqiqadan keyin tozalanadi.'
+      }
+    };
+    let currentLang = (()=>{ try{ return localStorage.getItem(LANG_KEY)==='uz'?'uz':'ru'; }catch(_e){ return 'ru'; } })();
+    function setLangButtons(){
+      document.getElementById('langRuBtn')?.setAttribute('aria-pressed',String(currentLang==='ru'));
+      document.getElementById('langUzBtn')?.setAttribute('aria-pressed',String(currentLang==='uz'));
+    }
+    function applyLanguage(){
+      try{ document.documentElement.lang=currentLang; }catch(_e){}
+      const d=I18N[currentLang]||I18N.ru;
+      document.getElementById('langLabel').textContent=d.langLabel;
+      document.getElementById('title').textContent=d.title;
+      document.getElementById('logoutBtn').textContent=d.logout;
+      document.getElementById('openBtn').textContent=d.openDept;
+      const instLbl = document.getElementById('instituteSelectLabel');
+      if (instLbl) instLbl.textContent = d.chooseInstitute || 'Выберите институт';
+      const deanLbl = document.getElementById('deanerySelectLabel');
+      if (deanLbl) deanLbl.textContent = d.chooseDeanery || 'Выберите деканат';
+      const deptLbl = document.getElementById('deptSelectLabel');
+      if (deptLbl) deptLbl.textContent = d.chooseDept || 'Выберите кафедру';
+      const dhTitle = document.getElementById('demoHintTitle');
+      const dhText = document.getElementById('demoHintText');
+      if (dhTitle) dhTitle.textContent = d.demoHintTitle || 'Демо-режим';
+      if (dhText) dhText.textContent = d.demoHintText || '';
+      setLangButtons();
+    }
+    function setLang(lang){
+      currentLang = (lang==='uz') ? 'uz' : 'ru';
+      try{ localStorage.setItem(LANG_KEY,currentLang);}catch(_e){}
+      applyLanguage();
+    }
+    document.getElementById('langRuBtn')?.addEventListener('click',()=>setLang('ru'));
+    document.getElementById('langUzBtn')?.addEventListener('click',()=>setLang('uz'));
+    applyLanguage();
+
+    const getBase = () => (location.pathname.includes('/') ? location.pathname.replace(/\/[^/]*$/, '') : '') || '';
+    function logout(){
+      clearAuthToken();
+      location.href = getBase() + '/';
+    }
+
+    function setStatus(t){ document.getElementById('status').textContent = t; }
+    function setWarn(html){
+      const el = document.getElementById('warn');
+      el.innerHTML = html;
+      el.style.display = 'block';
+    }
+
+    function hydrateAuthTokenFromHash(){
+      try{
+        const raw = (location.hash || '').replace(/^#/, '');
+        if (!raw) return;
+        const params = new URLSearchParams(raw);
+        const hashToken = params.get('authToken') || params.get('t');
+        if (!hashToken) return;
+        setAuthToken(hashToken);
+        history.replaceState(null, '', location.pathname + location.search);
+      } catch(_e){}
+    }
+
+    async function fetchDepartmentDisplayName(departmentId, token){
+      const resp = await fetch(`${API_URL}/departments/${encodeURIComponent(departmentId)}/basic`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (!resp.ok) return null;
+      const dept = await resp.json().catch(() => null);
+      if (!dept) return null;
+      const name = (currentLang === 'uz' && dept.nameUz) ? dept.nameUz : dept.name;
+      return name || null;
+    }
+
+    async function loadDeaneries(instituteId, token){
+      const resp = await fetch(`${API_URL}/deaneries?instituteId=${encodeURIComponent(instituteId)}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (!resp.ok) return [];
+      return resp.json().catch(() => []);
+    }
+
+    (async () => {
+      hydrateAuthTokenFromHash();
+      const token = getAuthToken();
+      if (!token){
+        setStatus((I18N[currentLang]||I18N.ru).notAuth);
+        return setTimeout(() => { location.href = getBase() + '/login.html?mode=user'; }, 600);
+      }
+
+      try{
+        const meResp = await fetch(`${API_URL}/auth/me`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const me = await meResp.json().catch(() => ({}));
+        if (!meResp.ok) {
+          setStatus((I18N[currentLang]||I18N.ru).badSession);
+          clearAuthToken();
+          return setTimeout(() => { location.href = getBase() + '/login.html?mode=user'; }, 600);
+        }
+
+        // Админов и партнёров — в админку
+        if (me.role === 'admin' || me.role === 'partner'){
+          setStatus((I18N[currentLang]||I18N.ru).isAdmin);
+          return setTimeout(() => { location.href = getBase() + '/admin.html'; }, 400);
+        }
+
+        if (me.username === 'demo') {
+          const dh = document.getElementById('demoHint');
+          if (dh) {
+            const d = I18N[currentLang] || I18N.ru;
+            const dhTitle = document.getElementById('demoHintTitle');
+            const dhText = document.getElementById('demoHintText');
+            if (dhTitle) dhTitle.textContent = d.demoHintTitle || 'Демо-режим';
+            if (dhText) dhText.textContent = d.demoHintText || '';
+            dh.style.display = 'block';
+          }
+        }
+
+        // Отладочная информация
+        console.log('User data from /api/auth/me:', me);
+
+        const accessLevel = me.accessLevel || 'department';
+        const isInstitute = accessLevel === 'institute';
+        const isMinistry = accessLevel === 'ministry';
+        const departmentIds = (me.departmentIds && me.departmentIds.length) ? me.departmentIds : (me.departmentId != null ? [me.departmentId] : []);
+
+        if (!isInstitute && !isMinistry && departmentIds.length === 0){
+          const d=I18N[currentLang]||I18N.ru;
+          setStatus(`${d.user} ${me.username}.`);
+          const warn=(typeof d.deptWarn==='function')?d.deptWarn(me.departmentId):String(d.deptWarn);
+          setWarn(`${warn}`);
+          return;
+        }
+
+        const d=I18N[currentLang]||I18N.ru;
+        let defaultDeptId = departmentIds[0] || me.departmentId;
+        let showDeptSelect = false;
+        let showDeanerySelect = false;
+        let showInstituteSelect = false;
+        let selectDepts = [];
+        let deaneryList = [];
+        let instituteIdForDeaneries = me.instituteId || null;
+        let allInstitutes = [];
+        let allDepartments = [];
+
+        if (isMinistry) {
+          location.href = getBase() + '/cabinet-department.html';
+          return;
+        } else if (isInstitute) {
+          const deptsResp = await fetch(`${API_URL}/departments`, { headers: { 'Authorization': `Bearer ${token}` } });
+          const departments = await deptsResp.json().catch(() => []);
+          selectDepts = (departments || []).filter(x => x.isActive !== false);
+          instituteIdForDeaneries = me.instituteId;
+          if (!instituteIdForDeaneries && selectDepts.length > 0) {
+            instituteIdForDeaneries = selectDepts[0].instituteId;
+          }
+          setStatus(`${d.user} ${me.username}. Доступ ко всем кафедрам института.`);
+          showDeptSelect = selectDepts.length > 0;
+        } else if (departmentIds.length > 1) {
+          const deptsResp = await fetch(`${API_URL}/departments`, { headers: { 'Authorization': `Bearer ${token}` } });
+          const departments = await deptsResp.json().catch(() => []);
+          const idSet = new Set(departmentIds.map(Number));
+          selectDepts = (departments || []).filter(x => idSet.has(Number(x.id)) && x.isActive !== false);
+          if (selectDepts.length > 0 && !instituteIdForDeaneries) {
+            instituteIdForDeaneries = selectDepts[0].instituteId;
+          }
+          setStatus(`${d.user} ${me.username}. Доступ к нескольким кафедрам.`);
+          showDeptSelect = selectDepts.length > 0;
+        } else if (departmentIds.length === 1) {
+          let deptName = null;
+          try{ deptName = await fetchDepartmentDisplayName(departmentIds[0], token); } catch (e){ deptName = null; }
+          if (deptName) setStatus(`${d.user} ${me.username}. ${d.deptLabel} ${deptName}.`);
+          else setStatus(`${d.user} ${me.username}. ${d.deptLabel} #${departmentIds[0]}.`);
+        }
+
+        const deaneryIdsFromDepts = [...new Set((selectDepts || [])
+          .map(x => x.deaneryId)
+          .filter(id => id != null && id !== ''))];
+        const hasDeptsWithoutDeanery = (selectDepts || []).some(x => x.deaneryId == null || x.deaneryId === '');
+        const totalDeaneryGroups = deaneryIdsFromDepts.length + (hasDeptsWithoutDeanery ? 1 : 0);
+        if (!isMinistry && totalDeaneryGroups > 1) {
+          const instIds = [...new Set((selectDepts || []).map(x => x.instituteId).filter(id => id != null))];
+          const allDeaneries = [];
+          for (const instId of instIds) {
+            const list = await loadDeaneries(instId, token);
+            allDeaneries.push(...(list || []));
+          }
+          const deaneryMap = new Map();
+          allDeaneries.forEach(x => { if (!deaneryMap.has(x.id)) deaneryMap.set(x.id, x); });
+          deaneryList = deaneryIdsFromDepts.map(id => deaneryMap.get(id)).filter(Boolean);
+          if (hasDeptsWithoutDeanery) {
+            deaneryList.push({ id: 'none', name: d.noDeanery || '— Без деканата —', nameUz: d.noDeanery || '— Dekanatsiz —' });
+          }
+          showDeanerySelect = deaneryList.length > 1;
+        }
+
+        const instWrap = document.getElementById('instituteSelectWrap');
+        const instSel = document.getElementById('instituteSelect');
+        const instLbl = document.getElementById('instituteSelectLabel');
+        const deaneryWrap = document.getElementById('deanerySelectWrap');
+        const deanerySel = document.getElementById('deanerySelect');
+        const deaneryLbl = document.getElementById('deanerySelectLabel');
+        const deptWrap = document.getElementById('deptSelectWrap');
+        const deptSel = document.getElementById('deptSelect');
+        const deptLbl = document.getElementById('deptSelectLabel');
+
+        function renderDeptSelect(deptsToShow) {
+          if (!deptWrap || !deptSel || !deptLbl) return;
+          if (deptsToShow.length === 0) {
+            deptWrap.style.display = 'none';
+            return;
+          }
+          deptWrap.style.display = 'block';
+          deptLbl.textContent = d.chooseDept || 'Выберите кафедру';
+          const selectedId = defaultDeptId && deptsToShow.some(x => x.id === defaultDeptId) ? defaultDeptId : (deptsToShow[0] && deptsToShow[0].id);
+          deptSel.innerHTML = '<option value="">— выберите —</option>' + deptsToShow.map(x =>
+            `<option value="${x.id}" ${x.id===selectedId?'selected':''}>${(currentLang==='uz'&&x.nameUz)?x.nameUz:x.name}</option>`
+          ).join('');
+          if (selectedId) deptSel.value = String(selectedId);
+        }
+
+        if (showInstituteSelect && allInstitutes.length > 0) {
+          instWrap.style.display = 'block';
+          instLbl.textContent = d.chooseInstitute || 'Выберите институт';
+          instSel.innerHTML = '<option value="">— выберите —</option>' + allInstitutes.map(x =>
+            `<option value="${x.id}">${(currentLang==='uz'&&x.nameUz)?x.nameUz:x.name}</option>`
+          ).join('');
+          const onMinistryInstituteChange = async () => {
+            const instId = instSel.value ? parseInt(instSel.value, 10) : null;
+            deaneryWrap.style.display = 'none';
+            deptWrap.style.display = 'none';
+            if (!instId) return;
+            const list = await loadDeaneries(instId, token);
+            const deptsForInst = (allDepartments || []).filter(d => d.instituteId === instId);
+            if (list.length > 0) {
+              deaneryWrap.style.display = 'block';
+              deaneryLbl.textContent = d.chooseDeanery || 'Выберите деканат';
+              deanerySel.innerHTML = '<option value="">— выберите —</option>' + list.map(x =>
+                `<option value="${x.id}">${(currentLang==='uz'&&x.nameUz)?x.nameUz:x.name}</option>`
+              ).join('');
+              const filterByDeanery = (deanId) => {
+                if (deanId === 'none' || deanId === null) return deptsForInst.filter(x => !x.deaneryId);
+                const id = typeof deanId === 'number' ? deanId : parseInt(deanId, 10);
+                return deptsForInst.filter(x => x.deaneryId === id);
+              };
+              deanerySel.onchange = () => {
+                const val = deanerySel.value;
+                if (!val) { deptWrap.style.display = 'none'; return; }
+                const filtered = filterByDeanery(val);
+                if (filtered.length > 0) {
+                  deptWrap.style.display = 'block';
+                  renderDeptSelect(filtered);
+                } else { deptWrap.style.display = 'none'; }
+              };
+              const firstDeanId = list[0].id;
+              deanerySel.value = String(firstDeanId);
+              const filtered = filterByDeanery(firstDeanId);
+              if (filtered.length > 0) {
+                deptWrap.style.display = 'block';
+                renderDeptSelect(filtered);
+              }
+            } else if (deptsForInst.length > 0) {
+              deptWrap.style.display = 'block';
+              renderDeptSelect(deptsForInst);
+            }
+          };
+          instSel.addEventListener('change', () => onMinistryInstituteChange());
+          if (allInstitutes.length > 0) {
+            instSel.value = String(allInstitutes[0].id);
+            onMinistryInstituteChange();
+          }
+        } else if (showDeanerySelect && deaneryList.length > 0) {
+          deaneryWrap.style.display = 'block';
+          deaneryLbl.textContent = d.chooseDeanery || 'Выберите деканат';
+          deanerySel.innerHTML = '<option value="">— выберите —</option>' + deaneryList.map(x =>
+            `<option value="${x.id}">${(currentLang==='uz'&&x.nameUz)?x.nameUz:x.name}</option>`
+          ).join('');
+          const firstDeanId = deaneryList[0].id;
+          deanerySel.value = String(firstDeanId);
+          const filterByDeanery = (deanId) => {
+            if (deanId === 'none' || deanId === null) {
+              return selectDepts.filter(x => x.deaneryId == null || x.deaneryId === '');
+            }
+            const id = typeof deanId === 'number' ? deanId : parseInt(deanId, 10);
+            return selectDepts.filter(x => x.deaneryId === id);
+          };
+          renderDeptSelect(filterByDeanery(firstDeanId));
+          deanerySel.addEventListener('change', () => {
+            const val = deanerySel.value;
+            if (!val) {
+              deptWrap.style.display = 'none';
+              return;
+            }
+            renderDeptSelect(filterByDeanery(val));
+          });
+        } else if (showDeptSelect && selectDepts.length > 0) {
+          renderDeptSelect(selectDepts);
+        }
+
+        const btn = document.getElementById('openBtn');
+        btn.style.display = '';
+        btn.addEventListener('click', () => {
+          const deptId = showDeptSelect ? (deptSel?.value || '') : defaultDeptId;
+          if (!deptId) return alert(d.chooseDept || 'Выберите кафедру');
+          location.href = getBase() + `/cabinet-department.html?departmentId=${encodeURIComponent(deptId)}`;
+        });
+      } catch (err){
+        console.error(err);
+        setStatus((I18N[currentLang]||I18N.ru).connErr);
+      }
+    })();
+  </script>
+</body>
+</html>
+

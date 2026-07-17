@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">IlmiyStat UZ Preview</title>
+  <desc id="desc">Preview image for the Uzbek version of IlmiyStat.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0c1222"/>
+      <stop offset="55%" stop-color="#0f766e"/>
+      <stop offset="100%" stop-color="#f97316"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <circle cx="1030" cy="120" r="120" fill="rgba(255,255,255,0.10)"/>
+  <circle cx="180" cy="510" r="150" fill="rgba(255,255,255,0.08)"/>
+  <text x="90" y="170" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="34" font-weight="700" letter-spacing="3">ILMIYSTAT</text>
+  <text x="90" y="285" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="62" font-weight="800">Kafedraning ilmiy</text>
+  <text x="90" y="360" fill="#ccfbf1" font-family="Segoe UI, Arial, sans-serif" font-size="62" font-weight="800">ishlari hisobi bir joyda</text>
+  <text x="90" y="445" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="28">Rejalar, maqolalar, patentlar, statistika va hisobotlar</text>
+  <rect x="90" y="500" width="270" height="62" rx="31" fill="#ffffff"/>
+  <text x="135" y="541" fill="#0c1222" font-family="Segoe UI, Arial, sans-serif" font-size="28" font-weight="700">14 kun bepul</text>
+</svg>

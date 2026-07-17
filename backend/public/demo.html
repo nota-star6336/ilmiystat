@@ -1,0 +1,651 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="Демо-страница IlmiyStat." />
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet" />
+  <title>IlmiyStat — Демо</title>
+  <!-- Без theme - демо использует собственные стили для надёжности в iframe -->
+  <style>
+    :root{--bg:#fff;--fg:#111;--muted:#666;--line:#e5e7eb;--btn:#111;--btnfg:#fff;--success:#16a34a;--danger:#dc2626}
+    .demo-wrap{max-width:900px;margin:0 auto;padding:12px 16px 24px;position:relative}
+    .demo-badge{position:absolute;top:12px;right:12px;background:#111;color:#fff;font-size:11px;font-weight:700;padding:4px 10px;border-radius:6px}
+    .tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+    .tabbtn{border:1px solid var(--line);background:#fff;border-radius:8px;padding:8px 14px;cursor:pointer;font-weight:600;font-size:13px}
+    .tabbtn[aria-selected="true"]{background:var(--btn);color:var(--btnfg);border-color:var(--btn)}
+    .section{display:none}.section.active{display:block}
+    .card{border:1px solid var(--line);border-radius:10px;padding:14px;margin-bottom:12px;background:#fff}
+    .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:10px}
+    .col-12{grid-column:span 12}.col-6{grid-column:span 6}.col-4{grid-column:span 4}.col-3{grid-column:span 3}.col-2{grid-column:span 2}
+    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    label{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700}
+    input,select,textarea{padding:8px;border:1px solid var(--line);border-radius:8px;font-size:13px;min-height:36px;width:100%}
+    .muted{color:var(--muted);font-size:12px}
+    .btn{border:1px solid var(--btn);background:var(--btn);color:var(--btnfg);padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:600;font-size:12px}
+    .btn.secondary{background:#fff;color:var(--btn);border-color:var(--line)}
+    .btn.danger{background:var(--danger);border-color:var(--danger);color:#fff}
+    .btn.small{padding:6px 10px;font-size:11px}
+    .btn.demo-blocked{opacity:.7;cursor:not-allowed}
+    table{width:100%;border-collapse:collapse;font-size:12px}
+    th,td{border-bottom:1px solid var(--line);padding:8px 6px;text-align:left}
+    .pill{display:inline-block;padding:3px 8px;border-radius:6px;font-size:11px;font-weight:700}
+    .pill.done{border:1px solid var(--success);color:var(--success);background:#f0fdf4}
+    .pill.partial{border:1px solid #f59e0b;color:#d97706;background:#fffbeb}
+    .pill.not{border:1px solid var(--danger);color:var(--danger);background:#fef2f2}
+    .note{border:1px dashed var(--line);border-radius:10px;padding:12px;background:#fafafa;margin:10px 0}
+    .checkItem{display:flex!important;align-items:center;gap:8px;font-size:12px;cursor:pointer}
+    .checkItem input{width:14px;height:14px}
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;display:none;align-items:center;justify-content:center;padding:16px}
+    .modal-overlay.open{display:flex}
+    .modal{background:#fff;border-radius:16px;padding:20px;width:min(600px,100%);max-height:90vh;overflow-y:auto}
+    .modal h3{margin:0 0 16px;font-size:16px}
+    .modal-actions{display:flex;gap:10px;margin-top:16px;justify-content:flex-end}
+    .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#111;color:#fff;padding:12px 20px;border-radius:8px;font-size:13px;opacity:0;transition:opacity .2s;z-index:200}
+    .toast.show{opacity:1}
+    .stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:10px;margin:12px 0}
+    .stat-card{background:#f8fafc;border:1px solid var(--line);border-radius:8px;padding:10px;text-align:center}
+    .stat-card .num{font-size:18px;font-weight:800;color:var(--btn)}
+    .stat-card .lbl{font-size:11px;color:var(--muted);margin-top:2px}
+    .divider{height:1px;background:var(--line);margin:12px 0}
+    @media(max-width:640px){.col-6,.col-4,.col-3,.col-2{grid-column:span 12}}
+  </style>
+  <script src="/cabinet-i18n.js"></script>
+</head>
+<body style="margin:0;background:#fff;color:#111;font-family:system-ui,sans-serif;min-height:100vh">
+  <div class="demo-wrap">
+    <span class="demo-badge">Демо</span>
+    <div class="tabs" role="tablist">
+      <button class="tabbtn" role="tab" data-tab="teachers" aria-selected="true">Педагоги</button>
+      <button class="tabbtn" role="tab" data-tab="plan" aria-selected="false">План</button>
+      <button class="tabbtn" role="tab" data-tab="works" aria-selected="false">Научные работы</button>
+      <button class="tabbtn" role="tab" data-tab="stats" aria-selected="false">Статистика</button>
+    </div>
+
+    <!-- ПЕДАГОГИ -->
+    <section id="panel-teachers" class="section active">
+      <div class="card">
+        <div class="muted" style="margin-bottom:10px">Добавляйте педагогов кафедры. В демо данные сохраняются только в сессии.</div>
+        <div class="grid">
+          <div class="col-6"><label>Ф.И.О.<input id="teacherFullName" placeholder="Иванов Иван Иванович" /></label></div>
+          <div class="col-2"><button class="btn" id="teacherAddBtn">Добавить</button></div>
+        </div>
+        <div class="divider"></div>
+        <div class="row" style="justify-content:space-between">
+          <div class="muted"><b>Список педагогов</b> <span id="teacherCount" class="muted"></span></div>
+          <button class="btn secondary small" id="teachersRefreshBtn">Обновить</button>
+        </div>
+        <table><thead><tr><th style="width:50px">ID</th><th>Ф.И.О.</th><th style="width:180px">Действия</th></tr></thead><tbody id="teachersTbody"></tbody></table>
+      </div>
+    </section>
+
+    <!-- ПЛАН -->
+    <section id="panel-plan" class="section">
+      <div class="card">
+        <div class="muted" style="margin-bottom:10px">План закрепляется за педагогом и учебным годом. Статус выполнения рассчитывается автоматически.</div>
+        <div class="grid">
+          <div class="col-6"><label>Педагог<select id="planTeacherSel"><option value="">— все педагоги —</option></select></label></div>
+          <div class="col-6"><label>Учебный год<select id="planYearSel"></select></label></div>
+          <div class="col-12">
+            <div class="note">
+              <div class="grid">
+                <div class="col-3">
+                  <label>Статус
+                    <div class="row" style="gap:12px;margin-top:4px">
+                      <label class="checkItem"><input type="checkbox" id="planFilterDone" checked><span>Выполнено</span></label>
+                      <label class="checkItem"><input type="checkbox" id="planFilterNotDone" checked><span>Невыполнено</span></label>
+                    </div>
+                    <div class="row" style="gap:12px;margin-top:8px">
+                      <label class="checkItem"><input type="checkbox" id="planFilterH1" checked><span>1-е пол. (авг–дек)</span></label>
+                      <label class="checkItem"><input type="checkbox" id="planFilterH2" checked><span>2-е пол. (янв–июл)</span></label>
+                    </div>
+                  </label>
+                </div>
+                <div class="col-3"><label>Месяц<select id="planFilterMonth"></select></label></div>
+                <div class="col-3"><label>Тип работы<select id="planFilterIndicator"></select></label></div>
+                <div class="col-3"><label>Тип статьи<select id="planFilterArticleType"></select></label></div>
+                <div class="col-12 row" style="justify-content:flex-end">
+                  <button class="btn secondary small" id="planFilterResetBtn">Сбросить</button>
+                  <button class="btn secondary small demo-blocked" id="planExportBtn" data-demo-block>Экспорт Excel</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="row" style="justify-content:space-between">
+          <div class="muted"><b>Плановые показатели</b> <span id="planCount" class="muted"></span></div>
+          <div class="row">
+            <button class="btn secondary small" id="planRefreshBtn">Обновить</button>
+            <button class="btn" id="planAddOpenBtn">+ Добавить план</button>
+          </div>
+        </div>
+        <div style="overflow:auto">
+          <table><thead><tr><th style="width:45px">ID</th><th style="width:160px">Педагог</th><th style="width:170px">Тип работы</th><th style="width:120px">Тип статьи</th><th style="width:100px">Месяц</th><th style="width:140px">Статус</th><th style="width:120px">Действия</th></tr></thead><tbody id="planTbody"></tbody></table>
+        </div>
+      </div>
+    </section>
+
+    <!-- НАУЧНЫЕ РАБОТЫ -->
+    <section id="panel-works" class="section">
+      <div class="card">
+        <div class="muted" style="margin-bottom:10px">Фиксируйте научные работы «по плану» или «вне плана».</div>
+        <div class="grid">
+          <div class="col-6"><label>Педагог<select id="workTeacherSel"><option value="">— все педагоги —</option></select></label></div>
+          <div class="col-6"><label>Учебный год<select id="workYearSel"></select></label></div>
+          <div class="col-6"><label>Показатель<select id="workFilterInd"><option value="">— все —</option></select></label></div>
+          <div class="col-6"><label>Источник<select id="workFilterSrc"><option value="">— все —</option><option value="PLAN">По плану</option><option value="OUT_OF_PLAN">Вне плана</option></select></label></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="row" style="justify-content:space-between">
+          <div class="muted"><b>Научные работы</b> <span id="workCount" class="muted"></span></div>
+          <div class="row">
+            <button class="btn secondary small" id="workRefreshBtn">Обновить</button>
+            <button class="btn secondary small demo-blocked" id="workExportBtn" data-demo-block>Экспорт Excel</button>
+            <button class="btn" id="workAddOpenBtn">+ Добавить работу</button>
+          </div>
+        </div>
+        <div style="overflow:auto">
+          <table><thead><tr><th style="width:50px">ID</th><th style="width:90px">Источник</th><th style="width:130px">Тип</th><th>Название</th><th style="width:120px">Издатель</th><th style="width:80px">Месяц</th><th style="width:70px">Год</th><th style="width:100px">Статус</th><th style="width:120px">Действия</th></tr></thead><tbody id="worksTbody"></tbody></table>
+        </div>
+      </div>
+    </section>
+
+    <!-- СТАТИСТИКА -->
+    <section id="panel-stats" class="section">
+      <div class="card">
+        <div class="muted" style="margin-bottom:10px">Фильтры для анализа выполненных и невыполненных работ.</div>
+        <div class="grid">
+          <div class="col-4"><label>Учебный год<select id="statsYearSel"></select></label></div>
+          <div class="col-4"><label>Педагог<select id="statsTeacherSel"><option value="">— все педагоги —</option></select></label></div>
+          <div class="col-4"><label>Месяц<select id="statsMonth"></select></label></div>
+          <div class="col-12 row" style="justify-content:flex-end">
+            <button class="btn secondary small demo-blocked" id="statsExportXlsBtn" data-demo-block>Экспорт в Excel</button>
+            <button class="btn secondary small" id="statsResetBtn">Сбросить</button>
+          </div>
+        </div>
+        <div class="divider"></div>
+        <div class="stats-grid" id="statsAggBox">
+          <div class="stat-card"><div class="num" id="statTeachers">0</div><div class="lbl">Педагогов</div></div>
+          <div class="stat-card"><div class="num" id="statPlans">0</div><div class="lbl">План. работ</div></div>
+          <div class="stat-card"><div class="num" id="statWorks">0</div><div class="lbl">Выполнено</div></div>
+          <div class="stat-card"><div class="num" id="statPct">0%</div><div class="lbl">Выполнение</div></div>
+        </div>
+        <div style="overflow:auto;margin-top:12px">
+          <table id="statsTable"><thead><tr><th>№</th><th>Педагог</th><th>Тип работы</th><th>Тип статьи</th><th>Название</th><th>Месяц</th><th>Год</th><th>Статус</th></tr></thead><tbody id="statsTbody"></tbody></table>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- MODAL: Plan -->
+  <div id="planModal" class="modal-overlay">
+    <div class="modal">
+      <h3 id="planModalTitle">Добавить план</h3>
+      <div class="grid">
+        <div class="col-6"><label>Педагог<select id="pmTeacher"></select></label></div>
+        <div class="col-6"><label>Учебный год<select id="pmYear"></select></label></div>
+        <div class="col-6"><label>Показатель<select id="pmIndicator"></select></label></div>
+        <div class="col-6" id="pmArticleTypeWrap"><label>Тип статьи<select id="pmArticleType"></select></label></div>
+        <div class="col-6"><label>Месяц<select id="pmMonth"></select></label></div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn secondary" onclick="closePlanModal()">Отмена</button>
+        <button class="btn" id="pmSaveBtn">Сохранить</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Work -->
+  <div id="workModal" class="modal-overlay">
+    <div class="modal">
+      <h3 id="workModalTitle">Добавить работу</h3>
+      <div class="grid">
+        <div class="col-6"><label>Педагог<select id="wmTeacher"></select></label></div>
+        <div class="col-6"><label>Учебный год<select id="wmYear"></select></label></div>
+        <div class="col-6"><label>Источник<select id="wmSource"><option value="PLAN">По плану</option><option value="OUT_OF_PLAN">Вне плана</option></select></label></div>
+        <div class="col-6"><label>Показатель<select id="wmIndicator"></select></label></div>
+        <div class="col-6" id="wmArticleTypeWrap"><label>Тип статьи<select id="wmArticleType"></select></label></div>
+        <div class="col-12"><label>Название<input id="wmTitle" placeholder="Название статьи / учебника / ..." /></label></div>
+        <div class="col-6"><label>Издательство<input id="wmPublisher" placeholder="Издательство" /></label></div>
+        <div class="col-6"><label>Месяц<select id="wmMonth"></select></label></div>
+        <div class="col-6"><label>Год публикации<input type="number" id="wmPubYear" min="1900" max="2100" placeholder="2025" /></label></div>
+        <div class="col-6"><label>Статус<select id="wmStatus"><option value="NOT_DONE">Не выполнена</option><option value="PARTIAL">Частично</option><option value="DONE">Выполнена работа</option></select></label></div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn secondary" onclick="closeWorkModal()">Отмена</button>
+        <button class="btn" id="wmSaveBtn">Сохранить</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="demoToast">В демо-режиме скачивание недоступно</div>
+
+  <script>
+document.addEventListener('DOMContentLoaded', function(){
+try{
+(function(){
+  const INDICATORS = ['ARTICLE_TYPE','TEXTBOOK','TUTORIAL','METHOD_GUIDELINES','METHODICAL_MANUAL','UMK','E_TEXTBOOK','MONOGRAPH','PATENTS','CITATIONS'];
+  const ARTICLE_TYPES = ['INTL_ARTICLE','VAK','INTL_CONF','REP_CONF','SCOPUS','WOS'];
+  const ACADEMIC_MONTH_ORDER = [8,9,10,11,12,1,2,3,4,5,6,7];
+  const MONTHS = ['','Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+  const MONTHS_SHORT = ['','Янв','Фев','Мар','Апр','Май','Июн','Июл','Авг','Сен','Окт','Ноя','Дек'];
+
+  const dict = (lang) => (window.CAB_I18N && window.CAB_I18N[lang]) ? window.CAB_I18N[lang] : ((window.CAB_I18N && window.CAB_I18N.ru) || {});
+  const indName = (code) => (dict('ru').meta && dict('ru').meta.indicators && dict('ru').meta.indicators[code]) || code;
+  const artName = (code) => {
+    const defs = (dict('ru').meta && dict('ru').meta.articleTypeDefs) || [];
+    const d = defs.find(x=>x.code===code);
+    return d ? d.ru : (code||'—');
+  };
+  const monthText = (m) => MONTHS[Number(m)||0] || '';
+  const monthShort = (m) => MONTHS_SHORT[Number(m)||0] || '';
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s!=null?s:'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+
+  let teachers = [
+    {id:1, fullName:'Иванов Иван Иванович'},
+    {id:2, fullName:'Петрова Мария Сергеевна'},
+    {id:3, fullName:'Сидоров Алексей Петрович'},
+    {id:4, fullName:'Козлова Елена Викторовна'}
+  ];
+  let plans = [
+    {id:1, teacherId:1, academicYear:'2024-2025', indicator:'ARTICLE_TYPE', articleType:'VAK', plannedMonth:10, status:'done'},
+    {id:2, teacherId:2, academicYear:'2024-2025', indicator:'TEXTBOOK', articleType:null, plannedMonth:5, status:'not'},
+    {id:3, teacherId:3, academicYear:'2024-2025', indicator:'PATENTS', articleType:null, plannedMonth:3, status:'done'},
+    {id:4, teacherId:4, academicYear:'2024-2025', indicator:'ARTICLE_TYPE', articleType:'INTL_ARTICLE', plannedMonth:11, status:'partial'},
+    {id:5, teacherId:1, academicYear:'2024-2025', indicator:'ARTICLE_TYPE', articleType:'INTL_CONF', plannedMonth:2, status:'not'},
+    {id:6, teacherId:2, academicYear:'2024-2025', indicator:'TEXTBOOK', articleType:null, plannedMonth:6, status:'not'}
+  ];
+  let works = [
+    {id:1, teacherId:1, academicYear:'2024-2025', source:'PLAN', indicator:'ARTICLE_TYPE', articleType:'VAK', title:'Методы оптимизации в образовании', publisher:'Вестник вуза', month:10, year:2024, completionStatus:'DONE'},
+    {id:2, teacherId:3, academicYear:'2024-2025', source:'PLAN', indicator:'PATENTS', articleType:null, title:'Способ обработки данных', publisher:'—', month:3, year:2024, completionStatus:'DONE'},
+    {id:3, teacherId:4, academicYear:'2024-2025', source:'PLAN', indicator:'ARTICLE_TYPE', articleType:'INTL_ARTICLE', title:'Современные подходы к обучению', publisher:'International Journal', month:11, year:2024, completionStatus:'PARTIAL'},
+    {id:4, teacherId:1, academicYear:'2024-2025', source:'OUT_OF_PLAN', indicator:'ARTICLE_TYPE', articleType:'VAK', title:'Дополнительная статья в журнале', publisher:'Наука и образование', month:9, year:2024, completionStatus:'DONE'}
+  ];
+  let nextTeacherId = 5, nextPlanId = 7, nextWorkId = 5;
+
+  function showToast(msg){
+    const t = $('demoToast');
+    t.textContent = msg || 'В демо-режиме скачивание недоступно';
+    t.classList.add('show');
+    setTimeout(()=> t.classList.remove('show'), 2000);
+  }
+
+  function fillTeacherSelect(sel, addAll){
+    if(!sel) return;
+    sel.innerHTML = addAll ? '<option value="">— все педагоги —</option>' : '';
+    teachers.forEach(t=>{ const o=document.createElement('option'); o.value=t.id; o.textContent=t.fullName; sel.appendChild(o); });
+  }
+
+  function fillYears(sel){
+    if(!sel) return;
+    const prev = sel.value;
+    sel.innerHTML = '';
+    ['2024-2025','2023-2024'].forEach(y=>{ const o=document.createElement('option'); o.value=y; o.textContent=y; sel.appendChild(o); });
+    if(prev) sel.value = prev; else sel.value = '2024-2025';
+  }
+
+  function fillIndicatorSelect(sel, addAll){
+    if(!sel) return;
+    sel.innerHTML = addAll ? '<option value="">— все —</option>' : '';
+    INDICATORS.forEach(c=>{ const o=document.createElement('option'); o.value=c; o.textContent=indName(c); sel.appendChild(o); });
+  }
+
+  function fillArticleTypeSelect(sel){
+    if(!sel) return;
+    sel.innerHTML = '<option value="">— выберите —</option>';
+    ARTICLE_TYPES.forEach(c=>{ const o=document.createElement('option'); o.value=c; o.textContent=artName(c); sel.appendChild(o); });
+  }
+
+  function fillMonthSelect(sel, academicOrder){
+    if(!sel) return;
+    sel.innerHTML = '<option value="">— все месяцы —</option>';
+    const order = academicOrder ? ACADEMIC_MONTH_ORDER : [1,2,3,4,5,6,7,8,9,10,11,12];
+    order.forEach(m=>{ const o=document.createElement('option'); o.value=m; o.textContent=monthText(m); sel.appendChild(o); });
+  }
+
+  function isH1(m){ return [8,9,10,11,12].includes(Number(m)); }
+  function isH2(m){ return [1,2,3,4,5,6,7].includes(Number(m)); }
+
+  function renderTeachers(){
+    $('teacherCount').textContent = `(${teachers.length})`;
+    const tb = $('teachersTbody');
+    tb.innerHTML = '';
+    teachers.forEach(t=>{
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${t.id}</td><td>${esc(t.fullName)}</td><td><div class="row"><button class="btn secondary small" onclick="demo.editTeacher(${t.id})">Ред.</button><button class="btn danger small" onclick="demo.delTeacher(${t.id})">Уд.</button></div></td>`;
+      tb.appendChild(tr);
+    });
+  }
+
+  function getFilteredPlans(){
+    const year = $('planYearSel').value;
+    const tid = $('planTeacherSel').value;
+    const done = $('planFilterDone').checked;
+    const notDone = $('planFilterNotDone').checked;
+    const h1 = $('planFilterH1').checked;
+    const h2 = $('planFilterH2').checked;
+    const month = $('planFilterMonth').value;
+    const ind = $('planFilterIndicator').value;
+    const art = $('planFilterArticleType').value;
+    return plans.filter(p=>{
+      if(year && p.academicYear !== year) return false;
+      if(tid && p.teacherId != tid) return false;
+      if(!done && p.status==='done') return false;
+      if(!notDone && p.status!==='done') return false;
+      const pm = Number(p.plannedMonth||0);
+      if(!h1 && pm && isH1(pm)) return false;
+      if(!h2 && pm && isH2(pm)) return false;
+      if(month && pm != month) return false;
+      if(ind && p.indicator !== ind) return false;
+      if(art && p.indicator==='ARTICLE_TYPE' && p.articleType !== art) return false;
+      return true;
+    });
+  }
+
+  function renderPlans(){
+    const filtered = getFilteredPlans();
+    $('planCount').textContent = `(${filtered.length})`;
+    const tb = $('planTbody');
+    tb.innerHTML = '';
+    const teacherMap = new Map(teachers.map(t=>[t.id,t.fullName]));
+    filtered.forEach(p=>{
+      const tName = teacherMap.get(p.teacherId) || '—';
+      const statusPill = p.status==='done' ? '<span class="pill done">Выполнено</span>' : p.status==='partial' ? '<span class="pill partial">Частично</span>' : '<span class="pill not">Не выполнено</span>';
+      const artType = p.indicator==='ARTICLE_TYPE' ? artName(p.articleType) : '—';
+      const actions = `<div class="row"><button class="btn secondary small" onclick="demo.editPlan(${p.id})">Ред.</button><button class="btn danger small" onclick="demo.delPlan(${p.id})">Уд.</button></div>`;
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${p.id}</td><td>${esc(tName)}</td><td>${esc(indName(p.indicator))}</td><td>${esc(artType)}</td><td>${p.plannedMonth?monthShort(p.plannedMonth):'—'}</td><td>${statusPill}</td><td>${actions}</td>`;
+      tb.appendChild(tr);
+    });
+  }
+
+  function getFilteredWorks(){
+    const year = $('workYearSel').value;
+    const tid = $('workTeacherSel').value;
+    const ind = $('workFilterInd').value;
+    const src = $('workFilterSrc').value;
+    return works.filter(w=>{
+      if(year && w.academicYear !== year) return false;
+      if(tid && w.teacherId != tid) return false;
+      if(ind && w.indicator !== ind) return false;
+      if(src && w.source !== src) return false;
+      return true;
+    });
+  }
+
+  function renderWorks(){
+    const filtered = getFilteredWorks();
+    $('workCount').textContent = `(${filtered.length} из ${works.length})`;
+    const tb = $('worksTbody');
+    tb.innerHTML = '';
+    const teacherMap = new Map(teachers.map(t=>[t.id,t.fullName]));
+    filtered.forEach(w=>{
+      const tName = teacherMap.get(w.teacherId) || '—';
+      const srcText = w.source==='PLAN' ? 'По плану' : 'Вне плана';
+      const statusPill = w.completionStatus==='DONE' ? '<span class="pill done">Выполнена</span>' : w.completionStatus==='PARTIAL' ? '<span class="pill partial">Частично</span>' : '<span class="pill not">Не выполнена</span>';
+      const artType = w.indicator==='ARTICLE_TYPE' ? artName(w.articleType) : '—';
+      const actions = `<div class="row"><button class="btn secondary small" onclick="demo.editWork(${w.id})">Ред.</button><button class="btn danger small" onclick="demo.delWork(${w.id})">Уд.</button></div>`;
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${w.id}</td><td>${esc(srcText)}</td><td>${esc(indName(w.indicator))}</td><td title="${esc(w.title||'')}">${esc((w.title||'—').slice(0,40))}${(w.title&&w.title.length>40)?'...':''}</td><td>${esc((w.publisher||'—').slice(0,15))}</td><td>${w.month?monthShort(w.month):'—'}</td><td>${w.year||'—'}</td><td>${statusPill}</td><td>${actions}</td>`;
+      tb.appendChild(tr);
+    });
+  }
+
+  function renderStats(){
+    const year = $('statsYearSel').value;
+    const tid = $('statsTeacherSel').value;
+    const month = $('statsMonth').value;
+    let filtered = works.filter(w=>{
+      if(year && w.academicYear !== year) return false;
+      if(tid && w.teacherId != tid) return false;
+      if(month && w.month != month) return false;
+      return true;
+    });
+    $('statTeachers').textContent = teachers.length;
+    $('statPlans').textContent = plans.filter(p=>!year||p.academicYear===year).length;
+    $('statWorks').textContent = filtered.filter(w=>w.completionStatus==='DONE').length;
+    const totalPlans = plans.filter(p=>!year||p.academicYear===year).length;
+    const done = filtered.filter(w=>w.completionStatus==='DONE').length;
+    $('statPct').textContent = totalPlans ? Math.round(done/totalPlans*100) + '%' : '0%';
+    const tb = $('statsTbody');
+    tb.innerHTML = '';
+    const teacherMap = new Map(teachers.map(t=>[t.id,t.fullName]));
+    filtered.forEach((w,i)=>{
+      const tr = document.createElement('tr');
+      const tName = teacherMap.get(w.teacherId) || '—';
+      const artType = w.indicator==='ARTICLE_TYPE' ? artName(w.articleType) : '—';
+      const statusPill = w.completionStatus==='DONE' ? 'Выполнена' : w.completionStatus==='PARTIAL' ? 'Частично' : 'Не выполнена';
+      tr.innerHTML = `<td>${i+1}</td><td>${esc(tName)}</td><td>${esc(indName(w.indicator))}</td><td>${esc(artType)}</td><td>${esc((w.title||'—').slice(0,35))}</td><td>${w.month?monthShort(w.month):'—'}</td><td>${w.year||'—'}</td><td>${statusPill}</td>`;
+      tb.appendChild(tr);
+    });
+  }
+
+  function refreshAll(){
+    fillTeacherSelect($('planTeacherSel'), true);
+    fillTeacherSelect($('workTeacherSel'), true);
+    fillTeacherSelect($('statsTeacherSel'), true);
+    fillTeacherSelect($('pmTeacher'), false);
+    fillTeacherSelect($('wmTeacher'), false);
+    fillYears($('planYearSel'));
+    fillYears($('workYearSel'));
+    fillYears($('statsYearSel'));
+    fillYears($('pmYear'));
+    fillYears($('wmYear'));
+    fillIndicatorSelect($('planFilterIndicator'), true);
+    fillIndicatorSelect($('workFilterInd'), true);
+    fillIndicatorSelect($('pmIndicator'), false);
+    fillIndicatorSelect($('wmIndicator'), false);
+    fillArticleTypeSelect($('planFilterArticleType'));
+    fillArticleTypeSelect($('pmArticleType'));
+    fillArticleTypeSelect($('wmArticleType'));
+    fillMonthSelect($('planFilterMonth'), true);
+    fillMonthSelect($('pmMonth'), true);
+    fillMonthSelect($('wmMonth'), false);
+    fillMonthSelect($('statsMonth'), false);
+    renderTeachers();
+    renderPlans();
+    renderWorks();
+    renderStats();
+  }
+
+  let editingPlanId = null;
+  function openPlanModal(planId){
+    editingPlanId = planId || null;
+    $('planModalTitle').textContent = planId ? 'Редактировать план' : 'Добавить план';
+    if(planId){
+      const p = plans.find(x=>x.id===planId);
+      if(p){
+        $('pmTeacher').value = p.teacherId;
+        $('pmYear').value = p.academicYear;
+        $('pmIndicator').value = p.indicator;
+        $('pmArticleType').value = p.articleType || 'VAK';
+        $('pmMonth').value = p.plannedMonth || '';
+        $('pmArticleTypeWrap').style.display = p.indicator==='ARTICLE_TYPE' ? 'block' : 'none';
+      }
+    } else {
+      $('pmTeacher').value = teachers[0]?.id || '';
+      $('pmYear').value = '2024-2025';
+      $('pmIndicator').value = 'ARTICLE_TYPE';
+      $('pmArticleType').value = 'VAK';
+      $('pmMonth').value = '10';
+      $('pmArticleTypeWrap').style.display = 'block';
+    }
+    $('planModal').classList.add('open');
+  }
+
+  function closePlanModal(){
+    editingPlanId = null;
+    $('planModal').classList.remove('open');
+  }
+
+  function savePlan(){
+    const teacherId = Number($('pmTeacher').value);
+    const year = $('pmYear').value;
+    const ind = $('pmIndicator').value;
+    const art = ind==='ARTICLE_TYPE' ? $('pmArticleType').value : null;
+    const month = $('pmMonth').value || null;
+    if(!teacherId || !year) return showToast('Не заполнены обязательные поля');
+    if(editingPlanId){
+      const p = plans.find(x=>x.id===editingPlanId);
+      if(p){ p.teacherId=teacherId; p.academicYear=year; p.indicator=ind; p.articleType=art; p.plannedMonth=month?Number(month):null; }
+      showToast('План обновлён');
+    } else {
+      plans.push({id: nextPlanId++, teacherId, academicYear: year, indicator: ind, articleType: art, plannedMonth: month ? Number(month) : null, status: 'not'});
+      showToast('План добавлен');
+    }
+    closePlanModal();
+    refreshAll();
+  }
+
+  let editingWorkId = null;
+  function openWorkModal(workId){
+    editingWorkId = workId || null;
+    $('workModalTitle').textContent = workId ? 'Редактировать работу' : 'Добавить работу';
+    if(workId){
+      const w = works.find(x=>x.id===workId);
+      if(w){
+        $('wmTeacher').value = w.teacherId;
+        $('wmYear').value = w.academicYear;
+        $('wmSource').value = w.source;
+        $('wmIndicator').value = w.indicator;
+        $('wmArticleType').value = w.articleType || 'VAK';
+        $('wmTitle').value = w.title || '';
+        $('wmPublisher').value = w.publisher || '';
+        $('wmMonth').value = w.month || '';
+        $('wmPubYear').value = w.year || '2024';
+        $('wmStatus').value = w.completionStatus || 'DONE';
+        $('wmArticleTypeWrap').style.display = w.indicator==='ARTICLE_TYPE' ? 'block' : 'none';
+      }
+    } else {
+      $('wmTeacher').value = teachers[0]?.id || '';
+      $('wmYear').value = '2024-2025';
+      $('wmSource').value = 'PLAN';
+      $('wmIndicator').value = 'ARTICLE_TYPE';
+      $('wmArticleType').value = 'VAK';
+      $('wmTitle').value = '';
+      $('wmPublisher').value = '';
+      $('wmMonth').value = '10';
+      $('wmPubYear').value = '2024';
+      $('wmStatus').value = 'DONE';
+      $('wmArticleTypeWrap').style.display = 'block';
+    }
+    $('workModal').classList.add('open');
+  }
+
+  function closeWorkModal(){
+    editingWorkId = null;
+    $('workModal').classList.remove('open');
+  }
+
+  function saveWork(){
+    const teacherId = Number($('wmTeacher').value);
+    const year = $('wmYear').value;
+    const source = $('wmSource').value;
+    const ind = $('wmIndicator').value;
+    const art = ind==='ARTICLE_TYPE' ? $('wmArticleType').value : null;
+    const title = ($('wmTitle').value||'').trim();
+    const publisher = ($('wmPublisher').value||'').trim();
+    const month = $('wmMonth').value ? Number($('wmMonth').value) : null;
+    const yearPub = Number($('wmPubYear').value) || 2024;
+    const status = $('wmStatus').value;
+    if(!teacherId || !year || !title) return showToast('Не заполнены обязательные поля');
+    if(editingWorkId){
+      const w = works.find(x=>x.id===editingWorkId);
+      if(w){ w.teacherId=teacherId; w.academicYear=year; w.source=source; w.indicator=ind; w.articleType=art; w.title=title; w.publisher=publisher; w.month=month; w.year=yearPub; w.completionStatus=status; }
+      showToast('Работа обновлена');
+    } else {
+      works.push({id: nextWorkId++, teacherId, academicYear: year, source, indicator: ind, articleType: art, title, publisher, month, year: yearPub, completionStatus: status});
+      showToast('Работа добавлена');
+    }
+    closeWorkModal();
+    refreshAll();
+  }
+
+  const demo = {
+    editTeacher(id){ const t=teachers.find(x=>x.id===id); if(!t) return; const n=prompt('Ф.И.О.:', t.fullName); if(n===null) return; const v=n.trim(); if(v) { t.fullName=v; refreshAll(); showToast('Сохранено'); }},
+    delTeacher(id){ if(!confirm('Удалить педагога?')) return; teachers=teachers.filter(x=>x.id!==id); plans=plans.filter(p=>p.teacherId!==id); works=works.filter(w=>w.teacherId!==id); refreshAll(); showToast('Удалено'); },
+    editPlan(id){ openPlanModal(id); },
+    delPlan(id){ if(!confirm('Удалить план?')) return; plans=plans.filter(p=>p.id!==id); refreshAll(); showToast('Удалено'); },
+    editWork(id){ openWorkModal(id); },
+    delWork(id){ if(!confirm('Удалить работу?')) return; works=works.filter(w=>w.id!==id); refreshAll(); showToast('Удалено'); }
+  };
+  window.demo = demo;
+
+  $('pmIndicator').addEventListener('change', ()=>{ $('pmArticleTypeWrap').style.display = $('pmIndicator').value==='ARTICLE_TYPE' ? 'block' : 'none'; });
+  $('wmIndicator').addEventListener('change', ()=>{ $('wmArticleTypeWrap').style.display = $('wmIndicator').value==='ARTICLE_TYPE' ? 'block' : 'none'; });
+
+  document.querySelectorAll('.tabbtn').forEach(tab=>{
+    tab.addEventListener('click', ()=>{
+      document.querySelectorAll('.tabbtn').forEach(t=> t.setAttribute('aria-selected','false'));
+      document.querySelectorAll('.section').forEach(s=> s.classList.remove('active'));
+      tab.setAttribute('aria-selected','true');
+      (document.getElementById('panel-'+tab.dataset.tab))?.classList.add('active');
+      refreshAll();
+    });
+  });
+
+  $('teacherAddBtn').onclick = ()=>{
+    const n = ($('teacherFullName').value||'').trim();
+    if(!n) return showToast('Введите Ф.И.О.');
+    teachers.push({id: nextTeacherId++, fullName: n});
+    $('teacherFullName').value = '';
+    refreshAll();
+    showToast('Педагог добавлен');
+  };
+  $('teachersRefreshBtn').onclick = ()=> refreshAll();
+
+  $('planFilterResetBtn').onclick = ()=>{
+    $('planFilterDone').checked = $('planFilterNotDone').checked = $('planFilterH1').checked = $('planFilterH2').checked = true;
+    $('planFilterMonth').value = $('planFilterIndicator').value = $('planFilterArticleType').value = '';
+    renderPlans();
+  };
+  $('planFilterDone').addEventListener('change', renderPlans);
+  $('planFilterNotDone').addEventListener('change', renderPlans);
+  $('planFilterH1').addEventListener('change', renderPlans);
+  $('planFilterH2').addEventListener('change', renderPlans);
+  $('planTeacherSel').addEventListener('change', renderPlans);
+  $('planYearSel').addEventListener('change', ()=>{ fillYears($('workYearSel')); fillYears($('statsYearSel')); renderPlans(); });
+  $('planFilterMonth').addEventListener('change', renderPlans);
+  $('planFilterIndicator').addEventListener('change', renderPlans);
+  $('planFilterArticleType').addEventListener('change', renderPlans);
+  $('planExportBtn').addEventListener('click', (e)=>{ e.preventDefault(); showToast(); });
+  $('planRefreshBtn').onclick = ()=> refreshAll();
+  $('planAddOpenBtn').onclick = openPlanModal;
+  $('pmSaveBtn').onclick = savePlan;
+
+  $('workTeacherSel').addEventListener('change', renderWorks);
+  $('workYearSel').addEventListener('change', renderWorks);
+  $('workFilterInd').addEventListener('change', renderWorks);
+  $('workFilterSrc').addEventListener('change', renderWorks);
+  $('workExportBtn').addEventListener('click', (e)=>{ e.preventDefault(); showToast(); });
+  $('workRefreshBtn').onclick = ()=> refreshAll();
+  $('workAddOpenBtn').onclick = openWorkModal;
+  $('wmSaveBtn').onclick = saveWork;
+
+  $('planModal').addEventListener('click', e=>{ if(e.target.id==='planModal') closePlanModal(); });
+  $('workModal').addEventListener('click', e=>{ if(e.target.id==='workModal') closeWorkModal(); });
+
+  $('statsYearSel').addEventListener('change', renderStats);
+  $('statsTeacherSel').addEventListener('change', renderStats);
+  $('statsMonth').addEventListener('change', renderStats);
+  $('statsExportXlsBtn').addEventListener('click', (e)=>{ e.preventDefault(); showToast(); });
+  $('statsResetBtn').onclick = ()=>{
+    $('statsYearSel').value = '2024-2025';
+    $('statsTeacherSel').value = '';
+    $('statsMonth').value = '';
+    renderStats();
+  };
+
+  refreshAll();
+})();
+}catch(e){
+  document.body.innerHTML='<div style="padding:24px;color:#dc2626;font-family:system-ui,sans-serif"><p><strong>Ошибка загрузки демо:</strong> '+e.message+'</p><p><a href="/demo.html" target="_blank">Открыть демо в отдельном окне</a></p></div>';
+}
+});
+  </script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">IlmiyStat RU Preview</title>
+  <desc id="desc">Preview image for the Russian version of IlmiyStat.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0c1222"/>
+      <stop offset="55%" stop-color="#1d4ed8"/>
+      <stop offset="100%" stop-color="#f97316"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <circle cx="1040" cy="120" r="120" fill="rgba(255,255,255,0.10)"/>
+  <circle cx="160" cy="520" r="160" fill="rgba(255,255,255,0.08)"/>
+  <text x="90" y="170" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="34" font-weight="700" letter-spacing="3">ILMIYSTAT</text>
+  <text x="90" y="285" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="64" font-weight="800">Учет научной работы</text>
+  <text x="90" y="360" fill="#dbeafe" font-family="Segoe UI, Arial, sans-serif" font-size="64" font-weight="800">кафедры в одной системе</text>
+  <text x="90" y="445" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="28">Планы, статьи, патенты, статистика и отчеты</text>
+  <rect x="90" y="500" width="330" height="62" rx="31" fill="#ffffff"/>
+  <text x="132" y="541" fill="#0c1222" font-family="Segoe UI, Arial, sans-serif" font-size="28" font-weight="700">14 дней бесплатно</text>
+</svg>

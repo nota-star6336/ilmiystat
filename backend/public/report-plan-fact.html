@@ -1,0 +1,1927 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="Служебный отчёт IlmiyStat по плану и фактическому выполнению." />
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet" />
+  <title>IlmiySTAT - План/выполнено по месяцам</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/theme-ilmiystat.css" />
+  <style>
+    :root{
+      --bg:#f6f9fc;
+      --bg-2:#f6f9fc;
+      --surface:#ffffff;
+      --surface-soft:#f4f7fc;
+      --surface-muted:#edf4ff;
+      --border:#dbe3ef;
+      --border-strong:#c7d3e6;
+      --text:#172033;
+      --muted:#66728a;
+      --accent:#3467eb;
+      --accent-soft:#e8f0ff;
+      --success:#1fa34a;
+      --success-soft:#e8f8eb;
+      --warning:#ff7a1a;
+      --warning-soft:#fff2e6;
+      --shadow-sm:0 1px 2px rgba(15,23,42,.04);
+      --shadow:0 12px 32px rgba(30,41,59,.08);
+      --shadow-lg:0 18px 48px rgba(30,41,59,.12);
+    }
+    body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,Arial,sans-serif;font-feature-settings:"cv02","cv03","cv04","cv11"}
+    body.drawer-open{overflow:hidden}
+    .wrap{max-width:1600px;margin:0 auto;padding:0 24px 56px}
+    .headRow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:24px;align-items:center;margin-bottom:18px;padding:16px 0;border-bottom:1px solid rgba(219,227,239,.88);background:rgba(246,249,252,.92)}
+    .heroPanel,.toolbarPanel,.card{border:1px solid var(--border);border-radius:16px;background:var(--surface);box-shadow:var(--shadow-sm)}
+    .heroPanel,.toolbarPanel{border:none;border-radius:0;background:transparent;box-shadow:none;padding:0}
+    .heroPanel{color:var(--text)}
+    .heroEyebrow{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border:1px solid var(--border);border-radius:999px;background:var(--surface);color:var(--text);font-size:18px;font-weight:700;line-height:1;margin-bottom:0;cursor:pointer;box-shadow:var(--shadow-sm)}
+    .heroEyebrow:hover{border-color:rgba(52,103,235,.35);background:var(--accent-soft)}
+    .heroEyebrow:focus-visible,.btn:focus-visible,.filtersFab:focus-visible,.checkItem:focus-within,.scopeCheck:focus-within{outline:2px solid rgba(52,103,235,.28);outline-offset:2px}
+    .title{font-size:24px;font-weight:700;line-height:1.2;letter-spacing:-.02em;margin:0}
+    .muted{color:var(--muted)}
+    .heroPanel .muted{color:var(--muted);font-size:14px;max-width:720px;margin-top:8px}
+    .titleRow{display:flex;align-items:center;gap:14px}
+    .controls{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:12px;align-items:center}
+    .langSwitch{display:inline-flex;align-items:center;padding:4px;border:1px solid var(--border);border-radius:999px;background:#fff;box-shadow:var(--shadow-sm)}
+    .langBtn{min-width:44px;height:34px;padding:0 12px;border:none;border-radius:999px;background:transparent;color:var(--muted);font-size:12px;font-weight:800;line-height:1;cursor:pointer;transition:background-color .15s ease,color .15s ease,box-shadow .15s ease}
+    .langBtn:hover{color:var(--text)}
+    .langBtn.is-active{background:var(--accent);color:#fff;box-shadow:0 8px 18px rgba(52,103,235,.2)}
+    .topStamp{display:flex;flex-direction:column;align-items:flex-end;justify-content:center;min-width:140px}
+    .topStampLabel{font-size:12px;color:var(--muted);line-height:1.1}
+    .topStampValue{font-size:13px;font-weight:700;color:var(--text);margin-top:4px}
+    .summaryChip{background:var(--surface-soft);border:1px solid var(--border);border-radius:12px;padding:12px 14px;min-height:72px}
+    .summaryChipLabel{display:block;font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+    .summaryChipValue{display:block;margin-top:8px;font-size:16px;font-weight:800;line-height:1.2;word-break:break-word}
+    label{display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:800;color:var(--muted)}
+    select{padding:11px 12px;border:1px solid var(--border);border-radius:14px;font-size:14px;min-height:44px;min-width:210px;background:#fff;color:var(--text);box-shadow:var(--shadow-sm)}
+    .controlSelect{min-width:210px}
+    .card{padding:16px;margin-top:12px}
+    .rowBtns{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .btn{border:1px solid var(--accent);background:var(--accent);color:#fff;padding:10px 14px;border-radius:14px;cursor:pointer;font-weight:800;font-size:13px;box-shadow:0 8px 20px rgba(52,103,235,.18)}
+    .btn:hover{filter:brightness(1.02)}
+    .btn.secondary{background:#fff;color:var(--text);border-color:var(--border);box-shadow:var(--shadow-sm)}
+    .btn.small{padding:8px 10px;font-size:12px}
+    .hint{font-size:12px;color:var(--muted);margin-top:6px}
+    .err{color:#b00020;font-weight:800}
+    .filtersHead{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:flex-start}
+    .filtersTitle{font-size:15px;font-weight:900;margin:0;color:var(--text)}
+    .filtersGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px;margin-top:12px}
+    .scopeFiltersGrid{display:grid;grid-template-columns:minmax(0,2fr) repeat(3,minmax(180px,1fr));gap:12px}
+    .scopeCard{padding:0;overflow:hidden}
+    .scopeCard .filtersHead{align-items:center;flex-wrap:nowrap;padding:22px 22px 18px;border-bottom:1px solid #e2e8f1}
+    .scopeCard .filtersTitle{font-size:17px;font-weight:600;letter-spacing:-.01em;color:#1f2b3d}
+    .scopeCard .hint{display:none}
+    .scopeCard .rowBtns{flex-wrap:wrap;gap:8px;align-items:center;justify-content:flex-end;min-width:0}
+    .scopeCard .btn.secondary.small{display:inline-flex;align-items:center;justify-content:center;gap:6px;background:transparent;border:none;box-shadow:none;color:#20293a;padding:0 2px;height:36px;font-size:12px;font-weight:500;line-height:1;white-space:nowrap}
+    .scopeCard .btn.secondary.small.scopeBulkBtn{padding:0 8px;border:1px solid #d6e0ee;border-radius:12px;background:#fff;color:#283446;font-weight:600}
+    .scopeCard .btn.secondary.small.scopeBulkBtn:hover{border-color:#3567eb;background:#f8fbff;color:#3567eb}
+    .scopeCard .btn.small:not(.secondary){display:inline-flex;align-items:center;justify-content:center;gap:7px;height:44px;padding:0 19px;border-radius:15px;box-shadow:none;line-height:1;white-space:nowrap;background:#3567eb;border-color:#3567eb;font-size:12px;font-weight:600}
+    .scopeCard .btn.small:not(.secondary):hover{background:#2f5fe1}
+    .scopeApplyHint{display:none;margin:12px 22px 0;padding:10px 12px;border:1px solid #ffe0b8;border-radius:14px;background:#fff8ed;color:#b45309;font-size:12px;font-weight:700;line-height:1.35}
+    .scopeApplyHint.is-visible{display:block}
+    .scopeApplyBar{position:sticky;bottom:0;z-index:3;padding:14px 22px 18px;background:linear-gradient(180deg,rgba(255,255,255,.86),#fff 34%);border-top:1px solid #edf2f8}
+    .scopeApplyBar .btn{width:100%;height:46px;font-size:13px}
+    .scopeApplyBar .btn.needs-apply{box-shadow:0 0 0 4px rgba(255,122,26,.14),0 10px 24px rgba(52,103,235,.2)}
+    .scopeBtnIcon{display:inline-flex;align-items:center;justify-content:center;font-size:14px;line-height:1;flex:0 0 auto}
+    .scopeBtnText{display:inline-block;line-height:1;flex:0 0 auto}
+    .scopeCard .scopeFiltersGrid{grid-template-columns:1fr;gap:24px;padding:20px 22px 18px}
+    .scopeFilterGroup{border:none;background:transparent;padding:0;border-radius:0}
+    .scopeFilterTitle{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:#7d8da9;margin-bottom:14px}
+    .monthsGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+    .inlineChecks{display:flex;flex-direction:column;gap:8px}
+    .scopeCheck{display:flex;flex-direction:row;align-items:center;justify-content:flex-start;gap:10px;width:100%;min-width:0;height:42px;padding:0 14px;border:1px solid #d6e0ee;border-radius:17px;background:#fdfefe;box-shadow:none;font-size:14px;font-weight:400;line-height:1.2;cursor:pointer;color:#283446;transition:border-color .15s ease,background-color .15s ease,color .15s ease}
+    .scopeCheck:hover{border-color:#c6d3e8;background:#fafcff}
+    .scopeCheck.is-selected{border-color:#3567eb;background:#edf3ff;color:#3567eb}
+    .scopeCheck input{appearance:none;-webkit-appearance:none;position:relative;margin:0;inline-size:17px;block-size:17px;border:1.5px solid #3f6fff;border-radius:999px;background:#fff;flex:0 0 auto;transition:border-color .15s ease,box-shadow .15s ease,background-color .15s ease}
+    .scopeCheck input:checked{border-color:#3567eb;background:#fff;box-shadow:inset 0 0 0 3px #fff, 0 0 0 4px #3567eb}
+    .inlineChecks .scopeCheck input{display:inline-block;width:17px;height:17px;min-width:17px;min-height:17px;max-width:17px;max-height:17px;padding:0;line-height:0;border-color:#d8e0ec;border-radius:999px;background:#fff;box-sizing:border-box;vertical-align:middle;flex:0 0 17px}
+    .inlineChecks .scopeCheck input:checked{border-color:#3567eb;background:#3567eb;box-shadow:none}
+    .scopeCheck span{display:block;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12px}
+    .scopeCheck.is-selected span{font-weight:600}
+    .scopeCard .monthsGrid .scopeCheck{justify-content:flex-start;gap:9px;height:40px;padding:0 12px;border-radius:16px;background:#f8fbff}
+    .scopeCard .monthsGrid .scopeCheck.is-selected{border-color:#3567eb;background:#eef4ff;color:#1f2b3d}
+    .scopeCard .monthsGrid .scopeCheck input{display:inline-block;width:18px;height:18px;min-width:18px;min-height:18px;max-width:18px;max-height:18px;padding:0;line-height:0;border:1.5px solid #3f6fff;border-radius:999px;background:#fff;box-sizing:border-box;vertical-align:middle}
+    .scopeCard .monthsGrid .scopeCheck input:checked{background:#3567eb;border-color:#3567eb;box-shadow:none}
+    .scopeCard .monthsGrid .scopeCheck input:checked::after{content:"";position:absolute;left:5px;top:2px;width:4px;height:8px;border-right:1.8px solid #fff;border-bottom:1.8px solid #fff;transform:rotate(40deg)}
+    .checkItem{display:grid;grid-template-columns:22px minmax(0,1fr);align-items:start;gap:12px;min-height:76px;padding:16px 14px;border:1px solid #dbe3ef;border-radius:12px;background:#fff;cursor:pointer;min-width:0;box-shadow:var(--shadow-sm);transition:border-color .15s ease,background-color .15s ease,box-shadow .15s ease}
+    .checkItem input{appearance:none;-webkit-appearance:none;display:block;width:22px;height:22px;min-width:22px;min-height:22px;max-width:22px;max-height:22px;inline-size:22px;block-size:22px;padding:0;margin:2px 0 0;border:1.5px solid #dbe3ef;border-radius:999px;background:#fff;position:relative;box-sizing:border-box;line-height:0;flex:0 0 22px}
+    .checkItem input:checked{background:var(--accent);border-color:var(--accent)}
+    .checkItem input:checked::after{content:"";position:absolute;left:7px;top:4px;width:5px;height:9px;border-right:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(40deg)}
+    .checkItemBody{min-width:0}
+    .checkItemTitle{display:block;min-width:0;max-width:100%;font-size:14px;font-weight:500;line-height:1.25;color:#172033;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .checkItemMeta{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:12px;line-height:1.2;color:#66728a;font-weight:400}
+    .checkItemPct{display:inline-flex;align-items:center;justify-content:center;margin-left:auto;min-width:0;padding:3px 7px;border-radius:999px;background:#fff2e6;color:#ff7a1a;font-size:10px;font-weight:600;line-height:1}
+    .checkItemPct.is-good{background:#e8f8eb;color:#1fa34a}
+    .checkItemPct.is-neutral{background:#f1f5fb;color:#66728a}
+    .checkItem:hover{background:#f8fbff;border-color:rgba(52,103,235,.4)}
+    .checkItem.is-active{border-color:var(--accent);background:#eef4ff;box-shadow:var(--shadow-sm)}
+    .checkItem.is-current{border-color:var(--accent);background:#eef4ff;box-shadow:var(--shadow-sm)}
+    .checkItem.is-off{opacity:1;background:#fbfdff}
+    .pageShell{display:flex;gap:24px;align-items:flex-start}
+    .mainColumn,.sideColumn{min-width:0}
+    .mainColumn{flex:1}
+    .sideColumn{width:320px;position:sticky;top:88px}
+    .layoutStack{display:flex;flex-direction:column;gap:18px}
+    .indicatorPanel{padding:20px}
+    .indicatorPanel .filtersHead{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;align-items:start;margin-bottom:16px}
+    .indicatorPanel .filtersTitle{font-size:16px;font-weight:600;line-height:1.25;color:#172033}
+    .indicatorPanel .hint{font-size:12px;color:#66728a;margin-top:6px}
+    .indicatorPanel .hint .selectedCount{font-weight:500;color:var(--accent)}
+    .indicatorPanel .filtersGrid{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+    .indicatorPanel .rowBtns{display:none}
+    .statusCard{padding:14px 16px;background:var(--surface-soft);border-color:var(--border-strong)}
+    .statusCardInner{display:flex;flex-direction:column;gap:6px}
+    .statusCard{display:none}
+    .reportGrid{display:grid;grid-template-columns:1fr;gap:18px;margin-top:14px}
+    .reportCard{display:flex;flex-direction:column;gap:12px;padding:0;background:transparent;border:none;box-shadow:none;border-radius:0}
+    .reportSummarySurface{display:flex;flex-direction:column;gap:18px;padding:20px 22px;background:#fff;border:1px solid #d9e3f0;box-shadow:0 1px 2px rgba(15,23,42,.03);border-radius:18px}
+    .reportCardHead{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;flex-wrap:wrap}
+    .reportCardTitle{font-size:22px;font-weight:900;margin:4px 0 0;color:#031126;line-height:1.04;letter-spacing:-.045em}
+    .reportCardMeta{display:flex;flex-wrap:wrap;gap:8px}
+    .reportBadge{display:inline-flex;align-items:center;gap:6px;padding:7px 10px;border-radius:999px;background:var(--surface-muted);border:1px solid #d6e2ff;font-size:11px;font-weight:800;color:var(--muted)}
+    .reportBadge b{color:var(--text);font-size:12px}
+    .reportSectionLabel{font-size:12px;font-weight:800;letter-spacing:.075em;text-transform:uppercase;color:#3567eb;line-height:1.15}
+    .reportStatusPill{display:inline-flex;align-items:center;padding:8px 14px;border-radius:999px;background:#e8f8eb;color:#0fa344;font-size:13px;font-weight:800;line-height:1}
+    .reportStatusPill.warning{background:var(--warning-soft);color:var(--warning)}
+    .reportStatusPill.muted{background:var(--surface-muted);color:#6f83a3}
+    .miniKpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+    .miniKpis.detail{grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+    .miniKpi{position:relative;border:1px solid #dbe4f0;border-radius:16px;padding:24px 56px 20px 18px;background:#fff;min-height:114px;box-shadow:0 1px 2px rgba(15,23,42,.03)}
+    .miniKpiIcon{position:absolute;right:18px;top:16px;width:36px;height:36px;border-radius:999px;display:flex;align-items:center;justify-content:center}
+    .miniKpiIcon svg{display:block;width:16px;height:16px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+    .miniKpiIcon.plan{background:#eef3ff;color:#3567eb}
+    .miniKpiIcon.fact{background:#e8f8eb;color:#12a34a}
+    .miniKpiIcon.fact svg{width:16px;height:16px}
+    .miniKpiIcon.pct{background:#e8f8eb;color:#12a34a}
+    .miniKpiIcon.pct svg{width:16px;height:16px}
+    .miniKpiIcon.pct.warning{background:var(--warning-soft);color:var(--warning)}
+    .miniKpiIcon.pct.muted{background:var(--surface-muted);color:#6f83a3}
+    .miniKpiIcon.remain{background:#f3f6fb;color:#6f83a3}
+    .miniKpiIcon.remain svg{width:16px;height:16px}
+    .miniKpiLbl{font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.035em;color:#657693;line-height:1.1}
+    .miniKpiVal{font-size:31px;font-weight:900;margin-top:8px;line-height:1;color:#1b2436;letter-spacing:-.03em}
+    .miniKpiVal.plan{color:#3567eb}
+    .miniKpiVal.fact{color:#12a34a}
+    .miniKpiVal.pct{color:#12a34a}
+    .miniKpiVal.pct.warning{color:var(--warning)}
+    .miniKpiVal.pct.muted{color:#6f83a3}
+    .miniKpiVal.remain{color:#657693}
+    .progressBlock{display:flex;flex-direction:column;gap:8px}
+    .progressMeta{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:13px;font-weight:800;color:#5f6f8b}
+    .progressTrack{position:relative;height:11px;border-radius:999px;background:#eaf0fa;overflow:hidden}
+    .progressFill{position:absolute;left:0;top:0;bottom:0;border-radius:999px;background:#4d73f5}
+    .chartSurface{border:1px solid #d9e3f0;border-radius:16px;background:#fff;padding:20px 20px 16px;box-shadow:0 1px 2px rgba(15,23,42,.03)}
+    .chartHead{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;margin-bottom:10px}
+    .chartTitle{font-size:15px;font-weight:800;color:#031126;line-height:1.15}
+    .chartSub{font-size:12px;color:#5f6f8b;margin-top:4px;line-height:1.1}
+    .toggleWrap{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;color:#526785;line-height:1.2}
+    .toggleSwitch{position:relative;width:43px;height:24px;border-radius:999px;background:#d8e2f0;cursor:pointer;flex:0 0 auto}
+    .toggleSwitch::after{content:"";position:absolute;left:3px;top:3px;width:18px;height:18px;border-radius:999px;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.12);transition:transform .2s ease}
+    .toggleSwitch.is-on{background:var(--accent)}
+    .toggleSwitch.is-on::after{transform:translateX(19px)}
+    .chartFoot{display:flex;justify-content:flex-end;margin-top:14px;padding-top:6px}
+    .chartBox{height:332px}
+    .chartScroll{height:100%;overflow-x:auto;overflow-y:hidden;padding-bottom:2px}
+    .chartCanvasFrame{height:100%;min-width:920px}
+    .chartCanvasFrame canvas{display:block;width:100%!important;height:100%!important}
+    .monthlyDetail{border:1px solid #d9e3f0;border-radius:16px;background:#fff;padding:18px 20px 20px;box-shadow:0 1px 2px rgba(15,23,42,.03)}
+    .monthlyDetailTitle{font-size:15px;font-weight:800;color:#031126;margin-bottom:16px;line-height:1.15}
+    .monthCardGrid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+    .monthCard{border:1px solid #e1e8f2;border-radius:10px;background:#fff;padding:12px 12px 10px;min-height:72px;box-shadow:none}
+    .monthCard.is-empty{opacity:1;background:#fcfdff}
+    .monthCard.is-over{border-color:#69d08d;background:#fff}
+    .monthCard.is-done{border-color:#69d08d;background:#fff}
+    .monthCard.is-partial{border-color:#ff8b37;background:#fff}
+    .monthCardTop{display:flex;justify-content:space-between;gap:8px;align-items:center}
+    .monthCardName{font-size:12px;font-weight:700;color:#1b2436}
+    .monthCardPct{display:inline-flex;align-items:center;justify-content:center;min-width:28px;height:16px;padding:0 7px;border-radius:999px;background:#f1f5fb;color:#a4b0c2;font-size:9px;font-weight:800;line-height:1}
+    .monthCardPct.is-good{color:var(--success)}
+    .monthCardPct.is-good{background:#e8f8eb;color:#1fa34a}
+    .monthCardPct.is-warn{background:#fff2e6;color:#ff7a1a}
+    .monthCardMeta{font-size:10px;color:#6f83a3;margin-top:13px}
+    .monthCardBar{margin-top:9px;height:5px;border-radius:999px;background:#f2f5fa;overflow:hidden}
+    .monthCardBarFill{height:100%;border-radius:999px;background:var(--success)}
+    .monthCardBarFill.is-warn{background:#ff7a1a}
+    .sideStack{display:flex;flex-direction:column;gap:16px;margin-top:16px}
+    .sideCard{border:1px solid #d9e3f0;border-radius:20px;background:#fff;padding:24px 26px 22px;box-shadow:0 1px 2px rgba(15,23,42,.03)}
+    .sideCardTitle{font-size:20px;font-weight:800;color:#1f2b3d;margin-bottom:22px;letter-spacing:-.02em}
+    .summaryList{display:flex;flex-direction:column;gap:0}
+    .summaryRow{display:flex;justify-content:space-between;align-items:center;gap:18px;font-size:15px;color:#667792;padding:0 0 16px;margin-bottom:16px;border-bottom:1px solid #edf2f8}
+    .summaryRow:last-child{border-bottom:none;padding-bottom:0}
+    .summaryRow b{font-size:20px;font-weight:800;color:#172033;line-height:1}
+    .summaryRow.success b{color:#12a34a}
+    .summaryRow.warning b{color:var(--warning)}
+    .summaryRow.muted b{color:#6f83a3}
+    .summaryRow.primary b{color:#3567eb}
+    .insightsTitle{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+    .insightsTitleIcon{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;color:#ff7a1a;flex:0 0 auto}
+    .insightsTitleIcon svg{display:block;width:18px;height:18px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+    .insightList{display:flex;flex-direction:column;gap:16px}
+    .insightItem{display:grid;grid-template-columns:36px minmax(0,1fr);gap:14px;align-items:center}
+    .insightIcon{width:36px;height:36px;border-radius:999px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;line-height:1}
+    .insightIcon svg{display:block;width:17px;height:17px}
+    .insightIcon.success{background:#e8f8eb;color:#22a447}
+    .insightIcon.warn{background:#fff2e6;color:#ff7a1a;border:none}
+    .insightIcon.muted{background:#f3f6fb;color:#6f83a3}
+    .insightText{padding-top:0;font-size:15px;line-height:1.35;color:#1f2b3d}
+    .emptyState{padding:24px;font-size:14px;background:linear-gradient(180deg,#ffffff 0%,#f5f8ff 100%);border-radius:16px;box-shadow:var(--shadow-sm)}
+    .drawerBackdrop{display:none}
+    .filtersFab{display:none;position:fixed;right:18px;bottom:18px;z-index:50;align-items:center;justify-content:center;width:56px;height:56px;padding:0;border:none;border-radius:999px;background:var(--accent);color:#fff;font-weight:800;font-size:13px;box-shadow:0 16px 36px rgba(52,103,235,.26);cursor:pointer}
+    .filtersFabIcon{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:999px;background:rgba(255,255,255,.16);font-size:15px}
+    .srOnly{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+    @media(max-width:1220px){
+      .headRow{grid-template-columns:1fr}
+      .pageShell{display:block}
+      .sideColumn{position:fixed;right:0;top:0;bottom:0;width:min(92vw,340px);padding:16px 16px 18px;background:rgba(248,250,255,.98);box-shadow:-24px 0 48px rgba(15,23,42,.16);border-left:1px solid var(--border);transform:translateX(110%);transition:transform .25s ease;z-index:45;overflow:auto;backdrop-filter:blur(18px)}
+      body.drawer-open .sideColumn{transform:translateX(0)}
+      .drawerBackdrop{display:block;position:fixed;inset:0;background:rgba(15,23,42,.28);opacity:0;pointer-events:none;transition:opacity .25s ease;z-index:40}
+      body.drawer-open .drawerBackdrop{opacity:1;pointer-events:auto}
+      .filtersFab{display:inline-flex}
+      .reportGrid{grid-template-columns:1fr}
+      .scopeFiltersGrid{grid-template-columns:1fr 1fr}
+      .indicatorPanel .filtersHead{grid-template-columns:1fr}
+      .indicatorPanel .filtersGrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .monthCardGrid{grid-template-columns:repeat(4,minmax(0,1fr))}
+      .pageShell{padding-bottom:88px}
+    }
+    @media(max-width:767px){
+      .controls{width:100%;justify-content:flex-start}
+      .controls label{width:100%}
+      .langSwitch{width:100%;justify-content:stretch}
+      .langBtn{flex:1}
+      .topStamp{display:none}
+      select{min-width:0;width:100%}
+      .rowBtns{width:100%}
+      .scopeFiltersGrid{grid-template-columns:1fr}
+      .filtersGrid{grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
+      .miniKpis{grid-template-columns:1fr}
+      .chartBox{height:320px}
+      .indicatorPanel .filtersGrid{grid-template-columns:1fr}
+      .monthCardGrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .title{font-size:24px}
+      .indicatorPanel .filtersHead{grid-template-columns:1fr}
+    }
+    @media(max-width:520px){
+      .wrap{padding:16px 12px 34px}
+      .heroPanel,.toolbarPanel,.card{border-radius:16px}
+      .headRow{padding:16px 16px 18px}
+      .filtersFab{right:14px;bottom:14px}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="headRow">
+      <div>
+        <div class="titleRow">
+          <div class="heroEyebrow" id="backGlyph" role="button" tabindex="0">←</div>
+          <h1 class="title" id="title">План/выполнено по месяцам</h1>
+        </div>
+      </div>
+      <div class="controls">
+        <label id="deptWrap"><span id="deptLabel">Кафедра</span>
+          <select id="deptSel" class="controlSelect"></select>
+        </label>
+        <label><span id="yearLabel">Учебный год</span>
+          <select id="yearSel" class="controlSelect"></select>
+        </label>
+        <div class="langSwitch" role="group" aria-label="Language switcher">
+          <button class="langBtn" type="button" id="langRuBtn" data-lang="ru">RU</button>
+          <button class="langBtn" type="button" id="langUzBtn" data-lang="uz">UZ</button>
+        </div>
+        <div class="topStamp">
+          <span class="topStampLabel" id="updatedLabel">Обновлено</span>
+          <span class="topStampValue" id="updatedStamp">-</span>
+        </div>
+        <div class="rowBtns">
+          <button class="btn" type="button" id="reloadBtn">Обновить</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" id="scopeFiltersCard">
+      <div class="filtersHead">
+        <div>
+          <div class="filtersTitle" id="scopeFiltersTitle"></div>
+          <div class="hint" id="scopeFiltersHint"></div>
+        </div>
+        <div class="rowBtns">
+          <button class="btn secondary small scopeBulkBtn" type="button" id="selectAllScopeFiltersBtn"></button>
+          <button class="btn secondary small scopeBulkBtn" type="button" id="clearAllScopeFiltersBtn"></button>
+        </div>
+      </div>
+      <div class="scopeApplyHint" id="scopeApplyHint"></div>
+      <div class="scopeFiltersGrid">
+        <div class="scopeFilterGroup">
+          <div class="scopeFilterTitle" id="monthFilterTitle"></div>
+          <div class="monthsGrid" id="monthFilterChecks"></div>
+        </div>
+        <div class="scopeFilterGroup">
+          <div class="scopeFilterTitle" id="halfFilterTitle"></div>
+          <div class="inlineChecks" id="halfFilterChecks"></div>
+        </div>
+        <div class="scopeFilterGroup">
+          <div class="scopeFilterTitle" id="sourceFilterTitle"></div>
+          <div class="inlineChecks" id="sourceFilterChecks"></div>
+        </div>
+        <div class="scopeFilterGroup">
+          <div class="scopeFilterTitle" id="statusFilterTitle"></div>
+          <div class="inlineChecks" id="statusFilterChecks"></div>
+        </div>
+      </div>
+      <div class="scopeApplyBar">
+        <button class="btn small" type="button" id="applyScopeFiltersBtn"></button>
+      </div>
+    </div>
+
+    <div class="card" id="indicatorFiltersCard" style="display:none">
+      <div class="filtersHead">
+        <div>
+          <div class="filtersTitle" id="filtersTitle">Показатели</div>
+          <div class="hint" id="filtersHint"></div>
+        </div>
+        <div class="rowBtns">
+          <button class="btn secondary small" type="button" id="selectAllIndicatorsBtn">Включить все</button>
+          <button class="btn secondary small" type="button" id="clearIndicatorsBtn">Выключить все</button>
+        </div>
+      </div>
+      <div class="filtersGrid" id="indicatorChecks"></div>
+    </div>
+
+    <div class="card" id="statusCard">
+      <div id="status" class="muted">Загрузка...</div>
+      <div id="error" class="err" style="display:none"></div>
+    </div>
+
+    <div class="card emptyState" id="emptyStateCard" style="display:none"></div>
+
+    <div class="reportGrid" id="reportGrid" style="display:none"></div>
+  </div>
+  <div class="drawerBackdrop" id="drawerBackdrop" aria-hidden="true"></div>
+  <button class="filtersFab" type="button" id="filtersFab" aria-controls="sideColumn" aria-expanded="false" aria-label="Фильтры">
+    <span class="filtersFabIcon">☰</span>
+    <span class="srOnly">Фильтры</span>
+  </button>
+
+  <script src="auth-storage.js?v=20260403b"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script>
+    const API = '/api';
+    const LANG_KEY = 'cabinetLang';
+    let currentLang = (() => { try { return localStorage.getItem(LANG_KEY) === 'uz' ? 'uz' : 'ru'; } catch (_) { return 'ru'; } })();
+
+    const I18N = {
+      ru: {
+        title: 'Интерактивный отчёт план/выполнено',
+        dept: 'Кафедра',
+        year: 'Учебный год',
+        back: 'Назад',
+        reload: 'Обновить',
+        loading: 'Загрузка...',
+        needAuth: 'Вы не авторизованы. Перенаправляем на вход...',
+        badYear: 'Неверный учебный год',
+        planned: 'План',
+        fact: 'Выполнено',
+        totalPlan: 'План всего',
+        totalFact: 'Выполнено всего',
+        pct: 'Выполнение',
+        noData: 'Нет данных для выбранного года и кафедры.',
+        noIndicatorsVisible: 'Включите хотя бы один показатель в верхнем фильтре.',
+        filtersTitle: 'Показатели',
+        filtersHint: (selected, total) => `Выбрано: ${selected} из ${total}`,
+        selectAll: 'Включить все',
+        clearAll: 'Выключить все',
+        scopeFiltersTitle: 'Фильтры',
+        scopeFiltersHint: 'Месяцы и полугодие влияют на план и выполнено. Источник и статус влияют только на выполнено.',
+        applyScopeFilters: 'Применить',
+        monthFilterTitle: 'Месяц',
+        halfFilterTitle: 'Полугодие',
+        sourceFilterTitle: 'Источник',
+        statusFilterTitle: 'Статус выполнения',
+        half1: '1-е (авг–дек)',
+        half2: '2-е (янв–июл)',
+        sourcePlan: 'По плану',
+        sourceOut: 'Вне плана',
+        statusDone: 'Выполнено',
+        statusPartial: 'Частично',
+        statusNotDone: 'Не выполнено',
+        months: ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'],
+        articleTypes: {
+          INTL_ARTICLE: 'Международная статья',
+          VAK: 'ВАКовская Республиканская статья',
+          INTL_CONF: 'Международная конференция',
+          REP_CONF: 'Республиканская конференция',
+          WOS_SCOPUS: 'Публикация в Web of Science / Scopus'
+        },
+        indicators: {
+          ARTICLE_TYPE: 'Статья',
+          ARTICLE_VAK: 'ВАКовская Республиканская статья',
+          ARTICLE_SCOPUS: 'Scopus / WoS',
+          CONFERENCE: 'Конференция',
+          TEXTBOOK: 'Учебник',
+          TUTORIAL: 'Учебное пособие',
+          METHOD_GUIDELINES: 'Методические указания',
+          METHODICAL_MANUAL: 'Учебно-методическое пособие',
+          UMK: 'Учебно-методический комплекс',
+          E_TEXTBOOK: 'Электронный учебник',
+          MONOGRAPH: 'Монография',
+          PATENT: 'Патент',
+          PATENTS: 'Патенты',
+          CERTIFICATE: 'Свидетельство',
+          CITATIONS: 'Цитаты',
+          WOS_SCOPUS: 'Web of Science / Scopus',
+          GRANT_PROJECTS: 'Грантовые проекты',
+          TOP1000_TRAINING: 'Обучение в TOP-1000',
+          DSC_PROFESSOR_UNVON: 'DSc / профессор / ученое звание',
+          PHD_DOTSENT_UNVON: 'PhD / доцент / ученое звание',
+          XORIJIY_TIL_MASHGULOT: 'Занятия на иностранном языке',
+          XORIJIY_TIL_SERTIFIKAT: 'Сертификат по иностранному языку'
+        }
+      },
+      uz: {
+        title: 'Interaktiv hisobot reja/bajarildi',
+        dept: 'Kafedra',
+        year: 'O‘quv yili',
+        back: 'Orqaga',
+        reload: 'Yangilash',
+        loading: 'Yuklanmoqda...',
+        needAuth: 'Siz avtorizatsiyadan o‘tmagansiz. Kirishga yo‘naltirilmoqda...',
+        badYear: 'O‘quv yili noto‘g‘ri',
+        planned: 'Reja',
+        fact: 'Bajarildi',
+        totalPlan: 'Jami reja',
+        totalFact: 'Jami bajarildi',
+        pct: 'Bajarilish',
+        noData: 'Tanlangan yil va kafedra uchun ma’lumot yo‘q.',
+        noIndicatorsVisible: 'Yuqoridagi filtrda kamida bitta ko‘rsatkichni yoqing.',
+        filtersTitle: 'Ko‘rsatkichlar',
+        filtersHint: (selected, total) => `Tanlangan: ${selected} / ${total}`,
+        selectAll: 'Barchasini yoqish',
+        clearAll: 'Barchasini o‘chirish',
+        scopeFiltersTitle: 'Filtrlar',
+        scopeFiltersHint: 'Oy va yarim yil reja va faktga ta’sir qiladi. Manba va status faqat faktga ta’sir qiladi.',
+        resetScopeFilters: 'Filtrlarni tiklash',
+        applyScopeFilters: 'Qo‘llash',
+        monthFilterTitle: 'Oy',
+        halfFilterTitle: 'Yarim yil',
+        sourceFilterTitle: 'Manba',
+        statusFilterTitle: 'Bajarilish holati',
+        half1: '1-chi (avg–dek)',
+        half2: '2-chi (yan–iyl)',
+        sourcePlan: 'Reja bo‘yicha',
+        sourceOut: 'Rejadan tashqari',
+        statusDone: 'Bajarilgan',
+        statusPartial: 'Qisman',
+        statusNotDone: 'Bajarilmagan',
+        months: ['Yanvar','Fevral','Mart','Aprel','May','Iyun','Iyul','Avgust','Sentyabr','Oktyabr','Noyabr','Dekabr'],
+        articleTypes: {
+          INTL_ARTICLE: 'Xalqaro maqola',
+          VAK: 'OAK Respublika maqolasi',
+          INTL_CONF: 'Xalqaro konferensiya',
+          REP_CONF: 'Respublika konferensiyasi',
+          WOS_SCOPUS: 'Web of Science / Scopus nashri'
+        },
+        indicators: {
+          ARTICLE_TYPE: 'Maqola',
+          ARTICLE_VAK: 'OAK Respublika maqolasi',
+          ARTICLE_SCOPUS: 'Scopus / WoS',
+          CONFERENCE: 'Konferensiya',
+          TEXTBOOK: 'Darslik',
+          TUTORIAL: 'O‘quv qo‘llanma',
+          METHOD_GUIDELINES: 'Uslubiy ko‘rsatmalar',
+          METHODICAL_MANUAL: 'O‘quv-uslubiy qo‘llanma',
+          UMK: 'O‘quv-uslubiy majmua',
+          E_TEXTBOOK: 'Elektron darslik',
+          MONOGRAPH: 'Monografiya',
+          PATENT: 'Patent',
+          PATENTS: 'Patentlar',
+          CERTIFICATE: 'Guvohnoma',
+          CITATIONS: 'Iqtiboslar',
+          WOS_SCOPUS: 'Web of Science / Scopus',
+          GRANT_PROJECTS: 'Grant loyihalari',
+          TOP1000_TRAINING: 'TOP-1000 ta’limi',
+          DSC_PROFESSOR_UNVON: 'DSc / professor / ilmiy unvon',
+          PHD_DOTSENT_UNVON: 'PhD / dotsent / ilmiy unvon',
+          XORIJIY_TIL_MASHGULOT: 'Xorijiy tildagi mashg‘ulotlar',
+          XORIJIY_TIL_SERTIFIKAT: 'Xorijiy til sertifikati'
+        }
+      }
+    };
+
+    const qs = new URLSearchParams(location.search);
+    const initialDeptId = qs.get('departmentId') || '';
+    const initialYear = qs.get('academicYear') || '';
+
+    let lastData = null;
+    let rawPlanItems = [];
+    let rawWorks = [];
+    let chartInstances = [];
+    let departmentsCache = null;
+    const reportResponseCache = new Map();
+    let reportLoadSeq = 0;
+    let activeDetailKey = '';
+    let showZeroMonths = true;
+    const REPORT_ARTICLE_TYPES = ['INTL_ARTICLE', 'VAK', 'INTL_CONF', 'REP_CONF', 'WOS_SCOPUS'];
+    const REPORT_LITERATURE_TYPES = ['TEXTBOOK', 'TUTORIAL', 'METHOD_GUIDELINES', 'METHODICAL_MANUAL', 'UMK', 'E_TEXTBOOK', 'MONOGRAPH'];
+    const REPORT_ALL_MONTHS = [1,2,3,4,5,6,7,8,9,10,11,12];
+    const DEFAULT_REPORT_FILTERS = Object.freeze({
+      half1: true,
+      half2: true,
+      sourcePlan: true,
+      sourceOut: true,
+      statusDone: true,
+      statusPartial: true,
+      statusNotDone: false
+    });
+    let appliedReportFilterState = createDefaultReportFilterState();
+    let draftReportFilterState = cloneReportFilterState(appliedReportFilterState);
+    let scopeFiltersDirty = false;
+    const chartValueLabelsPlugin = {
+      id: 'valueLabels',
+      afterDatasetsDraw(chart) {
+        const { ctx, chartArea } = chart;
+        ctx.save();
+        ctx.font = '700 13px Inter, Arial, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'bottom';
+        chart.data.datasets.forEach((dataset, datasetIndex) => {
+          const meta = chart.getDatasetMeta(datasetIndex);
+          meta.data.forEach((bar, index) => {
+            const rawValue = Number(dataset.data && dataset.data[index]) || 0;
+            if (rawValue <= 0) return;
+            const x = bar.x;
+            const y = Math.max(bar.y - 10, chartArea.top + 16);
+            ctx.lineWidth = 4;
+            ctx.strokeStyle = 'rgba(255,255,255,0.96)';
+            ctx.strokeText(String(rawValue), x, y);
+            ctx.fillStyle = datasetIndex === 0 ? '#51627d' : '#148f41';
+            ctx.fillText(String(rawValue), x, y);
+          });
+        });
+        ctx.restore();
+      }
+    };
+    Chart.register(chartValueLabelsPlugin);
+
+    function esc(value) {
+      return String(value == null ? '' : value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function t(key) {
+      return (I18N[currentLang] || I18N.ru)[key] || key;
+    }
+
+    function indicatorLabel(code) {
+      const dict = (I18N[currentLang] || I18N.ru).indicators || {};
+      return dict[code] || code;
+    }
+
+    function articleTypeLabel(code) {
+      const dict = (I18N[currentLang] || I18N.ru).articleTypes || {};
+      return dict[code] || code;
+    }
+
+    function monthName(monthNumber) {
+      const months = (I18N[currentLang] || I18N.ru).months || [];
+      const index = Number(monthNumber) - 1;
+      return months[index] || String(monthNumber);
+    }
+    function monthShortName(monthNumber) {
+      const full = monthName(monthNumber);
+      return String(full).slice(0, 3);
+    }
+
+    function reportMonthOrder() {
+      return [8, 9, 10, 11, 12, 1, 2, 3, 4, 5, 6, 7];
+    }
+
+    function formatUpdatedStamp(date = new Date()) {
+      try {
+        return new Intl.DateTimeFormat(currentLang === 'uz' ? 'uz-UZ' : 'ru-RU', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        }).format(date);
+      } catch (_e) {
+        return date.toLocaleString();
+      }
+    }
+
+    function setUpdatedStamp(date = new Date()) {
+      const el = document.getElementById('updatedStamp');
+      if (el) el.textContent = formatUpdatedStamp(date);
+    }
+
+    function createDefaultReportFilterState() {
+      return {
+        months: new Set(REPORT_ALL_MONTHS),
+        half1: DEFAULT_REPORT_FILTERS.half1,
+        half2: DEFAULT_REPORT_FILTERS.half2,
+        sourcePlan: DEFAULT_REPORT_FILTERS.sourcePlan,
+        sourceOut: DEFAULT_REPORT_FILTERS.sourceOut,
+        statusDone: DEFAULT_REPORT_FILTERS.statusDone,
+        statusPartial: DEFAULT_REPORT_FILTERS.statusPartial,
+        statusNotDone: DEFAULT_REPORT_FILTERS.statusNotDone
+      };
+    }
+
+    function cloneReportFilterState(state) {
+      const source = state || createDefaultReportFilterState();
+      return {
+        months: new Set(source.months || REPORT_ALL_MONTHS),
+        half1: !!source.half1,
+        half2: !!source.half2,
+        sourcePlan: !!source.sourcePlan,
+        sourceOut: !!source.sourceOut,
+        statusDone: !!source.statusDone,
+        statusPartial: !!source.statusPartial,
+        statusNotDone: !!source.statusNotDone
+      };
+    }
+
+    function setFiltersDrawerOpen(isOpen) {
+      document.body.classList.toggle('drawer-open', !!isOpen);
+      const backdrop = document.getElementById('drawerBackdrop');
+      const fab = document.getElementById('filtersFab');
+      if (backdrop) backdrop.setAttribute('aria-hidden', String(!isOpen));
+      if (fab) fab.setAttribute('aria-expanded', String(!!isOpen));
+    }
+
+    function closeFiltersDrawer() {
+      setFiltersDrawerOpen(false);
+    }
+
+    function initPageLayout() {
+      const wrap = document.querySelector('.wrap');
+      const scopeCard = document.getElementById('scopeFiltersCard');
+      const indicatorCard = document.getElementById('indicatorFiltersCard');
+      const statusCard = document.getElementById('statusCard');
+      const emptyCard = document.getElementById('emptyStateCard');
+      const reportGrid = document.getElementById('reportGrid');
+      if (!wrap || !scopeCard || !indicatorCard || !statusCard || !emptyCard || !reportGrid) return;
+
+      let shell = document.getElementById('pageShell');
+      let main = document.getElementById('mainColumn');
+      let side = document.getElementById('sideColumn');
+      let stack = document.getElementById('layoutStack');
+
+      if (!shell) {
+        shell = document.createElement('section');
+        shell.id = 'pageShell';
+        shell.className = 'pageShell';
+        wrap.appendChild(shell);
+      }
+      if (!main) {
+        main = document.createElement('div');
+        main.id = 'mainColumn';
+        main.className = 'mainColumn';
+        shell.appendChild(main);
+      }
+      if (!side) {
+        side = document.createElement('aside');
+        side.id = 'sideColumn';
+        side.className = 'sideColumn';
+        shell.appendChild(side);
+      }
+      if (!stack) {
+        stack = document.createElement('div');
+        stack.id = 'layoutStack';
+        stack.className = 'layoutStack';
+        main.appendChild(stack);
+      }
+
+      indicatorCard.classList.add('indicatorPanel');
+      scopeCard.classList.add('scopeCard');
+
+      if (indicatorCard.parentElement !== main) main.insertBefore(indicatorCard, stack);
+      if (scopeCard.parentElement !== side) side.appendChild(scopeCard);
+      let sideStack = document.getElementById('sideStack');
+      if (!sideStack) {
+        sideStack = document.createElement('div');
+        sideStack.id = 'sideStack';
+        sideStack.className = 'sideStack';
+        side.appendChild(sideStack);
+      }
+      if (!document.getElementById('summaryCard')) {
+        const summary = document.createElement('section');
+        summary.id = 'summaryCard';
+        summary.className = 'sideCard';
+        sideStack.appendChild(summary);
+      }
+      if (!document.getElementById('insightsCard')) {
+        const insights = document.createElement('section');
+        insights.id = 'insightsCard';
+        insights.className = 'sideCard';
+        sideStack.appendChild(insights);
+      }
+      if (statusCard.parentElement !== stack) stack.appendChild(statusCard);
+      if (emptyCard.parentElement !== stack) stack.appendChild(emptyCard);
+      if (reportGrid.parentElement !== stack) stack.appendChild(reportGrid);
+    }
+
+    function isH1Month(month) {
+      const value = Number(month);
+      return value >= 8 && value <= 12;
+    }
+
+    function isH2Month(month) {
+      const value = Number(month);
+      return value >= 1 && value <= 7;
+    }
+
+    function isMonthEnabledByReportFilters(month) {
+      const value = Number(month);
+      if (!Number.isFinite(value) || value < 1 || value > 12) return false;
+      if (!appliedReportFilterState.months.has(value)) return false;
+      if (isH1Month(value) && !appliedReportFilterState.half1) return false;
+      if (isH2Month(value) && !appliedReportFilterState.half2) return false;
+      return true;
+    }
+
+    function isFactSourceEnabled(source) {
+      const normalized = String(source || 'PLAN').trim().toUpperCase();
+      if (normalized === 'OUT_OF_PLAN') return appliedReportFilterState.sourceOut;
+      return appliedReportFilterState.sourcePlan;
+    }
+
+    function isFactStatusEnabled(status) {
+      const normalized = String(status || '').trim().toUpperCase();
+      if (normalized === 'DONE') return appliedReportFilterState.statusDone;
+      if (normalized === 'PARTIAL') return appliedReportFilterState.statusPartial;
+      return appliedReportFilterState.statusNotDone;
+    }
+
+    function normalizeArticleType(articleType) {
+      const normalized = String(articleType || '').trim().toUpperCase();
+      if (normalized === 'SCOPUS' || normalized === 'WOS') return 'WOS_SCOPUS';
+      return normalized;
+    }
+
+    function metricLabel(code) {
+      if (String(code).startsWith('ARTICLE_TYPE:')) {
+        return articleTypeLabel(String(code).split(':')[1] || '');
+      }
+      return indicatorLabel(code);
+    }
+
+    function pct(totalPlanned, totalFact) {
+      if (!totalPlanned) return '0%';
+      return Math.round((totalFact / totalPlanned) * 100) + '%';
+    }
+
+    function rawPctNumber(totalPlanned, totalFact) {
+      if (!totalPlanned) return 0;
+      return Math.max(0, Math.round((totalFact / totalPlanned) * 100));
+    }
+
+    function remainingAmount(totalPlanned, totalFact) {
+      return Math.max(0, totalPlanned - totalFact);
+    }
+
+    function metricGroupLabel(key) {
+      const normalized = String(key || '');
+      if (normalized.startsWith('ARTICLE_TYPE:')) return currentLang === 'uz' ? 'Nashrlar' : 'Публикации';
+      if (REPORT_LITERATURE_TYPES.includes(normalized)) return currentLang === 'uz' ? 'Nashrlar' : 'Издания';
+      if (normalized === 'GRANT_PROJECTS') return currentLang === 'uz' ? 'Grantlar' : 'Гранты';
+      if (normalized === 'PATENT' || normalized === 'PATENTS') return currentLang === 'uz' ? 'Intellektual mulk' : 'Интеллектуальная собственность';
+      if (normalized === 'DSC_PROFESSOR_UNVON' || normalized === 'PHD_DOTSENT_UNVON') return currentLang === 'uz' ? 'Attestatsiya' : 'Аттестация';
+      return currentLang === 'uz' ? 'Ko‘rsatkich' : 'Показатель';
+    }
+
+    function completionStatusLabel(totalPlanned, totalFact) {
+      if (!totalPlanned && !totalFact) return currentLang === 'uz' ? 'Ma’lumot yo‘q' : 'Нет данных';
+      if (!totalPlanned && totalFact) return currentLang === 'uz' ? 'Bajarilgan' : 'Выполнено';
+      if (totalFact > totalPlanned) return currentLang === 'uz' ? 'Ortiqcha bajarilgan' : 'Перевыполнен';
+      if (totalFact === totalPlanned) return currentLang === 'uz' ? 'Bajarilgan' : 'Выполнено';
+      if (totalFact > 0) return currentLang === 'uz' ? 'Jarayonda' : 'В процессе';
+      return currentLang === 'uz' ? 'Boshlanmagan' : 'Не начат';
+    }
+
+    function completionStatusTone(totalPlanned, totalFact) {
+      if (!totalPlanned && !totalFact) return 'muted';
+      if (totalFact >= totalPlanned) return 'success';
+      if (totalFact > 0) return 'warning';
+      return 'muted';
+    }
+
+    function pctToneClass(pctValue) {
+      const value = Number(pctValue) || 0;
+      if (value >= 100) return 'is-good';
+      if (value <= 0) return 'is-neutral';
+      return '';
+    }
+
+    function monthCardStatus(planValue, factValue) {
+      const plan = Number(planValue) || 0;
+      const fact = Number(factValue) || 0;
+      if (plan === 0 && fact === 0) return 'is-empty';
+      if (fact > plan) return 'is-over';
+      if (fact === plan) return 'is-done';
+      return 'is-partial';
+    }
+
+    function monthPctClass(planValue, factValue) {
+      const pctVal = rawPctNumber(planValue, factValue);
+      if (pctVal >= 100) return 'is-good';
+      if (pctVal > 0) return 'is-warn';
+      return '';
+    }
+
+    function getVisibleMonthIndexes(row) {
+      const planned = Array.isArray(row && row.planned) ? row.planned : [];
+      const fact = Array.isArray(row && row.fact) ? row.fact : [];
+      const indexes = [];
+      for (let i = 0; i < Math.max(planned.length, fact.length); i += 1) {
+        if (!showZeroMonths && Number(planned[i] || 0) === 0 && Number(fact[i] || 0) === 0) continue;
+        indexes.push(i);
+      }
+      return indexes.length ? indexes : planned.map((_, i) => i);
+    }
+
+    function renderMonthlyDetail(months, row) {
+      const monthItems = Array.isArray(months) ? months : [];
+      const planned = Array.isArray(row && row.planned) ? row.planned : [];
+      const fact = Array.isArray(row && row.fact) ? row.fact : [];
+      const indexes = getVisibleMonthIndexes(row);
+      return `
+        <section class="monthlyDetail">
+          <div class="monthlyDetailTitle">${currentLang === 'uz' ? 'Oylik tafsilotlar' : 'Помесячная детализация'}</div>
+          <div class="monthCardGrid">
+            ${indexes.map((index) => {
+              const item = monthItems[index] || { m: index + 1 };
+              const pVal = Number(planned[index] || 0);
+              const fVal = Number(fact[index] || 0);
+              const pctVal = rawPctNumber(pVal, fVal);
+              const fillWidth = Math.min(Math.max(pctVal, 0), 100);
+              const statusClass = monthCardStatus(pVal, fVal);
+              const pctClass = monthPctClass(pVal, fVal);
+              return `
+                <div class="monthCard ${statusClass}">
+                  <div class="monthCardTop">
+                    <div class="monthCardName">${esc(monthName(item.m))}</div>
+                    <div class="monthCardPct ${pctClass}">${pctVal}%</div>
+                  </div>
+                  <div class="monthCardMeta">${currentLang === 'uz' ? 'Reja' : 'План'} ${pVal} • ${currentLang === 'uz' ? 'Bajarildi' : 'Выполнено'} ${fVal}</div>
+                  <div class="monthCardBar"><div class="monthCardBarFill ${pctClass === 'is-warn' ? 'is-warn' : ''}" style="width:${fillWidth}%"></div></div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </section>
+      `;
+    }
+
+    function renderSidebarCards(row, totalPlanned, totalFact) {
+      const summaryCard = document.getElementById('summaryCard');
+      const insightsCard = document.getElementById('insightsCard');
+      if (!summaryCard || !insightsCard) return;
+      const insightIconSvg = {
+        success: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-right" aria-hidden="true"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg>',
+        warn: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 17h6v-6"/><path d="m22 17-8.5-8.5-5 5L2 7"/></svg>',
+        muted: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49"/><path d="M14.084 14.158a3 3 0 0 1-4.242-4.242"/><path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143"/><path d="m2 2 20 20"/></svg>'
+      };
+
+      const planned = Array.isArray(row && row.planned) ? row.planned : [];
+      const fact = Array.isArray(row && row.fact) ? row.fact : [];
+      const completedByPlan = Math.min(totalPlanned, totalFact);
+      const outOfPlan = Math.max(0, totalFact - totalPlanned);
+      const completionPct = pct(totalPlanned, totalFact);
+      const completionTone = completionStatusTone(totalPlanned, totalFact);
+      const monthItems = Array.isArray(lastData && lastData.months) ? lastData.months : [];
+      const zeroHidden = planned.filter((p, idx) => Number(p || 0) === 0 && Number(fact[idx] || 0) === 0).length;
+      const monthRatios = monthItems.map((item, index) => {
+        const pVal = Number(planned[index] || 0);
+        const fVal = Number(fact[index] || 0);
+        const ratio = pVal > 0 ? (fVal / pVal) : (fVal > 0 ? 999 : -1);
+        return { item, index, pVal, fVal, ratio };
+      });
+      const problemMonths = monthRatios
+        .filter(({ index }) => Number(planned[index] || 0) > Number(fact[index] || 0) && Number(planned[index] || 0) > 0)
+        .sort((a, b) => {
+          const aPlan = Number(planned[a.index] || 0);
+          const aFact = Number(fact[a.index] || 0);
+          const bPlan = Number(planned[b.index] || 0);
+          const bFact = Number(fact[b.index] || 0);
+          const aGap = aPlan - aFact;
+          const bGap = bPlan - bFact;
+          const aRatio = aPlan > 0 ? aFact / aPlan : 0;
+          const bRatio = bPlan > 0 ? bFact / bPlan : 0;
+          return aRatio - bRatio || bGap - aGap || a.index - b.index;
+        })
+        .slice(0, 2)
+        .map(({ item }) => monthName(item.m));
+
+      summaryCard.innerHTML = `
+        <div class="sideCardTitle">${currentLang === 'uz' ? 'Yakunlar' : 'Итоги'}</div>
+        <div class="summaryList">
+          <div class="summaryRow"><span>${currentLang === 'uz' ? 'Reja' : 'План'}</span><b>${totalPlanned}</b></div>
+          <div class="summaryRow success"><span>${currentLang === 'uz' ? 'Bajarildi' : 'Выполнено'}</span><b>${totalFact}</b></div>
+          <div class="summaryRow ${completionTone}"><span>${currentLang === 'uz' ? 'Bajarilish' : 'Выполнение'}</span><b>${completionPct}</b></div>
+          <div class="summaryRow"><span>${currentLang === 'uz' ? 'Reja bo‘yicha' : 'По плану'}</span><b>${completedByPlan}</b></div>
+          <div class="summaryRow primary"><span>${currentLang === 'uz' ? 'Rejadan tashqari' : 'Вне плана'}</span><b>${outOfPlan}</b></div>
+        </div>
+      `;
+
+      const pctValue = totalPlanned ? Math.round((totalFact / totalPlanned) * 100) : 0;
+      const overText = Math.max(0, pctValue - 100);
+      const overLabel = currentLang === 'uz'
+        ? (overText > 0 ? `Reja ${overText}% ga ortiqcha bajarilgan` : `Reja ${pctValue}% ga bajarilgan`)
+        : (overText > 0 ? `План перевыполнен на ${overText}%` : `План выполнен на ${pctValue}%`);
+      const zeroHiddenLabel = currentLang === 'uz'
+        ? `${zeroHidden} ta nol oy yashiriladi`
+        : `${zeroHidden} нулевых ${zeroHidden === 1 ? 'месяц скрываем' : (zeroHidden >= 2 && zeroHidden <= 4 ? 'месяца скрываем' : 'месяцев скрываем')}`;
+      insightsCard.innerHTML = `
+        <div class="sideCardTitle insightsTitle"><span class="insightsTitleIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></span><span>${currentLang === 'uz' ? 'Asosiy xulosalar' : 'Ключевые выводы'}</span></div>
+        <div class="insightList">
+          <div class="insightItem"><div class="insightIcon success">${insightIconSvg.success}</div><div class="insightText">${overLabel}</div></div>
+          <div class="insightItem"><div class="insightIcon warn">${insightIconSvg.warn}</div><div class="insightText">${problemMonths.length ? (currentLang === 'uz' ? `Muammoli oylar — ${problemMonths.join(' va ')}` : `Проблемные месяцы — ${problemMonths.join(' и ')}`) : (currentLang === 'uz' ? 'Muammoli oylar yo‘q' : 'Проблемных месяцев нет')}</div></div>
+          <div class="insightItem"><div class="insightIcon muted">${insightIconSvg.muted}</div><div class="insightText">${zeroHiddenLabel}</div></div>
+        </div>
+      `;
+    }
+
+    function seriesTotal(values) {
+      return (Array.isArray(values) ? values : []).reduce((sum, value) => sum + (Number(value) || 0), 0);
+    }
+
+    function getBase() {
+      return (location.pathname.includes('/') ? location.pathname.replace(/\/[^/]*$/, '') : '') || '';
+    }
+
+    function showError(msg) {
+      const el = document.getElementById('error');
+      el.style.display = 'block';
+      el.textContent = msg;
+      syncStatusCard();
+    }
+
+    function clearError() {
+      const el = document.getElementById('error');
+      el.style.display = 'none';
+      el.textContent = '';
+      syncStatusCard();
+    }
+
+    function setStatus(msg) {
+      document.getElementById('status').textContent = msg || '';
+      syncStatusCard();
+    }
+
+    function syncStatusCard() {
+      const status = document.getElementById('status').textContent.trim();
+      const error = document.getElementById('error').textContent.trim();
+      document.getElementById('statusCard').style.display = (status || error) ? 'block' : 'none';
+    }
+
+    function setEmptyState(msg) {
+      const card = document.getElementById('emptyStateCard');
+      if (!msg) {
+        card.style.display = 'none';
+        card.textContent = '';
+        return;
+      }
+      card.style.display = 'block';
+      card.textContent = msg;
+    }
+
+    function applyLang() {
+      document.documentElement.lang = currentLang;
+      document.title = 'IlmiySTAT - ' + t('title');
+      document.getElementById('title').textContent = t('title');
+      const langRuBtn = document.getElementById('langRuBtn');
+      const langUzBtn = document.getElementById('langUzBtn');
+      if (langRuBtn && langUzBtn) {
+        langRuBtn.classList.toggle('is-active', currentLang === 'ru');
+        langUzBtn.classList.toggle('is-active', currentLang === 'uz');
+        langRuBtn.setAttribute('aria-pressed', currentLang === 'ru' ? 'true' : 'false');
+        langUzBtn.setAttribute('aria-pressed', currentLang === 'uz' ? 'true' : 'false');
+      }
+      document.getElementById('deptLabel').textContent = t('dept');
+      document.getElementById('yearLabel').textContent = t('year');
+      document.getElementById('updatedLabel').textContent = currentLang === 'uz' ? 'Yangilangan' : 'Обновлено';
+      document.getElementById('reloadBtn').textContent = t('reload');
+      setUpdatedStamp();
+      renderReportScopeFilters();
+      document.getElementById('filtersTitle').textContent = t('filtersTitle');
+      document.getElementById('selectAllIndicatorsBtn').textContent = t('selectAll');
+      document.getElementById('clearIndicatorsBtn').textContent = t('clearAll');
+      if (!lastData) {
+        setStatus(t('loading'));
+      } else {
+        rebuildReportData();
+      }
+    }
+
+    applyLang();
+
+    window.addEventListener('storage', (event) => {
+      if (event.key !== LANG_KEY) return;
+      const nextLang = event.newValue === 'uz' ? 'uz' : 'ru';
+      if (nextLang === currentLang) return;
+      currentLang = nextLang;
+      applyLang();
+    });
+
+    const TOKEN_MSG_TYPE = 'ILMIYSTAT_TOKEN';
+    const TOKEN_REQ_TYPE = 'ILMIYSTAT_TOKEN_REQUEST';
+
+    function getToken() {
+      return getAuthToken();
+    }
+
+    function setToken(token) {
+      return setAuthToken(token);
+    }
+
+    function waitForToken(timeoutMs = 2500) {
+      return new Promise((resolve, reject) => {
+        const existing = getToken();
+        if (existing) return resolve(existing);
+        const origin = location.origin;
+        let done = false;
+
+        const onMsg = (event) => {
+          try {
+            if (event.origin !== origin) return;
+            const data = event.data || {};
+            if (data.type === TOKEN_MSG_TYPE && typeof data.token === 'string' && data.token) {
+              setToken(data.token);
+              done = true;
+              window.removeEventListener('message', onMsg);
+              resolve(data.token);
+            }
+          } catch (_e) {}
+        };
+
+        window.addEventListener('message', onMsg);
+        try {
+          if (window.opener && !window.opener.closed) {
+            window.opener.postMessage({ type: TOKEN_REQ_TYPE }, origin);
+          }
+        } catch (_e) {}
+
+        setTimeout(() => {
+          if (done) return;
+          window.removeEventListener('message', onMsg);
+          const token = getToken();
+          if (token) return resolve(token);
+          reject(new Error('no_auth'));
+        }, timeoutMs);
+      });
+    }
+
+    async function apiFetch(path) {
+      const token = getToken() || await waitForToken().catch(() => null);
+      if (!token) {
+        setStatus(t('needAuth'));
+        setTimeout(() => { location.href = getBase() + '/login.html?mode=user'; }, 600);
+        throw new Error('no_auth');
+      }
+
+      const response = await fetch(API + path, { headers: { 'Authorization': 'Bearer ' + token } });
+      const data = await response.json().catch(() => null);
+
+      if (!response.ok) {
+        if (response.status === 401 || response.status === 403) {
+          clearAuthToken();
+          setStatus(t('needAuth'));
+          setTimeout(() => { location.href = getBase() + '/login.html?mode=user'; }, 600);
+          throw new Error('no_auth');
+        }
+        throw new Error((data && data.error) ? data.error : ('HTTP ' + response.status));
+      }
+
+      return data;
+    }
+
+    function fillAcademicYears(select) {
+      const now = new Date();
+      const currentYear = now.getMonth() >= 8 ? now.getFullYear() : now.getFullYear() - 1;
+      select.innerHTML = '';
+      for (let year = currentYear; year >= currentYear - 4; year -= 1) {
+        const value = `${year}-${year + 1}`;
+        const option = document.createElement('option');
+        option.value = value;
+        option.textContent = value;
+        select.appendChild(option);
+      }
+    }
+
+    async function loadDepartments() {
+      if (Array.isArray(departmentsCache)) return departmentsCache;
+      const response = await fetch(`${API}/departments/public`);
+      const list = await response.json().catch(() => []);
+      departmentsCache = Array.isArray(list) ? list : [];
+      return departmentsCache;
+    }
+
+    function getDepartmentName(department) {
+      if (currentLang === 'uz' && department.nameUz) return department.nameUz;
+      return department.name || ('#' + department.id);
+    }
+
+    function getMetricKeys(data) {
+      if (data && data.__metricKeysLang === currentLang && Array.isArray(data.__metricKeysCache)) {
+        return data.__metricKeysCache;
+      }
+      const byIndicator = (data && data.byIndicator) || {};
+      const rawKeys = Object.keys(byIndicator);
+      const staticKeys = REPORT_ARTICLE_TYPES.map((code) => `ARTICLE_TYPE:${code}`).concat(REPORT_LITERATURE_TYPES);
+      const seen = new Set();
+      const ordered = [];
+
+      staticKeys.forEach((key) => {
+        if (seen.has(key)) return;
+        seen.add(key);
+        ordered.push(key);
+      });
+
+      rawKeys
+        .filter((key) => !seen.has(key))
+        .sort((a, b) => metricLabel(a).localeCompare(metricLabel(b), currentLang === 'uz' ? 'uz' : 'ru'))
+        .forEach((key) => {
+          seen.add(key);
+          ordered.push(key);
+        });
+
+      if (data) {
+        data.__metricKeysLang = currentLang;
+        data.__metricKeysCache = ordered;
+      }
+      return ordered;
+    }
+
+    function ensureActiveDetailKey(keys) {
+      if (!Array.isArray(keys) || !keys.length) {
+        activeDetailKey = '';
+        return;
+      }
+      if (!activeDetailKey || !keys.includes(activeDetailKey)) {
+        activeDetailKey = keys[0] || '';
+      }
+    }
+
+    function getSelectedIndicatorKeys(keys) {
+      if (!Array.isArray(keys) || !keys.length) return [];
+      return activeDetailKey && keys.includes(activeDetailKey) ? [activeDetailKey] : [keys[0]];
+    }
+
+    function getMonthLabels(data) {
+      const months = Array.isArray(data && data.months) ? data.months : [];
+      if (months.length) {
+        return months.map((item) => monthName(item.m));
+      }
+
+      const labels = Array.isArray(data && data.labels) ? data.labels : [];
+      return labels.map((label) => {
+        const parsedMonth = parseInt(String(label).split('.')[0], 10);
+        return Number.isFinite(parsedMonth) ? monthName(parsedMonth) : String(label);
+      });
+    }
+
+    function updateFiltersHint() {
+      if (!lastData) return;
+      const keys = getMetricKeys(lastData);
+      const total = keys.length;
+      const selected = getSelectedIndicatorKeys(keys).length;
+      document.getElementById('filtersHint').innerHTML = currentLang === 'uz'
+        ? `Tanlangan: <span class="selectedCount">${selected}</span> / ${total}`
+        : `Выбрано: <span class="selectedCount">${selected}</span> из ${total}`;
+    }
+
+    function syncReportScopeSelectionClasses() {
+      document.querySelectorAll('.scopeCard .scopeCheck').forEach((label) => {
+        const input = label.querySelector('input');
+        if (!input) return;
+        label.classList.toggle('is-selected', !!input.checked);
+      });
+    }
+
+    function updateScopeApplyHint() {
+      const hint = document.getElementById('scopeApplyHint');
+      const applyBtn = document.getElementById('applyScopeFiltersBtn');
+      if (!hint || !applyBtn) return;
+      const text = currentLang === 'uz'
+        ? 'Filtrlar o‘zgardi. Natijani yangilash uchun “Qo‘llash” tugmasini bosing.'
+        : 'Фильтры изменены. Чтобы обновить отчёт, нажмите «Применить».';
+      hint.textContent = text;
+      hint.classList.toggle('is-visible', scopeFiltersDirty);
+      applyBtn.classList.toggle('needs-apply', scopeFiltersDirty);
+    }
+
+    function setAllDraftReportFilters(isSelected) {
+      draftReportFilterState.months = new Set(isSelected ? REPORT_ALL_MONTHS : []);
+      draftReportFilterState.half1 = true;
+      draftReportFilterState.half2 = !!isSelected;
+      draftReportFilterState.sourcePlan = true;
+      draftReportFilterState.sourceOut = !!isSelected;
+      draftReportFilterState.statusDone = true;
+      draftReportFilterState.statusPartial = !!isSelected;
+      draftReportFilterState.statusNotDone = false;
+      scopeFiltersDirty = true;
+      renderReportScopeFilters();
+    }
+
+    function renderReportScopeFilters() {
+      const isUz = currentLang === 'uz';
+      document.getElementById('scopeFiltersTitle').textContent = t('scopeFiltersTitle');
+      const hintEl = document.getElementById('scopeFiltersHint');
+      if (hintEl) hintEl.textContent = '';
+      document.getElementById('applyScopeFiltersBtn').innerHTML = `<span class="scopeBtnIcon" aria-hidden="true">&#10003;</span><span class="scopeBtnText">${esc(isUz ? 'Qo‘llash' : 'Применить')}</span>`;
+      document.getElementById('selectAllScopeFiltersBtn').textContent = isUz ? 'Hammasini tanlash' : 'Выбрать все';
+      document.getElementById('clearAllScopeFiltersBtn').textContent = isUz ? 'Hammasini olib tashlash' : 'Снять все';
+      document.getElementById('monthFilterTitle').textContent = isUz ? 'OYLAR' : 'МЕСЯЦЫ';
+      document.getElementById('halfFilterTitle').textContent = isUz ? 'YARIM YIL' : 'ПОЛУГОДИЕ';
+      document.getElementById('sourceFilterTitle').textContent = t('sourceFilterTitle');
+      document.getElementById('statusFilterTitle').textContent = t('statusFilterTitle');
+
+      const monthContainer = document.getElementById('monthFilterChecks');
+      monthContainer.innerHTML = reportMonthOrder().map((month) => `
+        <label class="scopeCheck" title="${esc(monthName(month))}">
+          <input type="checkbox" data-report-filter="month" value="${month}" ${draftReportFilterState.months.has(month) ? 'checked' : ''} />
+          <span>${esc(monthShortName(month))}</span>
+        </label>
+      `).join('');
+
+      document.getElementById('halfFilterChecks').innerHTML = `
+        <label class="scopeCheck">
+          <input type="checkbox" data-report-filter="half1" ${draftReportFilterState.half1 ? 'checked' : ''} />
+          <span>${esc(isUz ? '1-chi (avg-dek)' : '1-е (авг–дек)')}</span>
+        </label>
+        <label class="scopeCheck">
+          <input type="checkbox" data-report-filter="half2" ${draftReportFilterState.half2 ? 'checked' : ''} />
+          <span>${esc(isUz ? '2-chi (yanv-iyul)' : '2-е (янв–июл)')}</span>
+        </label>
+      `;
+
+      document.getElementById('sourceFilterChecks').innerHTML = `
+        <label class="scopeCheck">
+          <input type="checkbox" data-report-filter="sourcePlan" ${draftReportFilterState.sourcePlan ? 'checked' : ''} />
+          <span>${esc(t('sourcePlan'))}</span>
+        </label>
+        <label class="scopeCheck">
+          <input type="checkbox" data-report-filter="sourceOut" ${draftReportFilterState.sourceOut ? 'checked' : ''} />
+          <span>${esc(t('sourceOut'))}</span>
+        </label>
+      `;
+
+      document.getElementById('statusFilterChecks').innerHTML = `
+        <label class="scopeCheck">
+          <input type="checkbox" data-report-filter="statusDone" ${draftReportFilterState.statusDone ? 'checked' : ''} />
+          <span>${esc(t('statusDone'))}</span>
+        </label>
+        <label class="scopeCheck">
+          <input type="checkbox" data-report-filter="statusPartial" ${draftReportFilterState.statusPartial ? 'checked' : ''} />
+          <span>${esc(t('statusPartial'))}</span>
+        </label>
+      `;
+
+      document.querySelectorAll('[data-report-filter]').forEach((input) => {
+        input.addEventListener('change', () => {
+          const kind = input.getAttribute('data-report-filter');
+          if (kind === 'month') {
+            const month = Number(input.value);
+            if (input.checked) draftReportFilterState.months.add(month);
+            else draftReportFilterState.months.delete(month);
+          } else if (kind === 'half1' || kind === 'half2') {
+            draftReportFilterState[kind] = !!input.checked;
+            if (!draftReportFilterState.half1 && !draftReportFilterState.half2) {
+              draftReportFilterState[kind] = true;
+              input.checked = true;
+            }
+          } else if (kind === 'sourcePlan' || kind === 'sourceOut') {
+            draftReportFilterState[kind] = !!input.checked;
+            if (!draftReportFilterState.sourcePlan && !draftReportFilterState.sourceOut) {
+              draftReportFilterState[kind] = true;
+              input.checked = true;
+            }
+          } else if (kind === 'statusDone' || kind === 'statusPartial') {
+            draftReportFilterState[kind] = !!input.checked;
+            if (!draftReportFilterState.statusDone && !draftReportFilterState.statusPartial) {
+              draftReportFilterState[kind] = true;
+              input.checked = true;
+            }
+            draftReportFilterState.statusNotDone = false;
+          } else {
+            draftReportFilterState[kind] = !!input.checked;
+            draftReportFilterState.statusNotDone = false;
+          }
+          syncReportScopeSelectionClasses();
+          scopeFiltersDirty = true;
+          updateScopeApplyHint();
+        });
+      });
+      syncReportScopeSelectionClasses();
+      updateScopeApplyHint();
+    }
+
+    function applyDraftReportFilters() {
+      scopeFiltersDirty = false;
+      appliedReportFilterState = cloneReportFilterState(draftReportFilterState);
+      rebuildReportData();
+    }
+
+    function rebuildReportData() {
+      const academicYear = document.getElementById('yearSel').value;
+      lastData = buildReportData(rawPlanItems, rawWorks, academicYear);
+      const keys = getMetricKeys(lastData);
+      ensureActiveDetailKey(keys);
+      renderIndicatorFilters();
+      renderReports();
+      renderReportScopeFilters();
+    }
+
+    function renderIndicatorFilters() {
+      const card = document.getElementById('indicatorFiltersCard');
+      const container = document.getElementById('indicatorChecks');
+
+      if (!lastData) {
+        card.style.display = 'none';
+        container.innerHTML = '';
+        return;
+      }
+
+      const keys = getMetricKeys(lastData);
+      if (!keys.length) {
+        card.style.display = 'none';
+        container.innerHTML = '';
+        return;
+      }
+
+      card.style.display = 'block';
+      container.innerHTML = keys.map((key) => {
+        const checked = activeDetailKey === key;
+        const row = (lastData.byIndicator && lastData.byIndicator[key]) || {};
+        const totalPlanned = seriesTotal(row.planned);
+        const totalFact = seriesTotal(row.fact);
+        const completionPct = rawPctNumber(totalPlanned, totalFact);
+        return `
+          <label class="checkItem${checked ? ' is-active is-current' : ' is-off'}" data-indicator-card="${esc(key)}">
+            <input type="checkbox" data-indicator="${esc(key)}" ${checked ? 'checked' : ''} />
+            <span class="checkItemBody">
+              <span class="checkItemTitle">${esc(metricLabel(key))}</span>
+              <span class="checkItemMeta"><span>${esc(metricGroupLabel(key))}</span><span class="checkItemPct ${pctToneClass(completionPct)}">${completionPct}%</span></span>
+            </span>
+          </label>
+        `;
+      }).join('');
+
+      container.querySelectorAll('input[data-indicator]').forEach((input) => {
+        input.addEventListener('change', () => {
+          const code = input.getAttribute('data-indicator');
+          activeDetailKey = code || '';
+          renderIndicatorFilters();
+          renderReports();
+        });
+      });
+      container.querySelectorAll('[data-indicator-card]').forEach((card) => {
+        card.addEventListener('click', (event) => {
+          if (event.target && event.target.tagName === 'INPUT') return;
+          const code = card.getAttribute('data-indicator-card') || '';
+          if (!code) return;
+          activeDetailKey = code;
+          renderIndicatorFilters();
+          renderReports();
+        });
+      });
+
+      updateFiltersHint();
+    }
+
+    function destroyCharts() {
+      chartInstances.forEach((chart) => {
+        try { chart.destroy(); } catch (_e) {}
+      });
+      chartInstances = [];
+    }
+
+    function createChart(canvas, labels, row, visibleIndexes) {
+      const indexes = Array.isArray(visibleIndexes) && visibleIndexes.length ? visibleIndexes : null;
+      const plannedData = Array.isArray(row && row.planned) ? row.planned : [];
+      const factData = Array.isArray(row && row.fact) ? row.fact : [];
+      const chartLabels = indexes ? indexes.map((i) => labels[i]) : labels;
+      const chartPlanned = indexes ? indexes.map((i) => plannedData[i]) : plannedData;
+      const chartFact = indexes ? indexes.map((i) => factData[i]) : factData;
+      const chart = new Chart(canvas, {
+        type: 'bar',
+        data: {
+          labels: chartLabels,
+          datasets: [
+            { label: t('planned'), data: chartPlanned, backgroundColor: '#c8d0dc', borderRadius: 6, maxBarThickness: 36, barPercentage: 0.74, categoryPercentage: 0.68 },
+            { label: t('fact'), data: chartFact, backgroundColor: '#1faa55', borderRadius: 6, maxBarThickness: 36, barPercentage: 0.74, categoryPercentage: 0.68 }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          events: [],
+          layout: {
+            padding: { top: 18 }
+          },
+          scales: {
+            x: {
+              ticks: {
+                autoSkip: false,
+                maxRotation: 0,
+                minRotation: 0,
+                color: '#526785',
+                font: { size: 12, weight: '500' },
+                padding: 8
+              },
+              grid: { display: false }
+            },
+            y: {
+              beginAtZero: true,
+              precision: 0,
+              border: { display: false },
+              ticks: { stepSize: 2, color: '#526785', font: { size: 12, weight: '500' }, padding: 8 },
+              grid: { color: '#dfe7f1', borderDash: [3, 3], drawTicks: false }
+            }
+          },
+          plugins: {
+            legend: { position: 'top', align: 'end', labels: { usePointStyle: true, pointStyle: 'circle', boxWidth: 9, boxHeight: 9, color: '#1f2b3d', padding: 16, font: { size: 12, weight: '500' } } },
+            tooltip: { enabled: false },
+            valueLabels: true
+          }
+        }
+      });
+
+      chartInstances.push(chart);
+    }
+
+    function renderReports() {
+      destroyCharts();
+
+      const grid = document.getElementById('reportGrid');
+      if (!lastData) {
+        grid.style.display = 'none';
+        grid.innerHTML = '';
+        setEmptyState('');
+        return;
+      }
+
+      if (!lastData.hasAnyData) {
+        grid.style.display = 'none';
+        grid.innerHTML = '';
+        setEmptyState(t('noData'));
+        return;
+      }
+
+      const keys = getMetricKeys(lastData);
+      if (!keys.length) {
+        grid.style.display = 'none';
+        grid.innerHTML = '';
+        setEmptyState(t('noData'));
+        return;
+      }
+
+      const visibleKeys = getSelectedIndicatorKeys(keys);
+      if (!visibleKeys.length) {
+        grid.style.display = 'none';
+        grid.innerHTML = '';
+        setEmptyState(t('noIndicatorsVisible'));
+        updateFiltersHint();
+        return;
+      }
+      const detailKeys = [activeDetailKey && visibleKeys.includes(activeDetailKey) ? activeDetailKey : visibleKeys[0]].filter(Boolean);
+      activeDetailKey = detailKeys[0] || '';
+
+      const labels = getMonthLabels(lastData);
+      const months = Array.isArray(lastData.months) ? lastData.months : [];
+      grid.style.display = 'grid';
+      setEmptyState('');
+
+      grid.innerHTML = detailKeys.map((key, index) => {
+        const row = lastData.byIndicator[key] || {};
+        const totalPlanned = seriesTotal(row.planned);
+        const totalFact = seriesTotal(row.fact);
+        const completionPct = rawPctNumber(totalPlanned, totalFact);
+        const remaining = remainingAmount(totalPlanned, totalFact);
+        const statusTone = completionStatusTone(totalPlanned, totalFact);
+        const visibleIndexes = getVisibleMonthIndexes(row);
+        return `
+          <section class="card reportCard">
+            <div class="reportSummarySurface">
+              <div class="reportCardHead">
+                <div>
+                  <div class="reportSectionLabel">${esc(metricGroupLabel(key))}</div>
+                  <div class="reportCardTitle">${esc(metricLabel(key))}</div>
+                </div>
+                <div class="reportCardMeta">
+                  <span class="reportStatusPill ${statusTone}">${esc(completionStatusLabel(totalPlanned, totalFact))}</span>
+                </div>
+              </div>
+              <div class="miniKpis detail">
+                <div class="miniKpi">
+                  <span class="miniKpiIcon plan" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span>
+                  <div class="miniKpiLbl">${esc(t('totalPlan'))}</div>
+                  <div class="miniKpiVal plan">${totalPlanned}</div>
+                </div>
+                <div class="miniKpi">
+                  <span class="miniKpiIcon fact" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg></span>
+                  <div class="miniKpiLbl">${esc(t('totalFact'))}</div>
+                  <div class="miniKpiVal fact">${totalFact}</div>
+                </div>
+                <div class="miniKpi">
+                  <span class="miniKpiIcon pct ${statusTone}" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M16 7h6v6"/><path d="m22 7-8.5 8.5-5-5L2 17"/></svg></span>
+                  <div class="miniKpiLbl">${esc(t('pct'))}</div>
+                  <div class="miniKpiVal pct ${statusTone}">${esc(pct(totalPlanned, totalFact))}</div>
+                </div>
+                <div class="miniKpi">
+                  <span class="miniKpiIcon remain" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 22h14"/><path d="M5 2h14"/><path d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22"/><path d="M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2"/></svg></span>
+                  <div class="miniKpiLbl">${currentLang === 'uz' ? 'Qoldi' : 'Осталось'}</div>
+                  <div class="miniKpiVal remain">${remaining}</div>
+                </div>
+              </div>
+            </div>
+            <div class="chartSurface">
+              <div class="chartHead">
+                <div>
+                  <div class="chartTitle">${currentLang === 'uz' ? 'Reja / Bajarildi grafigi' : 'График план / выполнено'}</div>
+                  <div class="chartSub">${currentLang === 'uz' ? 'O‘quv yili oylari bo‘yicha' : 'По месяцам учебного года'}</div>
+                </div>
+              </div>
+              <div class="chartBox">
+                <div class="chartScroll">
+                  <div class="chartCanvasFrame">
+                    <canvas id="indicatorChart${index}"></canvas>
+                  </div>
+                </div>
+              </div>
+              <div class="chartFoot">
+                <label class="toggleWrap">
+                  <span class="toggleSwitch ${showZeroMonths ? 'is-on' : ''}" id="showZeroMonthsToggle${index}"></span>
+                  <span>${currentLang === 'uz' ? 'Nol oylarni ko‘rsatish' : 'Показывать нулевые месяцы'}</span>
+                </label>
+              </div>
+            </div>
+            ${renderMonthlyDetail(months, row)}
+          </section>
+        `;
+      }).join('');
+
+      detailKeys.forEach((key, index) => {
+        const canvas = document.getElementById(`indicatorChart${index}`);
+        const row = lastData.byIndicator[key] || {};
+        const visibleIndexes = getVisibleMonthIndexes(row);
+        if (canvas) createChart(canvas, labels, row, visibleIndexes);
+        const toggle = document.getElementById(`showZeroMonthsToggle${index}`);
+        if (toggle) {
+          toggle.addEventListener('click', () => {
+            showZeroMonths = !showZeroMonths;
+            renderReports();
+          });
+        }
+      });
+
+      const activeRow = lastData.byIndicator[activeDetailKey] || lastData.byIndicator[detailKeys[0]] || {};
+      const activePlan = seriesTotal(activeRow.planned);
+      const activeFact = seriesTotal(activeRow.fact);
+      renderSidebarCards(activeRow, activePlan, activeFact);
+      updateFiltersHint();
+    }
+
+    function createMonthYearStructure(academicYear) {
+      const match = /^(\d{4})-(\d{4})$/.exec(String(academicYear || ''));
+      if (!match) return { labels: [], months: [], monthIndex: {} };
+
+      const y1 = Number(match[1]);
+      const y2 = Number(match[2]);
+      const monthOrder = [8, 9, 10, 11, 12, 1, 2, 3, 4, 5, 6, 7];
+      const months = monthOrder
+        .filter((month) => isMonthEnabledByReportFilters(month))
+        .map((month) => ({ m: month, y: month >= 8 ? y1 : y2 }));
+
+      const labels = months.map((item) => `${String(item.m).padStart(2, '0')}.${item.y}`);
+      const monthIndex = {};
+      months.forEach((item, index) => { monthIndex[`${item.y}-${item.m}`] = index; });
+      return { labels, months, monthIndex };
+    }
+
+    function inferAcademicYearMonthYear(month, academicYear) {
+      const monthNum = Number(month);
+      const match = /^(\d{4})-(\d{4})$/.exec(String(academicYear || ''));
+      if (!match || !Number.isFinite(monthNum) || monthNum < 1 || monthNum > 12) return null;
+      return monthNum >= 8 ? Number(match[1]) : Number(match[2]);
+    }
+
+    function createEmptySeries(length = 0) {
+      return {
+        planned: Array(length).fill(0),
+        fact: Array(length).fill(0),
+        totalPlanned: 0,
+        totalFact: 0
+      };
+    }
+
+    function getPlanAmount(item) {
+      const indicator = String(item && item.indicator || '').trim().toUpperCase();
+      if (indicator === 'CITATIONS') {
+        const value = Number(item && item.citationsCount);
+        return Number.isFinite(value) && value > 0 ? value : 1;
+      }
+      if (indicator === 'PATENTS' || indicator === 'PATENT') {
+        const value = Number(item && item.patentsCount);
+        return Number.isFinite(value) && value > 0 ? value : 1;
+      }
+      return 1;
+    }
+
+    function getFactAmount(item) {
+      const indicator = String(item && item.indicator || '').trim().toUpperCase();
+      if (indicator === 'CITATIONS') {
+        const value = Number(item && item.citationsCount);
+        return Number.isFinite(value) && value > 0 ? value : 1;
+      }
+      return 1;
+    }
+
+    function getCreditedFactStatus(item) {
+      const rawStatus = String(item && item.completionStatus || '').trim().toUpperCase();
+      if (rawStatus === 'PARTIAL') return 'PARTIAL';
+      if (rawStatus === 'DONE') return 'DONE';
+      return 'NOT_DONE';
+    }
+
+    function getWorkMonth(item) {
+      return Number(item && (item.plannedMonth || item.month));
+    }
+
+    function getWorkYear(item) {
+      const month = getWorkMonth(item);
+      const source = String(item && item.source || 'PLAN').trim().toUpperCase();
+      const plannedYear = Number(item && item.plannedYear);
+      const calendarYear = Number(item && item.year);
+      if (source === 'PLAN' && Number.isFinite(plannedYear) && plannedYear > 0) return plannedYear;
+      if (Number.isFinite(calendarYear) && calendarYear > 0) return calendarYear;
+      if (Number.isFinite(plannedYear) && plannedYear > 0) return plannedYear;
+      return inferAcademicYearMonthYear(month, item && item.academicYear);
+    }
+
+    function isFactWorkInScope(item) {
+      const source = String(item && item.source || 'PLAN').trim().toUpperCase();
+      if (!isFactSourceEnabled(source)) return false;
+
+      const status = getCreditedFactStatus(item);
+      if (!isFactStatusEnabled(status)) return false;
+
+      const month = getWorkMonth(item);
+      if (!isMonthEnabledByReportFilters(month)) return false;
+      return true;
+    }
+
+    function getMetricKey(indicator, articleType) {
+      const normalizedIndicator = String(indicator || '').trim();
+      if (!normalizedIndicator) return '';
+      if (normalizedIndicator === 'ARTICLE_TYPE') {
+        const normalizedType = normalizeArticleType(articleType);
+        return normalizedType ? `ARTICLE_TYPE:${normalizedType}` : 'ARTICLE_TYPE';
+      }
+      return normalizedIndicator;
+    }
+
+    function ensureSeries(container, key, length) {
+      if (!key) return null;
+      if (!container[key]) container[key] = createEmptySeries(length);
+      return container[key];
+    }
+
+    function buildReportData(planItems, works, academicYear) {
+      const structure = createMonthYearStructure(academicYear);
+      const seriesLength = structure.months.length;
+      const byIndicator = {};
+      let hasAnyData = false;
+
+      REPORT_ARTICLE_TYPES.forEach((code) => { byIndicator[`ARTICLE_TYPE:${code}`] = createEmptySeries(seriesLength); });
+      REPORT_LITERATURE_TYPES.forEach((code) => { byIndicator[code] = createEmptySeries(seriesLength); });
+
+      (Array.isArray(planItems) ? planItems : []).forEach((item) => {
+        const month = Number(item && item.plannedMonth);
+        if (!isMonthEnabledByReportFilters(month)) return;
+        const year = Number(item && item.plannedYear) || inferAcademicYearMonthYear(month, item && item.academicYear);
+        const index = structure.monthIndex[`${year}-${month}`];
+        if (!Number.isInteger(index)) return;
+
+        const key = getMetricKey(item.indicator, item.articleType);
+        const series = ensureSeries(byIndicator, key, seriesLength);
+        if (!series) return;
+
+        const plannedAmount = getPlanAmount(item);
+
+        series.planned[index] += plannedAmount;
+        series.totalPlanned += plannedAmount;
+        hasAnyData = true;
+      });
+
+      (Array.isArray(works) ? works : []).forEach((item) => {
+        if (!isFactWorkInScope(item)) return;
+
+        const month = getWorkMonth(item);
+        const year = getWorkYear(item);
+        const index = structure.monthIndex[`${year}-${month}`];
+        if (!Number.isInteger(index)) return;
+
+        const key = getMetricKey(item.indicator, item.articleType);
+        const series = ensureSeries(byIndicator, key, seriesLength);
+        if (!series) return;
+
+        const factAmount = getFactAmount(item);
+        series.fact[index] += factAmount;
+        series.totalFact += factAmount;
+        hasAnyData = true;
+      });
+
+      return {
+        academicYear,
+        labels: structure.labels,
+        months: structure.months,
+        byIndicator,
+        hasAnyData
+      };
+    }
+
+    async function loadReport(force = false) {
+      clearError();
+      setEmptyState('');
+      setStatus(t('loading'));
+      document.getElementById('reportGrid').style.display = 'none';
+      document.getElementById('indicatorFiltersCard').style.display = 'none';
+
+      const departmentId = document.getElementById('deptSel').value;
+      const academicYear = document.getElementById('yearSel').value;
+
+      if (!departmentId) {
+        lastData = null;
+        rawPlanItems = [];
+        rawWorks = [];
+        renderReportScopeFilters();
+        renderIndicatorFilters();
+        renderReports();
+        setStatus(t('noData'));
+        return;
+      }
+
+      if (!/^\d{4}-\d{4}$/.test(academicYear)) {
+        showError(t('badYear'));
+        return;
+      }
+
+      const requestSeq = ++reportLoadSeq;
+      const cacheKey = `${departmentId}::${academicYear}`;
+
+      try {
+        let planItems;
+        let works;
+        if (!force && reportResponseCache.has(cacheKey)) {
+          const cached = reportResponseCache.get(cacheKey) || {};
+          planItems = cached.planItems;
+          works = cached.works;
+        } else {
+          [planItems, works] = await Promise.all([
+            apiFetch(`/departments/${encodeURIComponent(departmentId)}/plan-items?academicYear=${encodeURIComponent(academicYear)}`),
+            apiFetch(`/departments/${encodeURIComponent(departmentId)}/scientific-works?academicYear=${encodeURIComponent(academicYear)}`)
+          ]);
+          reportResponseCache.set(cacheKey, {
+            planItems: Array.isArray(planItems) ? planItems : [],
+            works: Array.isArray(works) ? works : []
+          });
+        }
+        if (requestSeq !== reportLoadSeq) return;
+        rawPlanItems = Array.isArray(planItems) ? planItems : [];
+        rawWorks = Array.isArray(works) ? works : [];
+        rebuildReportData();
+        setUpdatedStamp(new Date());
+
+        if (!lastData || !lastData.hasAnyData) {
+          setStatus(t('noData'));
+          return;
+        }
+
+        setStatus('');
+      } catch (error) {
+        if (error && error.message === 'no_auth') return;
+        showError(error && error.message ? error.message : String(error));
+        setStatus('');
+      }
+    }
+
+    async function init() {
+      const deptSelect = document.getElementById('deptSel');
+      const yearSelect = document.getElementById('yearSel');
+      initPageLayout();
+      renderReportScopeFilters();
+      setFiltersDrawerOpen(false);
+
+      fillAcademicYears(yearSelect);
+      if (initialYear) {
+        const option = [...yearSelect.options].find((item) => item.value === initialYear);
+        if (option) yearSelect.value = initialYear;
+      }
+
+      const deptWrap = document.getElementById('deptWrap');
+      if (initialDeptId) {
+        if (deptWrap) deptWrap.style.display = 'none';
+        deptSelect.innerHTML = `<option value="${esc(String(initialDeptId))}">${esc(String(initialDeptId))}</option>`;
+        deptSelect.value = String(initialDeptId);
+      } else {
+        if (deptWrap) deptWrap.style.display = '';
+        const departments = await loadDepartments().catch(() => []);
+        if (!departments.length) {
+          deptSelect.innerHTML = '';
+          setStatus(t('noData'));
+          return;
+        }
+        deptSelect.innerHTML = departments.map((department) => `<option value="${department.id}">${esc(getDepartmentName(department))}</option>`).join('');
+      }
+      const backGlyph = document.getElementById('backGlyph');
+      if (backGlyph) {
+        const goBack = () => {
+          if (document.referrer) history.back();
+          else location.href = getBase() + '/cabinet-department.html?departmentId=' + encodeURIComponent(initialDeptId || document.getElementById('deptSel').value || '');
+        };
+        backGlyph.addEventListener('click', goBack);
+        backGlyph.addEventListener('keydown', (event) => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            goBack();
+          }
+        });
+      }
+      const drawerBackdrop = document.getElementById('drawerBackdrop');
+      const filtersFab = document.getElementById('filtersFab');
+      if (filtersFab) filtersFab.addEventListener('click', () => setFiltersDrawerOpen(!document.body.classList.contains('drawer-open')));
+      if (drawerBackdrop) drawerBackdrop.addEventListener('click', closeFiltersDrawer);
+
+      const langRuBtn = document.getElementById('langRuBtn');
+      const langUzBtn = document.getElementById('langUzBtn');
+      if (langRuBtn) {
+        langRuBtn.addEventListener('click', () => {
+          if (currentLang === 'ru') return;
+          currentLang = 'ru';
+          try { localStorage.setItem(LANG_KEY, 'ru'); } catch (_) {}
+          applyLang();
+        });
+      }
+      if (langUzBtn) {
+        langUzBtn.addEventListener('click', () => {
+          if (currentLang === 'uz') return;
+          currentLang = 'uz';
+          try { localStorage.setItem(LANG_KEY, 'uz'); } catch (_) {}
+          applyLang();
+        });
+      }
+
+      document.getElementById('reloadBtn').addEventListener('click', () => loadReport(true));
+      document.getElementById('selectAllScopeFiltersBtn').addEventListener('click', () => {
+        setAllDraftReportFilters(true);
+      });
+      document.getElementById('clearAllScopeFiltersBtn').addEventListener('click', () => {
+        setAllDraftReportFilters(false);
+      });
+      document.getElementById('applyScopeFiltersBtn').addEventListener('click', () => {
+        applyDraftReportFilters();
+        closeFiltersDrawer();
+      });
+      document.getElementById('selectAllIndicatorsBtn').addEventListener('click', () => {
+        if (!lastData) return;
+        const keys = getMetricKeys(lastData);
+        activeDetailKey = keys[0] || '';
+        renderIndicatorFilters();
+        renderReports();
+      });
+      document.getElementById('clearIndicatorsBtn').addEventListener('click', () => {
+        const keys = getMetricKeys(lastData || {});
+        activeDetailKey = keys[0] || '';
+        renderIndicatorFilters();
+        renderReports();
+      });
+
+      if (!initialDeptId) deptSelect.addEventListener('change', loadReport);
+      yearSelect.addEventListener('change', loadReport);
+      window.addEventListener('resize', () => {
+        if (window.innerWidth > 1220) closeFiltersDrawer();
+      });
+
+      await loadReport();
+    }
+
+    init().catch((error) => {
+      if (error && error.message === 'no_auth') return;
+      showError(error && error.message ? error.message : String(error));
+      setStatus('');
+    });
+  </script>
+</body>
+</html>
+
